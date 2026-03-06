@@ -4,6 +4,7 @@
 templates:
   roadmap_change:
     title: "Roadmap Updated"
+    block_message: "⏳ Roadmap 变更需要人工审核，Agent 已暂停"
     body: |
       The project roadmap has been updated.
 
@@ -19,6 +20,7 @@ templates:
 
   failure_alert:
     title: "Consecutive Failures Alert"
+    block_message: "⏳ 连续失败 {{failure_count}} 次，Agent 已暂停"
     body: |
       CRITICAL: Multiple consecutive failures detected.
 
@@ -32,6 +34,7 @@ templates:
 
   hypothesis_invalid:
     title: "Hypothesis Invalidated"
+    block_message: "⏳ 核心假设证伪，Agent 已暂停等待决策"
     body: |
       A hypothesis has been invalidated during testing.
 
@@ -46,6 +49,7 @@ templates:
 
   model_disagreement:
     title: "Model Disagreement Detected"
+    block_message: "ℹ️ 多模型分歧，建议人工审核（不阻塞）"
     body: |
       Significant disagreement detected between models.
 
@@ -59,6 +63,7 @@ templates:
 
   tech_debt_alert:
     title: "Tech Debt Threshold Exceeded"
+    block_message: "⏳ 技术债超阈值，Agent 已暂停等待处理"
     body: |
       Technical debt has exceeded the configured threshold.
 
@@ -72,6 +77,7 @@ templates:
 
   stage_complete:
     title: "Stage Completed"
+    block_message: "✅ Stage {{completed_stage}} 完成"
     body: |
       A stage has been successfully completed.
 
@@ -86,6 +92,7 @@ templates:
 
   daily_report:
     title: "Daily Progress Report"
+    block_message: null
     body: |
       Daily progress summary for {{project_name}}.
 
@@ -104,6 +111,7 @@ templates:
 
   weekly_report:
     title: "Weekly Progress Report"
+    block_message: null
     body: |
       Weekly progress summary for {{project_name}}.
 

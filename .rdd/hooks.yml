@@ -99,3 +99,10 @@ triggers:
     priority: "low"
     schedule: "Monday 09:00"
     timezone: "Asia/Shanghai"
+
+# Retry settings
+retry:
+  max_attempts: 3
+  backoff: exponential
+  initial_delay: 1s
+  max_delay: 30s
