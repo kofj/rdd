@@ -1,0 +1,126 @@
+# RDD Notification Templates
+# Define message templates for various notification triggers
+
+templates:
+  roadmap_change:
+    title: "Roadmap Updated"
+    body: |
+      The project roadmap has been updated.
+
+      Project: {{project_name}}
+      Change Type: {{change_type}}
+      Changed By: {{changed_by}}
+      Timestamp: {{timestamp}}
+
+      Details:
+      {{change_details}}
+
+      Please review the changes at your earliest convenience.
+
+  failure_alert:
+    title: "Consecutive Failures Alert"
+    body: |
+      CRITICAL: Multiple consecutive failures detected.
+
+      Project: {{project_name}}
+      Stage: {{stage_name}}
+      Failure Count: {{failure_count}}
+      Last Error: {{last_error}}
+      Timestamp: {{timestamp}}
+
+      Immediate attention required. Please check the logs and take corrective action.
+
+  hypothesis_invalid:
+    title: "Hypothesis Invalidated"
+    body: |
+      A hypothesis has been invalidated during testing.
+
+      Project: {{project_name}}
+      Hypothesis ID: {{hypothesis_id}}
+      Hypothesis: {{hypothesis_text}}
+      Reason: {{invalidation_reason}}
+      Evidence: {{evidence}}
+      Timestamp: {{timestamp}}
+
+      This may require revisiting the design or implementation approach.
+
+  model_disagreement:
+    title: "Model Disagreement Detected"
+    body: |
+      Significant disagreement detected between models.
+
+      Project: {{project_name}}
+      Models: {{model_names}}
+      Disagreement Score: {{disagreement_score}}
+      Context: {{context}}
+      Timestamp: {{timestamp}}
+
+      Review may be needed to resolve the discrepancy.
+
+  tech_debt_alert:
+    title: "Tech Debt Threshold Exceeded"
+    body: |
+      Technical debt has exceeded the configured threshold.
+
+      Project: {{project_name}}
+      Current Debt Count: {{debt_count}}
+      Threshold: {{threshold}}
+      Debt Items: {{debt_items}}
+      Timestamp: {{timestamp}}
+
+      Please address technical debt before proceeding with new features.
+
+  stage_complete:
+    title: "Stage Completed"
+    body: |
+      A stage has been successfully completed.
+
+      Project: {{project_name}}
+      Stage: {{stage_name}}
+      Duration: {{duration}}
+      Coverage: {{coverage}}%
+      Tests Passed: {{tests_passed}}
+      Timestamp: {{timestamp}}
+
+      Ready to proceed to the next stage.
+
+  daily_report:
+    title: "Daily Progress Report"
+    body: |
+      Daily progress summary for {{project_name}}.
+
+      Date: {{date}}
+
+      Completed Tasks: {{completed_tasks}}
+      In Progress: {{in_progress_tasks}}
+      Blocked Items: {{blocked_items}}
+      Tech Debt Count: {{tech_debt_count}}
+
+      Stage Progress:
+      {{stage_progress}}
+
+      Notes:
+      {{notes}}
+
+  weekly_report:
+    title: "Weekly Progress Report"
+    body: |
+      Weekly progress summary for {{project_name}}.
+
+      Week: {{week_range}}
+
+      Summary:
+      - Tasks Completed: {{tasks_completed}}
+      - Stages Finished: {{stages_finished}}
+      - Coverage Change: {{coverage_change}}%
+      - Tech Debt Resolved: {{debt_resolved}}
+      - New Tech Debt: {{new_debt}}
+
+      Highlights:
+      {{highlights}}
+
+      Blockers:
+      {{blockers}}
+
+      Next Week Goals:
+      {{next_week_goals}}

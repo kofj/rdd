@@ -1,0 +1,62 @@
+# RDD Checkpoints Configuration
+# Define review checkpoints for quality gates
+
+checkpoints:
+  stage_complete_review:
+    enabled: true
+    trigger: "stage_complete"
+    requirements:
+      - "All tests passing"
+      - "Coverage meets minimum threshold"
+      - "No unresolved tech debt above threshold"
+      - "Documentation updated"
+    reviewers:
+      - "lead_developer"
+      - "tech_lead"
+    auto_approve_conditions:
+      coverage_above: 80
+      no_blockers: true
+      tech_debt_below: 1
+
+  adr_review:
+    enabled: true
+    trigger: "adr_created"
+    requirements:
+      - "ADR follows template format"
+      - "Decision rationale documented"
+      - "Alternatives considered"
+      - "Impact assessment included"
+    reviewers:
+      - "architect"
+      - "tech_lead"
+    auto_approve_conditions: null
+
+  new_debt:
+    enabled: true
+    trigger: "tech_debt_added"
+    requirements:
+      - "Debt item documented"
+      - "Priority assigned"
+      - "Resolution plan proposed"
+      - "Impact assessed"
+    reviewers:
+      - "lead_developer"
+    auto_approve_conditions:
+      priority: "low"
+
+  daily_sync:
+    enabled: true
+    trigger: "scheduled"
+    schedule: "daily"
+    time: "09:00"
+    timezone: "Asia/Shanghai"
+    requirements:
+      - "Update task status"
+      - "Review blockers"
+      - "Sync with roadmap"
+    auto_approve_conditions: null
+
+# Checkpoint state storage
+state:
+  storage_path: ".rdd/cache/checkpoints.json"
+  history_retention_days: 30

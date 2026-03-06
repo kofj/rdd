@@ -1,0 +1,38 @@
+# RDD Configuration
+# This is the main configuration file for RDD (Roadmap Driven Development)
+
+version: "1.0.0"
+project:
+  name: ""
+  description: ""
+
+# Stage settings
+stage:
+  # Minimum test coverage requirement
+  min_coverage: 20
+  # Maximum consecutive failures before pause
+  max_failures: 3
+  # Tech debt threshold for blocking
+  tech_debt_threshold: 3
+
+# Gate settings
+gates:
+  design_required: true
+  review_required: true
+  e2e_required: true
+  docs_required: true
+
+# Hook settings
+hooks:
+  enabled: false
+  config_file: ".rdd/hooks.yml"
+  templates_file: ".rdd/templates.yml"
+
+# Notification settings
+notifications:
+  quiet_hours:
+    enabled: true
+    start: "22:00"
+    end: "08:00"
+    timezone: "Asia/Shanghai"
+    bypass_for_p0: true

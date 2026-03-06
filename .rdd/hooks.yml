@@ -1,0 +1,101 @@
+# RDD Hooks Configuration
+# Configure notification channels and triggers for RDD framework
+
+# Notification channels configuration
+channels:
+  wecom:
+    enabled: false
+    webhook_url: ""
+    # WeChat Work bot webhook URL
+
+  email:
+    enabled: false
+    smtp_host: ""
+    smtp_port: 587
+    smtp_user: ""
+    smtp_pass: ""
+    from_address: ""
+    to_addresses: []
+
+  bark:
+    enabled: false
+    server_url: ""
+    device_key: ""
+    # iOS Bark push notification
+
+  telegram:
+    enabled: false
+    bot_token: ""
+    chat_id: ""
+
+  webhook:
+    enabled: false
+    url: ""
+    method: "POST"
+    headers: {}
+    # Generic webhook for custom integrations
+
+# Trigger configurations
+triggers:
+  roadmap_change:
+    enabled: true
+    channels:
+      - wecom
+      - email
+    priority: "high"
+
+  consecutive_failure:
+    enabled: true
+    channels:
+      - wecom
+      - bark
+      - telegram
+    priority: "critical"
+    # Triggered after max_failures consecutive failures
+
+  hypothesis_invalid:
+    enabled: true
+    channels:
+      - wecom
+      - email
+    priority: "high"
+    # Triggered when hypothesis is invalidated
+
+  model_disagreement:
+    enabled: true
+    channels:
+      - wecom
+    priority: "medium"
+    # Triggered when models disagree significantly
+
+  tech_debt_threshold:
+    enabled: true
+    channels:
+      - wecom
+      - email
+    priority: "high"
+    # Triggered when tech debt exceeds threshold
+
+  stage_complete:
+    enabled: true
+    channels:
+      - wecom
+      - email
+    priority: "normal"
+    # Triggered when a stage is completed
+
+  daily_report:
+    enabled: true
+    channels:
+      - email
+    priority: "low"
+    schedule: "09:00"
+    timezone: "Asia/Shanghai"
+
+  weekly_report:
+    enabled: true
+    channels:
+      - email
+    priority: "low"
+    schedule: "Monday 09:00"
+    timezone: "Asia/Shanghai"
