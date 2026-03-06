@@ -26,7 +26,7 @@
 ```
 RDD = Roadmap (Human-led)
     + Stage (Minimal Delivery Unit)
-    + Gate (Four-Layer Checkpoint)
+    + Gate (Five-Layer Checkpoint)
     + Knowledge (Explicit Knowledge Management)
     + Hook (Human Intervention Notification)
 ```
