@@ -76,18 +76,206 @@ DON'T:
 
 | 编号 | 标题 | 日期 | 相关 Stage | 状态 |
 |------|------|------|------------|------|
-| 决策 1 | [标题] | [日期] | [Stage N] | [生效/废弃] |
-| 决策 2 | [标题] | [日期] | [Stage N] | [生效/废弃] |
+| 决策 1 | Hook 脚本使用 source 引入共享函数 | 2026-03-07 | Stage 1 | 生效 |
+| 决策 2 | Hook 触发通过 rdd-hooks skill 统一管理 | 2026-03-07 | Stage 1 | 生效 |
+| 决策 3 | 使用相对路径和 PROJECT_ROOT 环境变量 | 2026-03-07 | Stage 1 | 生效 |
+| 决策 4 | 凭证使用 ${VAR} 环境变量引用 | 2026-03-07 | Stage 1 | 生效 |
+| 决策 5 | 选择 bats-core 作为 Shell 测试框架 | 2026-03-07 | Stage 2 | 生效 |
+| 决策 6 | 测试分层策略：单元/BDD/E2E 三层测试 | 2026-03-07 | Stage 2 | 生效 |
 
 ---
 
 ## ADR 记录
 
-<!-- 在此处添加新的 ADR 记录 -->
+---
+
+### 决策 1：Hook 脚本使用 source 引入共享函数
+
+**背景**：Hook 脚本需要调用 notify.sh 中定义的 log_info、log_warn、log_error、send_notification 等函数。当前 Hook 脚本直接调用这些函数但没有 source notify.sh，导致 "command not found" 错误。
+
+**决策内容**：所有 Hook 脚本在开头统一使用 `source "${SCRIPTS_DIR}/notify.sh"` 引入共享函数，并确保 SCRIPTS_DIR 正确设置。
+
+**原因**：
+1. 保持代码 DRY（Don't Repeat Yourself）
+2. 便于维护，函数修改只需改一处
+3. 符合 Shell 脚本最佳实践
+4. 便于单元测试
+
+**对后续 Stage 的影响**：
+- Stage 2 测试可以直接测试 notify.sh 函数，无需复制代码
+- 未来新增 Hook 只需 source 即可使用所有函数
+- Stage 3 可依赖稳定的 Hook 机制实现恢复通知
+
+**Date**: 2026-03-07
+
+**Related Stage**: Stage 1
+
+**Alternatives Considered**:
+1. 每个脚本内定义函数 - 代码重复，维护困难
+2. 使用符号链接 - 不适用于函数，仅适用于文件
 
 ---
 
-### 决策 1：使用 Rust 作为主要开发语言
+### 决策 2：Hook 触发通过 rdd-hooks skill 统一管理
+
+**背景**：当前 Hooks 脚本存在但没有任何机制触发它们。需要在合适的时机调用这些脚本。
+
+**决策内容**：创建 rdd-hooks skill 定义触发规则，各 skill 在适当时机通过环境变量传递参数并调用 Hook 脚本。
+
+**原因**：
+1. 集中管理所有 Hook 触发逻辑
+2. 便于测试和调试
+3. 遵循 RDD 单一职责原则
+4. 各 skill 无需了解 Hook 实现细节
+
+**对后续 Stage 的影响**：
+- Stage 2 可以测试 Hook 触发流程
+- Stage 3 可依赖此机制发送恢复通知
+- Stage 4 可扩展更多 Hook 类型
+
+**Date**: 2026-03-07
+
+**Related Stage**: Stage 1
+
+**Alternatives Considered**:
+1. 在每个 skill 中直接调用 - 分散，难维护
+2. 创建独立 Hook 服务 - 过度设计，增加复杂度
+
+---
+
+### 决策 3：使用相对路径和 PROJECT_ROOT 环境变量
+
+**背景**：当前代码中硬编码了 `/data/works/play/sbd/` 路径，导致框架无法在其他项目中使用。
+
+**决策内容**：
+1. 所有路径使用相对路径（相对于脚本所在目录）
+2. 支持 PROJECT_ROOT 环境变量覆盖项目根目录
+3. 在 skills 中使用 `.` 或 `${PROJECT_ROOT:-.}` 形式
+
+**原因**：
+1. 使框架可移植到任意项目
+2. 保持向后兼容（默认当前目录）
+3. 符合 12-Factor App 原则
+4. 简化部署流程
+
+**对后续 Stage 的影响**：
+- Stage 2 测试可在临时目录运行
+- Stage 4 多项目支持变得简单
+- rdd-init 可直接在新项目创建结构
+
+**Date**: 2026-03-07
+
+**Related Stage**: Stage 1
+
+**Alternatives Considered**:
+1. 绝对路径配置文件 - 需要每个项目单独配置
+2. 自动检测项目根 - 不可靠，可能误判
+
+---
+
+### 决策 4：凭证使用 ${VAR} 环境变量引用
+
+**背景**：当前 hooks.yml 中 Webhook URL、Bot Token 等敏感信息需要明文存储，存在安全风险。
+
+**决策内容**：支持 `${VAR}` 和 `$VAR` 形式的环境变量引用，配置文件中只存储变量名而非实际值。
+
+**原因**：
+1. 符合安全最佳实践
+2. 便于 CI/CD 集成
+3. 支持不同环境不同配置
+4. 避免敏感信息泄露到版本控制
+
+**对后续 Stage 的影响**：
+- Stage 2 测试可使用 mock 环境变量
+- Stage 4 CI/CD 集成可直接使用 CI 环境变量
+- 可安全提交配置文件示例
+
+**Date**: 2026-03-07
+
+**Related Stage**: Stage 1
+
+**Alternatives Considered**:
+1. 加密存储 - 增加复杂度，需要密钥管理
+2. 单独 secrets 文件 - 增加配置复杂度
+3. 仅环境变量 - 不便于本地开发
+
+---
+
+### 决策 5：选择 bats-core 作为 Shell 测试框架
+
+**背景**：Stage 2 需要建立测试体系，为 notify.sh 和 Hook 脚本提供单元测试和 BDD 测试能力。当前没有任何测试框架。
+
+**决策内容**：选择 bats-core 作为 Shell 脚本测试框架，用于单元测试和 BDD 测试。
+
+**原因**：
+1. 原生 BDD 风格语法（@test "description"），符合 Stage 2 的 BDD 测试需求
+2. TAP (Test Anything Protocol) 输出，易于 CI 集成
+3. 活跃的社区和丰富的文档
+4. 支持环境变量 mock 和函数覆盖
+5. 可扩展通过 bats-support、bats-assert 等库
+
+**对后续 Stage 的影响**：
+- Stage 2：建立完整的单元测试和 BDD 测试体系
+- Stage 3：可测试上下文恢复逻辑
+- Stage 4：CI/CD 可直接使用 bats 输出
+
+**Date**: 2026-03-07
+
+**Related Stage**: Stage 2
+
+**Alternatives Considered**:
+1. shunit2 - xUnit 风格，不适合 BDD 场景
+2. shellcheck - 静态分析，非测试框架
+3. 自定义测试脚本 - 重复造轮子，功能有限
+
+---
+
+### 决策 6：测试分层策略：单元/BDD/E2E 三层测试
+
+**背景**：需要为 RDD 框架建立完整测试体系，确保各层级测试覆盖不同的验证需求。
+
+**决策内容**：采用三层测试策略：
+
+1. **单元测试层 (tests/unit/)**：测试单个函数和脚本逻辑
+   - notify.sh 各函数测试
+   - Hook 脚本测试
+   - 工具函数测试
+   - 目标覆盖率 >= 80%
+
+2. **BDD 测试层 (tests/bdd/)**：测试用户行为场景
+   - Given/When/Then 格式
+   - 验证 Hook 触发流程
+   - 验证通知发送流程
+   - 验证错误处理
+
+3. **E2E 测试层 (tests/e2e/)**：端到端集成测试
+   - 完整工作流测试
+   - 真实环境验证
+   - Agent 行为模拟
+
+**原因**：
+1. 分层测试隔离关注点
+2. 单元测试快速反馈，BDD 验证行为，E2E 验证集成
+3. 符合测试金字塔原则
+4. 便于定位问题层级
+
+**对后续 Stage 的影响**：
+- Stage 2：实现三层测试框架和基础测试用例
+- Stage 3：可添加上下文恢复的 E2E 测试
+- Stage 4：CI/CD 可分层运行测试
+
+**Date**: 2026-03-07
+
+**Related Stage**: Stage 2
+
+**Alternatives Considered**:
+1. 仅单元测试 - 无法验证行为和集成
+2. 仅 E2E 测试 - 反馈慢，调试困难
+3. 无分层 - 测试混乱，职责不清
+
+---
+
+### 决策 5：使用 Rust 作为主要开发语言
 
 **背景**：项目需要高性能、内存安全的后端服务，团队有 Rust 开发经验。
 
