@@ -10,16 +10,17 @@
 
 | 项目名称 | RDD Framework |
 |----------|--------------|
-| 当前阶段 | Stage 11-15: 全部完成 ✅ |
-| 当前版本 | v1.0.0 (E2E 测试通过) |
+| 当前阶段 | Phase 3 完成 ✅ |
+| 当前版本 | v1.0.1 (准备发布) |
 | 开始日期 | 2026-03-06 |
-| 完成日期 | 2026-03-09 |
+| 最后更新 | 2026-03-10 |
 
 ### 当前进度
 
 ```
 Phase 1 核心开发: ████████████████████ 100% (11/11 Stage)
 Phase 2 E2E测试:  ████████████████████ 100% (5/5 Stage)
+Phase 3 发布运维: ████████████████████ 100% (3/3 Stage)
 ```
 
 ### 测试统计
@@ -41,6 +42,11 @@ Phase 2 E2E测试:  ████████████████████
 - Stage 14: 完整工作流 E2E 测试 ✅
 - Stage 15: 代码提交与发布准备 ✅
 
+**Phase 3: 发布与运维 ✅ (完成)**
+- Stage 16: 安装脚本修复 ✅ (ASCII Banner + go-task 官方脚本)
+- Stage 17: GitHub Actions CI/CD ✅ (自动 Release)
+- Stage 18: Docker 测试环境 ✅ (完整安装测试容器化)
+
 ---
 
 ## 发布状态
@@ -53,13 +59,16 @@ Phase 2 E2E测试:  ████████████████████
 - [x] 文档更新完成
 - [x] 无敏感信息泄露
 - [x] Git 提交完成
+- [x] ASCII Banner 修复 (RDD)
+- [x] go-task 使用官方安装脚本
+- [x] GitHub Actions CI/CD 配置
+- [x] Docker 测试环境
 
 ### 待用户确认 ⏳
 
-- [ ] 配置 Git Remote (GitHub 仓库地址)
-- [ ] 推送代码到 GitHub
-- [ ] 创建 v1.0.0 Tag
-- [ ] 创建 GitHub Release
+- [ ] 推送代码到 GitHub: `git push origin main`
+- [ ] 创建发布: `./scripts/release/create-release.sh v1.0.1`
+- [ ] 验证 GitHub Actions 工作流
 - [ ] 发布到 npm (可选)
 - [ ] 部署文档站点 (可选)
 
@@ -85,6 +94,21 @@ npm install -g @kofj/rdd
 git clone https://github.com/kofj/rdd.git
 cd rdd-framework
 ./scripts/install/install.sh
+```
+
+---
+
+## Docker 测试 (新增)
+
+```bash
+# 构建并运行所有测试
+./docker/run-tests.sh test
+
+# 只运行安装测试
+./docker/run-tests.sh install
+
+# 进入容器 shell
+./docker/run-tests.sh shell
 ```
 
 ---
@@ -143,7 +167,7 @@ export RDD_FRAMEWORK_HOME=/path/to/rdd-framework
 bats tests/e2e/
 
 # 运行 Docker 测试
-./tests/e2e/run-tests.sh --docker
+./docker/run-tests.sh test
 ```
 
 ---
@@ -152,6 +176,7 @@ bats tests/e2e/
 
 | 版本 | 日期 | 修订内容 |
 |------|------|----------|
+| v6.0 | 2026-03-10 | Phase 3 完成，添加 Stage 16-18 |
 | v5.0 | 2026-03-09 | Stage 11-15 完成，E2E 测试全部通过 |
 | v4.0 | 2026-03-09 | 添加 Stage 11-15 E2E 测试计划 |
 | v3.0 | 2026-03-09 | v1.0.0 代码完成 |
