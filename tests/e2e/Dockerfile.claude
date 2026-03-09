@@ -1,0 +1,72 @@
+# RDD Framework E2E Test Environment
+# Docker image with Claude Code for end-to-end testing
+#
+# Build: docker build -t rdd-test -f Dockerfile.claude .
+# Run:   docker run -e ANTHROPIC_AUTH_TOKEN="${TOKEN}" \
+#                   -e ANTHROPIC_BASE_URL="${API_URL}" \
+#                   -e ANTHROPIC_MODEL="${MODEL}" \
+#                   rdd-test
+
+FROM ubuntu:22.04
+
+# Avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install base dependencies
+RUN apt-get update && apt-get install -y \
+    bash \
+    curl \
+    git \
+    jq \
+    yq \
+    nodejs \
+    npm \
+    python3 \
+    pip \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Task (go-task)
+RUN curl -sL https://taskfile.dev/install.sh | sh && \
+    ln -s /root/.local/bin/task /usr/local/bin/task || true
+
+# Install bats-core for testing
+RUN git clone https://github.com/bats-core/bats-core.git /opt/bats-core && \
+    ln -s /opt/bats-core/bin/bats /usr/local/bin/bats
+
+# Create non-root user for testing
+RUN useradd -m -s /bin/bash rdduser && \
+    echo "rdduser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Create Claude Code directories
+RUN mkdir -p /home/rdduser/.claude/skills && \
+    mkdir -p /home/rdduser/.claude/commands && \
+    mkdir -p /home/rdduser/.rdd-framework && \
+    chown -R rdduser:rdduser /home/rdduser/.claude && \
+    chown -R rdduser:rdduser /home/rdduser/.rdd-framework
+
+# Set working directory
+WORKDIR /app
+
+# Copy RDD Framework
+COPY --chown=rdduser:rdduser . /app/
+
+# Make scripts executable
+RUN chmod +x /app/.rdd/scripts/*.sh 2>/dev/null || true && \
+    chmod +x /app/.rdd/hooks/*.sh 2>/dev/null || true && \
+    chmod +x /app/scripts/install/*.sh 2>/dev/null || true && \
+    chmod +x /app/bin/rdd 2>/dev/null || true
+
+# Create settings template (sensitive info via env vars)
+RUN echo '{}' > /home/rdduser/.claude/settings.json && \
+    chown rdduser:rdduser /home/rdduser/.claude/settings.json
+
+# Switch to non-root user
+USER rdduser
+WORKDIR /home/rdduser
+
+# Set environment variables for Claude Code
+ENV CLAUDE_CODE_HOME=/home/rdduser/.claude
+
+# Default command
+CMD ["bats", "/app/tests/e2e/"]
