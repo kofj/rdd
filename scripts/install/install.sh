@@ -71,12 +71,12 @@ show_banner() {
 ${BOLD}${BLUE}
 ╔══════════════════════════════════════════════════════════════╗
 ║                                                              ║
-║   ██████╗ ███████╗██████╗  ██████╗                           ║
-║   ██╔══██╗██╔════╝██╔══██╗██╔═══██╗                          ║
-║   ██████╔╝█████╗  ██████╔╝██║   ██║                           ║
-║   ██╔══██╗██╔══╝  ██╔══██╗██║   ██║                           ║
-║   ██║  ██║███████╗██║  ██║╚██████╔╝                           ║
-║   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝                            ║
+║   █████╗ ██████╗ ██████╗                                     ║
+║   ██╔══██╗██╔══██╗██╔══██╗                                   ║
+║   █████╔╝ ██║  ██║██║  ██║                                    ║
+║   ██╔══██╗██║  ██║██║  ██║                                   ║
+║   ██║  ██║██████╔╝██████╔╝                                   ║
+║   ╚═╝  ╚═╝╚═════╝ ╚═════╝                                    ║
 ║                                                              ║
 ║           Roadmap Driven Development Framework                ║
 ║                                                              ║
@@ -329,49 +329,60 @@ download_rdd() {
 # Install go-task if not present
 install_task() {
     if command -v task &> /dev/null; then
+        log_info "task $(task --version 2>&1 | head -1 || echo 'already installed') ✓"
         return 0
     fi
 
     log_step "Installing go-task..."
 
-    local task_version="v3.35.1"
-    local task_url
+    local task_install_dir="${INSTALL_PREFIX}/bin"
+    mkdir -p "${task_install_dir}"
 
-    case "${OS}" in
-        macos)
-            case "${ARCH}" in
-                arm64)
-                    task_url="https://github.com/go-task/task/releases/download/${task_version}/task_darwin_arm64.tar.gz"
-                    ;;
-                *)
-                    task_url="https://github.com/go-task/task/releases/download/${task_version}/task_darwin_amd64.tar.gz"
-                    ;;
-            esac
-            ;;
-        linux)
-            case "${ARCH}" in
-                arm64|aarch64)
-                    task_url="https://github.com/go-task/task/releases/download/${task_version}/task_linux_arm64.tar.gz"
-                    ;;
-                *)
-                    task_url="https://github.com/go-task/task/releases/download/${task_version}/task_linux_amd64.tar.gz"
-                    ;;
-            esac
-            ;;
-    esac
+    # Use official install script
+    if curl -sL https://taskfile.dev/install.sh | sh -s -- -d -b "${task_install_dir}"; then
+        chmod +x "${task_install_dir}/task" 2>/dev/null || true
+        log_info "go-task installed to ${task_install_dir}/task"
+    else
+        log_warn "Official install script failed, trying fallback..."
 
-    local task_temp="${TEMP_DIR}/task"
-    mkdir -p "${task_temp}"
+        # Fallback: direct download from GitHub Releases
+        local task_version="v3.42.1"
+        local task_url
+        local task_arch="${ARCH}"
 
-    download_file "${task_url}" "${task_temp}/task.tar.gz"
-    tar -xzf "${task_temp}/task.tar.gz" -C "${task_temp}"
+        case "${task_arch}" in
+            x86_64|amd64) task_arch="amd64" ;;
+            aarch64|arm64) task_arch="arm64" ;;
+        esac
 
-    # Move to install prefix bin
-    mkdir -p "${INSTALL_PREFIX}/bin"
-    mv "${task_temp}/task" "${INSTALL_PREFIX}/bin/"
-    chmod +x "${INSTALL_PREFIX}/bin/task"
+        case "${OS}" in
+            macos)
+                task_url="https://github.com/go-task/task/releases/download/${task_version}/task_darwin_${task_arch}.tar.gz"
+                ;;
+            linux)
+                task_url="https://github.com/go-task/task/releases/download/${task_version}/task_linux_${task_arch}.tar.gz"
+                ;;
+            *)
+                log_error "Unsupported OS for fallback: ${OS}"
+                return 1
+                ;;
+        esac
 
-    log_info "go-task installed to ${INSTALL_PREFIX}/bin/task"
+        local task_temp="${TEMP_DIR}/task"
+        mkdir -p "${task_temp}"
+
+        download_file "${task_url}" "${task_temp}/task.tar.gz"
+        tar -xzf "${task_temp}/task.tar.gz" -C "${task_temp}"
+        mv "${task_temp}/task" "${task_install_dir}/"
+        chmod +x "${task_install_dir}/task"
+        log_info "go-task installed via fallback to ${task_install_dir}/task"
+    fi
+
+    # Verify installation
+    if ! command -v task &> /dev/null && [[ ! -x "${task_install_dir}/task" ]]; then
+        log_error "Failed to install go-task"
+        return 1
+    fi
 }
 
 # Install RDD Framework
