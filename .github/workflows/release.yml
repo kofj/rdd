@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Extract release notes
+        id: notes
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          VERSION_NUM="${VERSION#v}"
+          sed -n "/^## \[$VERSION_NUM\]/,/^## \[/p" CHANGELOG.md | head -n -1 > RELEASE_NOTES.md
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "Release $VERSION" > RELEASE_NOTES.md
+          fi
+          cat RELEASE_NOTES.md
+
+      - name: Create tarball
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          tar --exclude='.git' --exclude='node_modules' --exclude='.rdd/cache' \
+              -czvf rdd-framework-${VERSION}.tar.gz .
+          sha256sum rdd-framework-${VERSION}.tar.gz > rdd-framework-${VERSION}.tar.gz.sha256
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          files: |
+            rdd-framework-*.tar.gz
+            rdd-framework-*.tar.gz.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "### Release Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release URL:** ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
