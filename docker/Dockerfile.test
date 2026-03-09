@@ -1,0 +1,32 @@
+FROM debian:bookworm-slim
+
+LABEL maintainer="RDD Framework"
+LABEL description="RDD Framework Test Environment"
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PROJECT_ROOT=/workspace
+ENV RDD_FRAMEWORK_HOME=/workspace
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    wget \
+    git \
+    bash \
+    bc \
+    ca-certificates \
+    bats \
+    shellcheck \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+RUN curl -sL https://taskfile.dev/install.sh | sh -s -- -d -b /usr/local/bin
+
+WORKDIR /workspace
+
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["test"]
