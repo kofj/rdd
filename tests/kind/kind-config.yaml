@@ -1,0 +1,19 @@
+# Kind cluster configuration for RDD Framework E2E testing
+# Creates a clean Kubernetes environment for testing
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: rdd-test-cluster
+
+# Single node cluster for simplicity
+nodes:
+- role: control-plane
+  extraMounts:
+  # Mount RDD framework code
+  - hostPath: ../..
+    containerPath: /rdd-framework
+
+# Pod subnet configuration
+networking:
+  podSubnet: "10.244.0.0/16"
+  serviceSubnet: "10.96.0.0/12"

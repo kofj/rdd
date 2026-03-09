@@ -1,0 +1,45 @@
+# RDD Framework 配置文件
+# 示例项目配置
+
+project:
+  name: simple-project
+  version: 1.0.0
+  description: RDD Framework 简单项目示例
+
+# Stage 配置
+stages:
+  current: 1
+  total: 1
+
+# Hook 配置
+hooks:
+  enabled: true
+  channels:
+    # 企业微信通知
+    - type: wecom
+      webhook: ${WECOM_WEBHOOK_URL}
+      enabled: true
+
+    # Slack 通知 (可选)
+    # - type: slack
+    #   webhook: ${SLACK_WEBHOOK_URL}
+    #   enabled: false
+
+# 通知模板
+templates:
+  stage_complete:
+    title: "Stage 完成"
+    level: "success"
+  stage_failed:
+    title: "Stage 失败"
+    level: "error"
+
+# 缓存配置
+cache:
+  enabled: true
+  ttl: 3600
+
+# 日志配置
+logging:
+  level: INFO
+  format: json

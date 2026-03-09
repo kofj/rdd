@@ -1,0 +1,63 @@
+# HashiCorp Vault Integration Configuration (Optional)
+version: "1.0.0"
+
+# Vault configuration
+vault:
+  # Enable/disable Vault integration
+  enabled: false
+
+  # Connection settings
+  # Use environment variables for sensitive values
+  address: "${VAULT_ADDR:-http://localhost:8200}"
+  token: "${VAULT_TOKEN:-}"
+  namespace: "${VAULT_NAMESPACE:-}"
+
+  # Secret paths
+  paths:
+    # Credentials
+    credentials: "secret/data/rdd/credentials"
+
+    # Configuration secrets
+    config: "secret/data/rdd/config"
+
+    # API keys
+    api_keys: "secret/data/rdd/api_keys"
+
+    # Encryption keys
+    encryption_keys: "secret/data/rdd/keys"
+
+  # Secret engines
+  engines:
+    # KV v2 for static secrets
+    kv:
+      enabled: true
+      version: 2
+      mount: "secret"
+
+    # Transit for encryption as a service
+    transit:
+      enabled: false
+      mount: "transit"
+      key_name: "rdd-encryption"
+
+  # Auto-renewal
+  renewal:
+    enabled: true
+    interval: "1h"
+
+  # Fallback behavior when Vault is unavailable
+  fallback:
+    # Use environment variables
+    use_env: true
+
+    # Use local encrypted storage
+    use_local: true
+
+    # Cache TTL
+    cache_ttl: "5m"
+
+  # Health check settings
+  health_check:
+    enabled: true
+    interval: "30s"
+    timeout: "5s"

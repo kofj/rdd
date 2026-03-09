@@ -1,0 +1,137 @@
+# Test templates for unit tests
+# This file provides template definitions for notification testing
+
+templates:
+  stage_complete:
+    title: "Stage Complete: {{project_name}}"
+    body: |
+      ## Stage Completion Notification
+
+      **Project**: {{project_name}}
+      **Stage**: {{stage_name}}
+      **Duration**: {{duration}}
+      **Coverage**: {{coverage}}%
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Stage completed successfully"
+
+  roadmap_change:
+    title: "Roadmap Changed: {{project_name}}"
+    body: |
+      ## Roadmap Change Notification
+
+      **Project**: {{project_name}}
+      **Change Type**: {{change_type}}
+      **Details**: {{details}}
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Roadmap has been updated"
+
+  consecutive_failure:
+    title: "Consecutive Failures: {{project_name}}"
+    body: |
+      ## Consecutive Failure Alert
+
+      **Project**: {{project_name}}
+      **Stage**: {{stage_name}}
+      **Failure Count**: {{failure_count}}
+      **Last Error**: {{last_error}}
+
+      Please investigate the failures.
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Multiple failures detected"
+
+  hypothesis_invalid:
+    title: "Hypothesis Invalidated: {{project_name}}"
+    body: |
+      ## Hypothesis Invalidation Alert
+
+      **Project**: {{project_name}}
+      **Stage**: {{stage_name}}
+      **Hypothesis**: {{hypothesis}}
+      **Evidence**: {{evidence}}
+
+      Core hypothesis has been falsified. Please review.
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Hypothesis invalidated - action required"
+
+  model_disagreement:
+    title: "Model Disagreement: {{project_name}}"
+    body: |
+      ## Model Disagreement Alert
+
+      **Project**: {{project_name}}
+      **Stage**: {{stage_name}}
+      **Issue**: {{issue}}
+      **Models Involved**: {{models}}
+
+      Multiple models have differing opinions. Review needed.
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Model disagreement detected"
+
+  tech_debt_threshold:
+    title: "Tech Debt Threshold: {{project_name}}"
+    body: |
+      ## Tech Debt Threshold Alert
+
+      **Project**: {{project_name}}
+      **Current Debt Count**: {{debt_count}}
+      **Threshold**: {{threshold}}
+      **Top Issues**:
+      {{top_issues}}
+
+      Tech debt has exceeded the threshold. Please address.
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Tech debt threshold exceeded"
+
+  daily_report:
+    title: "Daily Report: {{project_name}}"
+    body: |
+      ## Daily Progress Report
+
+      **Project**: {{project_name}}
+      **Date**: {{date}}
+
+      ### Progress
+      {{progress}}
+
+      ### Blockers
+      {{blockers}}
+
+      ### Next Steps
+      {{next_steps}}
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Daily report"
+
+  weekly_report:
+    title: "Weekly Report: {{project_name}}"
+    body: |
+      ## Weekly Progress Report
+
+      **Project**: {{project_name}}
+      **Week**: {{week}}
+
+      ### Summary
+      {{summary}}
+
+      ### Completed Stages
+      {{completed_stages}}
+
+      ### Upcoming Stages
+      {{upcoming_stages}}
+
+      ---
+      *RDD Framework Notification*
+    block_message: "Weekly report"

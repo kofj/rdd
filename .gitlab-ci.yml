@@ -1,0 +1,111 @@
+# GitLab CI Configuration for RDD Framework
+
+stages:
+  - check
+  - test
+  - security
+  - deploy
+
+variables:
+  RDD_ENV: ci
+  RDD_DEBUG: "false"
+
+# Cache dependencies
+cache:
+  paths:
+    - tests/lib/bats-core/
+    - .rdd/cache/
+
+before_script:
+  - apt-get update && apt-get install -y curl git
+  - curl -sL https://taskfile.dev/install.sh | sh
+  - export PATH="$PATH:./bin"
+  - git clone https://github.com/bats-core/bats-core.git tests/lib/bats-core 2>/dev/null || true
+
+# Health Check
+rdd-health:
+  stage: check
+  script:
+    - task doctor
+  artifacts:
+    paths:
+      - .rdd/logs/
+    expire_in: 1 week
+    when: always
+
+# Unit Tests
+rdd-test-unit:
+  stage: test
+  script:
+    - task test-unit
+  artifacts:
+    reports:
+      junit: test-results/unit.xml
+    paths:
+      - .rdd/logs/
+    expire_in: 1 week
+    when: always
+
+# BDD Tests
+rdd-test-bdd:
+  stage: test
+  script:
+    - task test-bdd
+  artifacts:
+    reports:
+      junit: test-results/bdd.xml
+    paths:
+      - .rdd/logs/
+    expire_in: 1 week
+    when: always
+
+# E2E Tests
+rdd-test-e2e:
+  stage: test
+  script:
+    - task test-e2e
+  artifacts:
+    reports:
+      junit: test-results/e2e.xml
+    paths:
+      - .rdd/logs/
+    expire_in: 1 week
+    when: always
+
+# Security Scan
+security-scan:
+  stage: security
+  script:
+    # Check for hardcoded secrets
+    - |
+      if grep -r -E "(password|secret|token|api_key)\s*=\s*[\"'][^\"']+[\"']" .rdd --include="*.sh"; then
+        echo "Found potential hardcoded secrets"
+        exit 1
+      fi
+    # Check for .env files
+    - |
+      if find . -name ".env" -type f | grep -q .; then
+        echo "Found .env files - ensure they are in .gitignore"
+        exit 1
+      fi
+    - echo "Security scan passed"
+
+# Lint
+lint:
+  stage: check
+  script:
+    - apt-get install -y shellcheck
+    - find .rdd -name "*.sh" -exec shellcheck {} +
+  allow_failure: true
+
+# Deploy (only on main branch)
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to production..."
+    - task rdd:backup --name "pre-deploy-${CI_COMMIT_SHA}"
+  environment:
+    name: production
+  only:
+    - main
+  when: manual

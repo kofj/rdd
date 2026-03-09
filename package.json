@@ -1,0 +1,57 @@
+{
+  "name": "@kofj/rdd",
+  "version": "1.0.0",
+  "description": "Roadmap Driven Development Framework for AI Agents - Structured development with quality gates and multi-model verification",
+  "keywords": [
+    "ai",
+    "agent",
+    "development",
+    "roadmap",
+    "claude",
+    "claude-code",
+    "stage-based",
+    "tdd",
+    "quality-gates"
+  ],
+  "homepage": "https://github.com/kofj/rdd#readme",
+  "bugs": {
+    "url": "https://github.com/kofj/rdd/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kofj/rdd.git"
+  },
+  "license": "MIT",
+  "author": "kofj",
+  "bin": {
+    "rdd": "./bin/rdd"
+  },
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js",
+    "test": "task test",
+    "lint": "echo 'No linting configured'",
+    "doctor": "task doctor"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    ".claude/",
+    ".rdd/",
+    "docs/",
+    "Taskfile.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

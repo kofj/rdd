@@ -1,0 +1,97 @@
+name: RDD Check
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install bats
+        run: |
+          git clone https://github.com/bats-core/bats-core.git tests/lib/bats-core
+          git clone https://github.com/bats-core/bats-support.git tests/lib/bats-support
+          git clone https://github.com/bats-core/bats-assert.git tests/lib/bats-assert
+
+      - name: Verify installation
+        run: |
+          task --version
+          ./tests/lib/bats-core/bin/bats --version
+
+      - name: Run health check
+        run: task doctor
+
+      - name: Run tests
+        run: task test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            .rdd/logs/
+            test-results/
+          retention-days: 7
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run shellcheck
+        run: |
+          if command -v shellcheck &> /dev/null; then
+            find .rdd -name "*.sh" -exec shellcheck {} +
+          else
+            echo "shellcheck not installed, skipping"
+          fi
+
+      - name: Check script permissions
+        run: |
+          find .rdd -name "*.sh" -type f ! -executable -print
+          test $(find .rdd -name "*.sh" -type f ! -executable | wc -l) -eq 0
+
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run security check
+        run: |
+          # Check for hardcoded secrets
+          if grep -r -E "(password|secret|token|api_key)\s*=\s*[\"'][^\"']+[\"']" .rdd --include="*.sh"; then
+            echo "Found potential hardcoded secrets"
+            exit 1
+          fi
+
+          # Check for .env files
+          if find . -name ".env" -type f | grep -q .; then
+            echo "Found .env files - ensure they are in .gitignore"
+            exit 1
+          fi
+
+          echo "Security check passed"

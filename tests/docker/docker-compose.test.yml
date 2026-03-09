@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Unit test environment
+  rdd-unit-tests:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+    command: bats tests/unit/
+    volumes:
+      - ../../tests/coverage:/app/tests/coverage
+    environment:
+      - RDD_PROJECT_NAME=DockerTest
+      - DRY_RUN=true
+
+  # BDD test environment
+  rdd-bdd-tests:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+    command: bats tests/bdd/
+    volumes:
+      - ../../tests/coverage:/app/tests/coverage
+    environment:
+      - RDD_PROJECT_NAME=DockerTest
+      - DRY_RUN=true
+
+  # E2E test environment
+  rdd-e2e-tests:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+    command: bats tests/e2e/
+    volumes:
+      - ../../tests/coverage:/app/tests/coverage
+    environment:
+      - RDD_PROJECT_NAME=DockerTest
+      - DRY_RUN=true
+
+  # Full test suite
+  rdd-all-tests:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+    command: >
+      sh -c "
+        echo '=== Running Unit Tests ===' &&
+        bats tests/unit/ &&
+        echo '=== Running BDD Tests ===' &&
+        bats tests/bdd/ &&
+        echo '=== Running E2E Tests ===' &&
+        bats tests/e2e/
+      "
+    volumes:
+      - ../../tests/coverage:/app/tests/coverage
+    environment:
+      - RDD_PROJECT_NAME=DockerTest
+      - DRY_RUN=true

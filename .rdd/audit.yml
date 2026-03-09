@@ -1,0 +1,151 @@
+# RDD Audit Configuration
+version: "1.0.0"
+
+# Audit settings
+audit:
+  enabled: true
+
+  # What to audit
+  events:
+    # Security events (always audited)
+    - category: SECURITY
+      events:
+        - PERMISSION_DENIED
+        - AUTH_FAILURE
+        - CONFIG_CHANGE
+        - SECURITY_CHECK
+      level: INFO
+      mandatory: true
+
+    # Stage operations
+    - category: STAGE
+      events:
+        - STAGE_START
+        - STAGE_COMPLETE
+        - STAGE_FAIL
+        - STAGE_ROLLBACK
+        - STAGE_PAUSE
+        - STAGE_RESUME
+      level: INFO
+
+    # Roadmap changes
+    - category: ROADMAP
+      events:
+        - ROADMAP_CHANGE
+        - STAGE_ADDED
+        - STAGE_REMOVED
+        - STAGE_REORDERED
+        - STAGE_PRIORITY_CHANGE
+      level: INFO
+
+    # Tech debt operations
+    - category: TECH_DEBT
+      events:
+        - DEBT_CREATED
+        - DEBT_RESOLVED
+        - DEBT_ESCALATED
+        - DEBT_UPDATED
+      level: INFO
+
+    # Hook executions
+    - category: HOOK
+      events:
+        - HOOK_TRIGGERED
+        - HOOK_SUCCESS
+        - HOOK_FAILURE
+        - HOOK_SKIPPED
+      level: DEBUG
+
+    # Notification events
+    - category: NOTIFICATION
+      events:
+        - NOTIFICATION_SENT
+        - NOTIFICATION_FAILED
+        - NOTIFICATION_QUEUED
+      level: DEBUG
+
+    # Configuration changes
+    - category: CONFIG
+      events:
+        - CONFIG_MODIFIED
+        - CONFIG_RELOADED
+        - PERMISSIONS_CHANGED
+      level: INFO
+
+    # User operations
+    - category: USER
+      events:
+        - USER_LOGIN
+        - USER_LOGOUT
+        - USER_ROLE_CHANGED
+      level: INFO
+
+  # Storage configuration
+  storage:
+    # Log file settings
+    file:
+      enabled: true
+      path: ".rdd/logs/audit.log"
+      format: "text"  # text format for human readability
+      rotation:
+        enabled: true
+        max_size: "10MB"
+        max_files: 10
+        compress: true
+
+    # JSON log for machine processing
+    json:
+      enabled: true
+      path: ".rdd/logs/audit.json"
+      rotation:
+        enabled: true
+        max_size: "10MB"
+        max_files: 30
+        compress: true
+
+    # External webhook (optional)
+    webhook:
+      enabled: false
+      url: "${AUDIT_WEBHOOK_URL:-}"
+      method: "POST"
+      headers:
+        Content-Type: "application/json"
+      batch_size: 10
+      flush_interval: "5s"
+
+  # Retention policy
+  retention:
+    # Keep audit logs for 90 days
+    days: 90
+
+    # Archive old logs
+    archive:
+      enabled: true
+      path: ".rdd/logs/archive"
+      compress: true
+
+  # Sensitive data handling
+  masking:
+    enabled: true
+
+    # Fields to mask
+    fields:
+      - password
+      - passwd
+      - pwd
+      - token
+      - api_key
+      - apikey
+      - secret
+      - credential
+      - private_key
+
+    # Mask pattern
+    pattern: "***MASKED***"
+
+    # Exclude from audit (never log)
+    exclude:
+      - "*.password"
+      - "*.token"
+      - "*.secret"
+      - "*.private_key"

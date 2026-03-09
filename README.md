@@ -1,6 +1,68 @@
 # RDD (Roadmap Driven Development) Framework
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/kofj/rdd)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai/code)
+
 A disciplined development framework for AI agents, inspired by Gary's Stage-Based Development methodology.
+
+## Installation
+
+### Quick Install (macOS / Linux)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh
+```
+
+### Verify Installation
+
+```bash
+rdd --version
+```
+
+### Initialize a Project
+
+```bash
+# Create a new project
+rdd init my-project
+cd my-project
+
+# Or initialize in current directory
+rdd init
+```
+
+### Requirements
+
+- **Bash 4.0+** (pre-installed on macOS/Linux)
+- **Git 2.0+** (for version control)
+- **Task 3.0+** (will be installed automatically if missing)
+
+### Manual Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/kofj/rdd.git
+cd rdd-framework
+
+# Run the installer
+./scripts/install/install.sh
+
+# Or install manually
+cp -r .claude/skills/* ~/.claude/skills/
+cp -r .claude/commands/* ~/.claude/commands/
+cp -r .rdd/scripts/* ~/.rdd-framework/scripts/
+cp -r .rdd/hooks/* ~/.rdd-framework/hooks/
+```
+
+### Using with Claude Code
+
+After installation, RDD skills are automatically available in Claude Code:
+
+- `/rdd-init` - Initialize a new RDD project
+- `/rdd-migrate` - Migrate existing project
+- `/rdd-stage-auto` - Execute stage with gates
+- `/rdd-knowledge` - Manage ADRs and tech debt
+- `/rdd-loop` - Control autonomous execution
 
 ## Overview
 

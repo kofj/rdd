@@ -357,6 +357,128 @@ When human intervention is needed:
 
 ---
 
+## Compact Recovery Protocol
+
+When a session starts, the following protocol determines if context recovery is needed:
+
+### Session Startup Protocol
+
+```
+1. Read docs/11-next-steps.md
+   ↓
+2. Check if .rdd/cache/handoff.md exists
+   ↓
+3. If handoff.md exists → Recovery Mode
+   │
+   ├─→ a. Read handoff.md completely
+   ├─→ b. Load .rdd/cache/checkpoints.json
+   ├─→ c. Verify environment (task doctor)
+   ├─→ d. Verify tests (task test)
+   ├─→ e. Resume from last checkpoint
+   └─→ f. Increment recovery count
+   ↓
+4. Else → Normal Mode
+   │
+   └─→ Continue with standard workflow
+```
+
+### Recovery Mode Steps
+
+When recovering from compact:
+
+1. **Read Handoff Document**
+   ```bash
+   cat .rdd/cache/handoff.md
+   ```
+   Or use task command:
+   ```bash
+   task recovery:load
+   ```
+
+2. **Load Checkpoint State**
+   ```bash
+   task checkpoint:show
+   ```
+
+3. **Verify Environment**
+   ```bash
+   task doctor
+   task test
+   ```
+
+4. **Resume Work**
+   - Review gate status from checkpoint
+   - Resume from first incomplete gate
+   - Update checkpoint after each step
+
+5. **Clear Recovery State** (after successful recovery)
+   ```bash
+   task recovery:clear
+   ```
+
+### Auto Handoff Triggers
+
+Handoff documents are automatically generated at:
+
+| Trigger | Condition | Action |
+|---------|-----------|--------|
+| Gate Complete | Any gate passes | Generate handoff with progress |
+| Decision Made | ADR recorded | Generate handoff with decision context |
+| Timer | 30 min no checkpoint save | Generate handoff for context preservation |
+| Manual | Before session end | Generate handoff explicitly |
+
+### Checkpoint Save Points
+
+Save checkpoints at these points:
+
+- After completing any gate
+- After recording a decision
+- After resolving a blocker
+- Before any long-running operation
+- After 30 minutes of progress
+
+### Recovery Commands
+
+```bash
+# Check if recovery is needed
+task recovery:check
+
+# Load checkpoint and handoff
+task recovery:load
+
+# Save current state
+task recovery:save
+
+# Clear recovery state
+task recovery:clear
+
+# Show checkpoint
+task checkpoint:show
+
+# Update gate status
+task checkpoint:gate -- 1 completed
+task checkpoint:gate -- 2 in_progress
+
+# Generate handoff
+task handoff:generate -- manual "Reason for handoff"
+
+# Validate handoff
+task handoff:validate
+```
+
+### Verification Checklist
+
+Before marking recovery complete:
+
+- [ ] Read docs/11-next-steps.md
+- [ ] Read docs/08-autonomous-decisions.md
+- [ ] Run `task doctor` - all checks pass
+- [ ] Run `task test` - all tests pass
+- [ ] Identified current task from Next Single Action
+- [ ] Resumed work on current task
+
+---
+
 ## Emergency Procedures
 
 ### If Blocked

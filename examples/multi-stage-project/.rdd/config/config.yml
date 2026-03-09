@@ -1,0 +1,94 @@
+# RDD Framework 配置文件
+# 多 Stage 项目示例
+
+project:
+  name: multi-stage-project
+  version: 1.0.0
+  description: RDD Framework 多 Stage 项目示例
+
+# Stage 配置
+stages:
+  current: 1
+  total: 3
+  roadmap: docs/stages/stage-roadmap.md
+
+# Hook 配置
+hooks:
+  enabled: true
+  channels:
+    # 企业微信通知
+    - type: wecom
+      webhook: ${WECOM_WEBHOOK_URL}
+      events:
+        - stage_complete
+        - roadmap_change
+        - consecutive_failure
+      enabled: true
+
+    # Slack 通知 (可选)
+    - type: slack
+      webhook: ${SLACK_WEBHOOK_URL}
+      events:
+        - stage_complete
+      enabled: false
+
+# 通知模板
+templates:
+  stage_complete:
+    title: "Stage {{stage_id}} 完成"
+    level: "success"
+    template: |
+      ## Stage 完成
+      **Stage**: {{stage_id}}
+      **状态**: 成功
+      **时间**: {{timestamp}}
+
+  roadmap_change:
+    title: "Roadmap 变更"
+    level: "warning"
+    template: |
+      ## Roadmap 变更
+      **变更类型**: {{change_type}}
+      **详情**: {{details}}
+
+  consecutive_failure:
+    title: "连续失败告警"
+    level: "error"
+    template: |
+      ## 连续失败
+      **失败次数**: {{failure_count}}
+      **最后错误**: {{last_error}}
+      **需要人工介入**
+
+# 检查点配置
+checkpoint:
+  enabled: true
+  auto_save: true
+  save_interval: 300  # 5分钟
+
+# Handoff 配置
+handoff:
+  enabled: true
+  auto_generate: true
+  triggers:
+    - stage_complete
+    - decision_made
+    - blocker_found
+    - timer  # 30分钟无保存
+
+# 技术债配置
+tech_debt:
+  threshold: 5
+  alert_level: warning
+
+# 日志配置
+logging:
+  level: INFO
+  format: json
+  output: .rdd/cache/rdd.log
+
+# 审计配置
+audit:
+  enabled: true
+  output: .rdd/cache/audit.log
+  retention_days: 30

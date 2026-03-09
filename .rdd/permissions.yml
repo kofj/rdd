@@ -1,0 +1,69 @@
+# RDD Permission Configuration
+version: "1.0.0"
+
+# RBAC Configuration
+rbac:
+  enabled: true
+
+  # Role definitions
+  roles:
+    admin:
+      description: "Full administrative access"
+      permissions:
+        - "rdd:*"           # All permissions
+      priority: 100
+
+    developer:
+      description: "Development operations access"
+      permissions:
+        - "rdd:stage:read"
+        - "rdd:stage:execute"
+        - "rdd:test:read"
+        - "rdd:test:execute"
+        - "rdd:doc:read"
+        - "rdd:doc:write"
+        - "rdd:hook:execute"
+        - "rdd:debt:read"
+        - "rdd:debt:write"
+        - "rdd:status:read"
+        - "rdd:audit:read"
+      priority: 50
+
+    viewer:
+      description: "Read-only access"
+      permissions:
+        - "rdd:stage:read"
+        - "rdd:test:read"
+        - "rdd:doc:read"
+        - "rdd:status:read"
+        - "rdd:roadmap:read"
+      priority: 10
+
+  # User assignments
+  # Users can be assigned from environment variables or explicit usernames
+  users:
+    - username: "${RDD_ADMIN_USER:-admin}"
+      role: admin
+      source: env
+
+    - username: "${RDD_DEVELOPER_USER:-developer}"
+      role: developer
+      source: env
+
+  # Default role for unauthenticated/unknown users
+  default_role: viewer
+
+# Permission checking settings
+checking:
+  # Enable strict mode (deny by default)
+  strict_mode: true
+
+  # Cache permission checks for performance
+  cache_enabled: true
+  cache_ttl: 300  # seconds (5 minutes)
+
+  # Log denied operations to audit log
+  log_denied: true
+
+  # Require permission for all operations
+  require_all: false

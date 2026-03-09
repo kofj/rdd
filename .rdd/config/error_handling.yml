@@ -1,0 +1,52 @@
+# RDD Error Handling Configuration
+# This file configures error handling, retry, circuit breaker, and degradation settings
+
+error_handling:
+  # Error classification settings
+  classification:
+    default_severity: "P2"
+    unknown_error_recoverable: false
+
+  # Retry settings
+  retry:
+    enabled: true
+    max_attempts: 3
+    initial_delay: 1s
+    max_delay: 30s
+    backoff_multiplier: 2
+    jitter: true
+    jitter_range: 0.5
+
+  # Circuit breaker settings
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 5
+    success_threshold: 3
+    timeout: 60s
+    half_open_max_requests: 1
+
+  # Degradation settings
+  degradation:
+    enabled: true
+    auto_level_adjustment: false
+    notification_failure_threshold: 10
+    recovery_check_interval: 300s
+
+  # Logging settings
+  logging:
+    format: "json"
+    level: "INFO"
+    include_trace_id: true
+    include_context: true
+    output_file: ""  # Empty = stderr
+
+  # Metrics settings
+  metrics:
+    enabled: true
+    output_file: "${RDD_DIR}/cache/metrics.prom"
+    collection_interval: 60s
+
+  # Health check settings
+  health:
+    detailed_checks: true
+    include_dependencies: true

@@ -1,0 +1,5 @@
+[2026-03-07T17:19:01Z] [INFO] Migration Status
+[2026-03-08T02:53:26Z] [INFO] Checking migration prerequisites...
+[2026-03-08T02:53:26Z] [INFO] Current version: 1.0.0
+[2026-03-08T02:53:26Z] [INFO] Target version: latest
+[2026-03-08T02:53:26Z] [INFO] Prerequisite check complete

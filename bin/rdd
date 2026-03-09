@@ -1,0 +1,200 @@
+#!/usr/bin/env bash
+#
+# RDD Framework CLI Wrapper
+# This script is the main entry point for the rdd command
+#
+
+set -euo pipefail
+
+# Find RDD Framework installation
+if [[ -n "${RDD_FRAMEWORK_HOME:-}" ]]; then
+    RDD_HOME="${RDD_FRAMEWORK_HOME}"
+elif [[ -d "${HOME}/.rdd-framework" ]]; then
+    RDD_HOME="${HOME}/.rdd-framework"
+elif [[ -d "/usr/local/rdd-framework" ]]; then
+    RDD_HOME="/usr/local/rdd-framework"
+elif [[ -d "/opt/rdd-framework" ]]; then
+    RDD_HOME="/opt/rdd-framework"
+else
+    echo "Error: RDD Framework not found"
+    echo "Please install RDD Framework: curl -fsSL https://raw.githubusercontent.com/anthropic/rdd-framework/main/scripts/install/install.sh | sh"
+    exit 1
+fi
+
+# Source library functions
+source "${RDD_HOME}/lib/common.sh" 2>/dev/null || true
+
+# Version
+if [[ -f "${RDD_HOME}/VERSION" ]]; then
+    RDD_VERSION=$(cat "${RDD_HOME}/VERSION")
+else
+    RDD_VERSION="unknown"
+fi
+
+# Show help
+show_help() {
+    cat << 'EOF'
+RDD Framework - Roadmap Driven Development
+
+Usage:
+    rdd <command> [arguments]
+
+Commands:
+    init [NAME]            Initialize a new RDD project
+    migrate                Migrate existing project to RDD
+    stage <cmd>            Stage management (verify, gate, status)
+    knowledge <cmd>        Knowledge management (adr, debt, handoff, check)
+    upgrade [--version V]  Upgrade to a new version
+    uninstall              Remove RDD Framework
+    doctor                 Run project health check
+    version                Show version
+
+Options:
+    --version              Show version
+    --help                 Show this help message
+
+Examples:
+    rdd init my-project    Create a new project
+    rdd init               Initialize in current directory
+    rdd stage verify       Verify current stage
+    rdd knowledge adr      Record a new decision
+    rdd doctor             Check project health
+
+Skills (for Claude Code):
+    /rdd-init              Initialize project
+    /rdd-migrate           Migrate existing project
+    /rdd-stage-auto        Execute stage with gates
+    /rdd-knowledge         Manage knowledge
+    /rdd-loop              Control autonomous execution
+
+For more information: https://github.com/anthropic/rdd-framework
+EOF
+}
+
+# Show version
+show_version() {
+    echo "RDD Framework v${RDD_VERSION}"
+}
+
+# Initialize command
+cmd_init() {
+    if [[ -f "${RDD_HOME}/lib/init.sh" ]]; then
+        source "${RDD_HOME}/lib/init.sh"
+        rdd_init "$@"
+    else
+        echo "Error: init.sh not found"
+        exit 1
+    fi
+}
+
+# Migrate command
+cmd_migrate() {
+    if [[ -f "${RDD_HOME}/lib/migrate.sh" ]]; then
+        source "${RDD_HOME}/lib/migrate.sh"
+        rdd_migrate "$@"
+    else
+        echo "Error: migrate.sh not found"
+        exit 1
+    fi
+}
+
+# Stage command
+cmd_stage() {
+    local subcmd="${1:-help}"
+    shift || true
+
+    case "${subcmd}" in
+        verify|gate|status)
+            if command -v task &> /dev/null; then
+                task "stage:${subcmd}" "$@"
+            else
+                echo "Error: 'task' command not found"
+                echo "Install go-task: https://taskfile.dev/installation/"
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Usage: rdd stage {verify|gate|status}"
+            ;;
+    esac
+}
+
+# Knowledge command
+cmd_knowledge() {
+    local subcmd="${1:-help}"
+    shift || true
+
+    case "${subcmd}" in
+        adr|debt|handoff|check)
+            if command -v task &> /dev/null; then
+                task "knowledge:${subcmd}" "$@"
+            else
+                echo "Error: 'task' command not found"
+                echo "Install go-task: https://taskfile.dev/installation/"
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Usage: rdd knowledge {adr|debt|handoff|check}"
+            ;;
+    esac
+}
+
+# Doctor command
+cmd_doctor() {
+    if command -v task &> /dev/null; then
+        task doctor "$@"
+    else
+        echo "Error: 'task' command not found"
+        echo "Install go-task: https://taskfile.dev/installation/"
+        exit 1
+    fi
+}
+
+# Main command dispatcher
+main() {
+    if [[ $# -eq 0 ]]; then
+        show_help
+        exit 0
+    fi
+
+    local command="$1"
+    shift
+
+    case "${command}" in
+        init)
+            cmd_init "$@"
+            ;;
+        migrate)
+            cmd_migrate "$@"
+            ;;
+        stage)
+            cmd_stage "$@"
+            ;;
+        knowledge)
+            cmd_knowledge "$@"
+            ;;
+        upgrade)
+            "${RDD_HOME}/scripts/upgrade.sh" "$@"
+            ;;
+        uninstall)
+            "${RDD_HOME}/scripts/uninstall.sh" "$@"
+            ;;
+        doctor)
+            cmd_doctor "$@"
+            ;;
+        version|--version|-v)
+            show_version
+            ;;
+        help|--help|-h)
+            show_help
+            ;;
+        *)
+            echo "Error: Unknown command '${command}'"
+            echo "Run 'rdd --help' for usage information"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

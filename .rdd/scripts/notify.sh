@@ -57,7 +57,7 @@ log_error() {
 }
 
 log_debug() {
-    if [[ "$VERBOSE" == "true" ]]; then
+    if [[ "${VERBOSE:-false}" == "true" ]]; then
         echo "[DEBUG] $*"
     fi
 }

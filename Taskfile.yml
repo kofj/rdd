@@ -44,16 +44,16 @@ tasks:
       - mkdir -p {{.DOCS_DIR}}/framework
       - mkdir -p {{.DOCS_DIR}}/handoff
       - echo "Checking configuration files..."
-      - test -f {{.RDD_DIR}}/config.yml || echo "Warning: {{.RDD_DIR}}/config.yml not found"
-      - test -f {{.RDD_DIR}}/hooks.yml || echo "Warning: {{.RDD_DIR}}/hooks.yml not found"
-      - test -f {{.RDD_DIR}}/templates.yml || echo "Warning: {{.RDD_DIR}}/templates.yml not found"
-      - test -f {{.RDD_DIR}}/checkpoints.yml || echo "Warning: {{.RDD_DIR}}/checkpoints.yml not found"
+      - 'test -f {{.RDD_DIR}}/config.yml || echo "Warning: {{.RDD_DIR}}/config.yml not found"'
+      - 'test -f {{.RDD_DIR}}/hooks.yml || echo "Warning: {{.RDD_DIR}}/hooks.yml not found"'
+      - 'test -f {{.RDD_DIR}}/templates.yml || echo "Warning: {{.RDD_DIR}}/templates.yml not found"'
+      - 'test -f {{.RDD_DIR}}/checkpoints.yml || echo "Warning: {{.RDD_DIR}}/checkpoints.yml not found"'
       - echo "Checking core documentation..."
-      - test -f AGENTS.md || echo "Warning: AGENTS.md not found"
-      - test -f CLAUDE.md || echo "Warning: CLAUDE.md not found"
-      - test -f CHANGELOG.md || echo "Warning: CHANGELOG.md not found"
+      - 'test -f AGENTS.md || echo "Warning: AGENTS.md not found"'
+      - 'test -f CLAUDE.md || echo "Warning: CLAUDE.md not found"'
+      - 'test -f CHANGELOG.md || echo "Warning: CHANGELOG.md not found"'
       - echo "Checking stage documents..."
-      - test -f {{.STAGES_DIR}}/stage-roadmap.md || echo "Warning: stage-roadmap.md not found"
+      - 'test -f {{.STAGES_DIR}}/stage-roadmap.md || echo "Warning: stage-roadmap.md not found"'
       - echo "RDD project structure initialized."
     silent: false
 
@@ -71,37 +71,37 @@ tasks:
       - echo "========================"
       - echo ""
       - echo "[1/6] Checking directory structure..."
-      - test -d {{.RDD_DIR}} && echo "  [OK] .rdd directory exists" || echo "  [FAIL] .rdd directory missing"
-      - test -d {{.DOCS_DIR}} && echo "  [OK] docs directory exists" || echo "  [FAIL] docs directory missing"
-      - test -d {{.STAGES_DIR}} && echo "  [OK] docs/stages directory exists" || echo "  [FAIL] docs/stages directory missing"
-      - test -d {{.HANDOFF_DIR}} && echo "  [OK] docs/handoff directory exists" || echo "  [FAIL] docs/handoff directory missing"
+      - 'test -d {{.RDD_DIR}} && echo "  [OK] .rdd directory exists" || echo "  [FAIL] .rdd directory missing"'
+      - 'test -d {{.DOCS_DIR}} && echo "  [OK] docs directory exists" || echo "  [FAIL] docs directory missing"'
+      - 'test -d {{.STAGES_DIR}} && echo "  [OK] docs/stages directory exists" || echo "  [FAIL] docs/stages directory missing"'
+      - 'test -d {{.HANDOFF_DIR}} && echo "  [OK] docs/handoff directory exists" || echo "  [FAIL] docs/handoff directory missing"'
       - echo ""
       - echo "[2/6] Checking core configuration..."
-      - test -f {{.RDD_DIR}}/config.yml && echo "  [OK] config.yml exists" || echo "  [FAIL] config.yml missing"
-      - test -f {{.RDD_DIR}}/hooks.yml && echo "  [OK] hooks.yml exists" || echo "  [WARN] hooks.yml missing (hooks disabled)"
-      - test -f {{.RDD_DIR}}/templates.yml && echo "  [OK] templates.yml exists" || echo "  [WARN] templates.yml missing"
-      - test -f {{.RDD_DIR}}/checkpoints.yml && echo "  [OK] checkpoints.yml exists" || echo "  [WARN] checkpoints.yml missing"
+      - 'test -f {{.RDD_DIR}}/config.yml && echo "  [OK] config.yml exists" || echo "  [FAIL] config.yml missing"'
+      - 'test -f {{.RDD_DIR}}/hooks.yml && echo "  [OK] hooks.yml exists" || echo "  [WARN] hooks.yml missing (hooks disabled)"'
+      - 'test -f {{.RDD_DIR}}/templates.yml && echo "  [OK] templates.yml exists" || echo "  [WARN] templates.yml missing"'
+      - 'test -f {{.RDD_DIR}}/checkpoints.yml && echo "  [OK] checkpoints.yml exists" || echo "  [WARN] checkpoints.yml missing"'
       - echo ""
       - echo "[3/6] Checking agent entry points..."
-      - test -f AGENTS.md && echo "  [OK] AGENTS.md exists" || echo "  [FAIL] AGENTS.md missing"
-      - test -f CLAUDE.md && echo "  [OK] CLAUDE.md exists" || echo "  [FAIL] CLAUDE.md missing"
-      - test -f Taskfile.yml && echo "  [OK] Taskfile.yml exists" || echo "  [FAIL] Taskfile.yml missing"
+      - 'test -f AGENTS.md && echo "  [OK] AGENTS.md exists" || echo "  [FAIL] AGENTS.md missing"'
+      - 'test -f CLAUDE.md && echo "  [OK] CLAUDE.md exists" || echo "  [FAIL] CLAUDE.md missing"'
+      - 'test -f Taskfile.yml && echo "  [OK] Taskfile.yml exists" || echo "  [FAIL] Taskfile.yml missing"'
       - echo ""
       - echo "[4/6] Checking documentation..."
-      - test -f CHANGELOG.md && echo "  [OK] CHANGELOG.md exists" || echo "  [WARN] CHANGELOG.md missing"
-      - test -f {{.DOCS_DIR}}/01-charter.md && echo "  [OK] 01-charter.md exists" || echo "  [WARN] 01-charter.md missing"
-      - test -f {{.DOCS_DIR}}/02-engineering-principles.md && echo "  [OK] 02-engineering-principles.md exists" || echo "  [WARN] 02-engineering-principles.md missing"
-      - test -f {{.DOCS_DIR}}/03-stage-based-development.md && echo "  [OK] 03-stage-based-development.md exists" || echo "  [WARN] 03-stage-based-development.md missing"
-      - test -f {{.DOCS_DIR}}/08-autonomous-decisions.md && echo "  [OK] 08-autonomous-decisions.md exists" || echo "  [WARN] 08-autonomous-decisions.md missing"
-      - test -f {{.DOCS_DIR}}/10-review-practices.md && echo "  [OK] 10-review-practices.md exists" || echo "  [WARN] 10-review-practices.md missing"
-      - test -f {{.DOCS_DIR}}/11-next-steps.md && echo "  [OK] 11-next-steps.md exists" || echo "  [WARN] 11-next-steps.md missing"
-      - test -f {{.DOCS_DIR}}/12-technical-debt.md && echo "  [OK] 12-technical-debt.md exists" || echo "  [WARN] 12-technical-debt.md missing"
+      - 'test -f CHANGELOG.md && echo "  [OK] CHANGELOG.md exists" || echo "  [WARN] CHANGELOG.md missing"'
+      - 'test -f {{.DOCS_DIR}}/01-charter.md && echo "  [OK] 01-charter.md exists" || echo "  [WARN] 01-charter.md missing"'
+      - 'test -f {{.DOCS_DIR}}/02-engineering-principles.md && echo "  [OK] 02-engineering-principles.md exists" || echo "  [WARN] 02-engineering-principles.md missing"'
+      - 'test -f {{.DOCS_DIR}}/03-stage-based-development.md && echo "  [OK] 03-stage-based-development.md exists" || echo "  [WARN] 03-stage-based-development.md missing"'
+      - 'test -f {{.DOCS_DIR}}/08-autonomous-decisions.md && echo "  [OK] 08-autonomous-decisions.md exists" || echo "  [WARN] 08-autonomous-decisions.md missing"'
+      - 'test -f {{.DOCS_DIR}}/10-review-practices.md && echo "  [OK] 10-review-practices.md exists" || echo "  [WARN] 10-review-practices.md missing"'
+      - 'test -f {{.DOCS_DIR}}/11-next-steps.md && echo "  [OK] 11-next-steps.md exists" || echo "  [WARN] 11-next-steps.md missing"'
+      - 'test -f {{.DOCS_DIR}}/12-technical-debt.md && echo "  [OK] 12-technical-debt.md exists" || echo "  [WARN] 12-technical-debt.md missing"'
       - echo ""
       - echo "[5/6] Checking stage documents..."
-      - test -f {{.STAGES_DIR}}/stage-roadmap.md && echo "  [OK] stage-roadmap.md exists" || echo "  [FAIL] stage-roadmap.md missing"
+      - 'test -f {{.STAGES_DIR}}/stage-roadmap.md && echo "  [OK] stage-roadmap.md exists" || echo "  [FAIL] stage-roadmap.md missing"'
       - echo ""
       - echo "[6/6] Checking git status..."
-      - git rev-parse --is-inside-work-tree > /dev/null 2>&1 && echo "  [OK] Git repository detected" || echo "  [WARN] Not a git repository"
+      - 'git rev-parse --is-inside-work-tree > /dev/null 2>&1 && echo "  [OK] Git repository detected" || echo "  [WARN] Not a git repository"'
       - echo ""
       - echo "Health check complete."
     silent: false
@@ -156,13 +156,13 @@ tasks:
       Gate 1: Verify design document completeness.
       Checks: design doc exists, goals defined, non-goals stated, acceptance criteria testable, rollback plan exists.
     cmds:
-      - echo "Gate 1: Design Document Check"
-      - echo "------------------------------"
-      - echo "[ ] Design document is complete"
-      - echo "[ ] Goals are clearly defined"
-      - echo "[ ] Non-goals are explicitly stated"
-      - echo "[ ] Acceptance criteria are testable"
-      - echo "[ ] Rollback plan exists"
+      - 'echo "Gate 1: Design Document Check"'
+      - 'echo "------------------------------"'
+      - 'echo "[ ] Design document is complete"'
+      - 'echo "[ ] Goals are clearly defined"'
+      - 'echo "[ ] Non-goals are explicitly stated"'
+      - 'echo "[ ] Acceptance criteria are testable"'
+      - 'echo "[ ] Rollback plan exists"'
       - echo ""
       - echo "Manual verification required. Check stage document for details."
     silent: false
@@ -173,11 +173,11 @@ tasks:
       Gate 2: Verify design review has been completed.
       Checks: multi-model review triggered, AI pre-filtering done, high-confidence findings resolved.
     cmds:
-      - echo "Gate 2: Design Review Check"
-      - echo "---------------------------"
-      - echo "[ ] Multi-model review has been triggered"
-      - echo "[ ] AI pre-filtering completed"
-      - echo "[ ] High-confidence findings resolved"
+      - 'echo "Gate 2: Design Review Check"'
+      - 'echo "---------------------------"'
+      - 'echo "[ ] Multi-model review has been triggered"'
+      - 'echo "[ ] AI pre-filtering completed"'
+      - 'echo "[ ] High-confidence findings resolved"'
       - echo ""
       - echo "Check docs/stages/stage-N-review-log.md for review details."
     silent: false
@@ -188,13 +188,13 @@ tasks:
       Gate 3: Verify implementation and testing completeness.
       Checks: implementation complete, unit tests >= 20% coverage, E2E tests (2+ high-signal paths), real env verification, clean env verification.
     cmds:
-      - echo "Gate 3: Implementation & Testing Check"
-      - echo "--------------------------------------"
-      - echo "[ ] Implementation is complete"
-      - echo "[ ] Unit test coverage >= 20%"
-      - echo "[ ] E2E tests: at least 2 high-signal paths"
-      - echo "[ ] Real environment verification (not mock)"
-      - echo "[ ] Clean environment secondary verification passed"
+      - 'echo "Gate 3: Implementation & Testing Check"'
+      - 'echo "--------------------------------------"'
+      - 'echo "[ ] Implementation is complete"'
+      - 'echo "[ ] Unit test coverage >= 20%"'
+      - 'echo "[ ] E2E tests: at least 2 high-signal paths"'
+      - 'echo "[ ] Real environment verification (not mock)"'
+      - 'echo "[ ] Clean environment secondary verification passed"'
       - echo ""
       - echo "Run 'task test' to verify tests."
     silent: false
@@ -205,11 +205,11 @@ tasks:
       Gate 4: Verify code review has been completed.
       Checks: triangulation complete, blocking findings resolved, acceptance criteria met.
     cmds:
-      - echo "Gate 4: Code Review Check"
-      - echo "-------------------------"
-      - echo "[ ] Triangulation complete: main dev + independent reviewer + rule check"
-      - echo "[ ] All blocking findings resolved"
-      - echo "[ ] All acceptance criteria met"
+      - 'echo "Gate 4: Code Review Check"'
+      - 'echo "-------------------------"'
+      - 'echo "[ ] Triangulation complete: main dev + independent reviewer + rule check"'
+      - 'echo "[ ] All blocking findings resolved"'
+      - 'echo "[ ] All acceptance criteria met"'
       - echo ""
       - echo "Check docs/stages/stage-N-review-log.md for review findings."
     silent: false
@@ -220,16 +220,16 @@ tasks:
       Gate 5: Final completion gate verification.
       Checks: hypotheses verified, tests reproducible, no undocumented steps, implementation matches design, tech debt updated, ADR recorded, fresh-agent-check passed.
     cmds:
-      - echo "Gate 5: Completion Gate Check"
-      - echo "-----------------------------"
-      - echo "[ ] Main hypotheses verified or falsified"
-      - echo "[ ] Tests are reproducible via Task entry point"
-      - echo "[ ] No undocumented manual steps"
-      - echo "[ ] Implementation matches design (differences documented)"
-      - echo "[ ] New capabilities have CLI subcommands (if applicable)"
-      - echo "[ ] Tech debt ledger updated"
-      - echo "[ ] ADR recorded (Impact on subsequent Stages MUST NOT be empty)"
-      - echo "[ ] fresh-agent-check passed"
+      - 'echo "Gate 5: Completion Gate Check"'
+      - 'echo "-----------------------------"'
+      - 'echo "[ ] Main hypotheses verified or falsified"'
+      - 'echo "[ ] Tests are reproducible via Task entry point"'
+      - 'echo "[ ] No undocumented manual steps"'
+      - 'echo "[ ] Implementation matches design (differences documented)"'
+      - 'echo "[ ] New capabilities have CLI subcommands (if applicable)"'
+      - 'echo "[ ] Tech debt ledger updated"'
+      - 'echo "[ ] ADR recorded (Impact on subsequent Stages MUST NOT be empty)"'
+      - 'echo "[ ] fresh-agent-check passed"'
       - echo ""
       - echo "Run 'task docs:fresh-check' to verify fresh agent can continue."
     silent: false
@@ -276,11 +276,11 @@ tasks:
         echo "4. docs/12-technical-debt.md - Known issues" >> "$HANDOFF_FILE"
         echo "" >> "$HANDOFF_FILE"
         echo "## Quick Start Commands" >> "$HANDOFF_FILE"
-        echo "\`\`\`bash" >> "$HANDOFF_FILE"
+        echo '```bash' >> "$HANDOFF_FILE"
         echo "task doctor        # Check project health" >> "$HANDOFF_FILE"
         echo "task test          # Run tests" >> "$HANDOFF_FILE"
         echo "task stage:gate    # Run all gate checks" >> "$HANDOFF_FILE"
-        echo "\`\`\`" >> "$HANDOFF_FILE"
+        echo '```' >> "$HANDOFF_FILE"
         echo "" >> "$HANDOFF_FILE"
         echo "Handoff package created: $HANDOFF_FILE"
     silent: false
@@ -298,19 +298,19 @@ tasks:
       - echo "Running quick checks..."
       - echo ""
       - echo "[1/4] Checking documentation structure..."
-      - test -f AGENTS.md && echo "  [OK] AGENTS.md" || echo "  [FAIL] AGENTS.md missing"
-      - test -f CLAUDE.md && echo "  [OK] CLAUDE.md" || echo "  [FAIL] CLAUDE.md missing"
-      - test -f CHANGELOG.md && echo "  [OK] CHANGELOG.md" || echo "  [WARN] CHANGELOG.md missing"
+      - 'test -f AGENTS.md && echo "  [OK] AGENTS.md" || echo "  [FAIL] AGENTS.md missing"'
+      - 'test -f CLAUDE.md && echo "  [OK] CLAUDE.md" || echo "  [FAIL] CLAUDE.md missing"'
+      - 'test -f CHANGELOG.md && echo "  [OK] CHANGELOG.md" || echo "  [WARN] CHANGELOG.md missing"'
       - echo ""
       - echo "[2/4] Checking for required documents..."
-      - test -f {{.DOCS_DIR}}/11-next-steps.md && echo "  [OK] next-steps.md" || echo "  [WARN] next-steps.md missing"
-      - test -f {{.DOCS_DIR}}/01-charter.md && echo "  [OK] charter.md" || echo "  [WARN] charter.md missing"
+      - 'test -f {{.DOCS_DIR}}/11-next-steps.md && echo "  [OK] next-steps.md" || echo "  [WARN] next-steps.md missing"'
+      - 'test -f {{.DOCS_DIR}}/01-charter.md && echo "  [OK] charter.md" || echo "  [WARN] charter.md missing"'
       - echo ""
       - echo "[3/4] Checking for stage documents..."
       - sh -c 'ls {{.STAGES_DIR}}/stage-*.md 2>/dev/null | wc -l | xargs -I {} echo "  [INFO] {} stage documents found"'
       - echo ""
       - echo "[4/4] Checking tech debt ledger..."
-      - test -f {{.DOCS_DIR}}/12-technical-debt.md && echo "  [OK] technical-debt.md" || echo "  [WARN] technical-debt.md missing"
+      - 'test -f {{.DOCS_DIR}}/12-technical-debt.md && echo "  [OK] technical-debt.md" || echo "  [WARN] technical-debt.md missing"'
       - echo ""
       - echo "Quick check complete."
     silent: false
@@ -326,8 +326,8 @@ tasks:
       Override with your project's test command.
     cmds:
       - echo "Running all tests..."
-      - echo "Override this task with your project's test command."
-      - echo "Example: go test ./... or npm test"
+      - task test:unit
+      - task test:e2e
     silent: false
 
   test:unit:
@@ -337,8 +337,17 @@ tasks:
       Override with your project's unit test command.
     cmds:
       - echo "Running unit tests..."
-      - echo "Override this task with your project's unit test command."
-      - echo "Example: go test -short ./... or npm run test:unit"
+      - ./tests/lib/bats-core/bin/bats tests/unit/*.bats
+    silent: false
+
+  test:bdd:
+    desc: Run BDD tests
+    summary: |
+      Run BDD tests only.
+      Override with your project's BDD test command.
+    cmds:
+      - echo "Running BDD tests..."
+      - ./tests/lib/bats-core/bin/bats tests/bdd/*.bats
     silent: false
 
   test:e2e:
@@ -348,21 +357,19 @@ tasks:
       Override with your project's E2E test command.
     cmds:
       - echo "Running E2E tests..."
-      - echo "Override this task with your project's E2E test command."
-      - echo "Example: go test -run E2E ./... or npm run test:e2e"
+      - ./tests/lib/bats-core/bin/bats tests/e2e/*.bats
     silent: false
 
-  coverage:
+  test:coverage:
     desc: Generate test coverage report
     summary: |
       Generate test coverage report.
       Override with your project's coverage command.
     cmds:
       - echo "Generating test coverage report..."
-      - echo "Override this task with your project's coverage command."
-      - echo "Example: go test -coverprofile=coverage.out ./... or npm run test:coverage"
+      - bash tests/lib/coverage.sh
       - echo ""
-      - echo "Minimum coverage requirement: {{.MIN_COVERAGE}}%"
+      - 'echo "Minimum coverage requirement: {{.MIN_COVERAGE}}%"'
     silent: false
 
   # ===========================================
@@ -385,25 +392,25 @@ tasks:
       - echo "Simulating fresh agent reading project..."
       - echo ""
       - echo "[1/5] Checking entry point documents..."
-      - test -f AGENTS.md && echo "  [OK] AGENTS.md - Agent entry point exists" || echo "  [FAIL] AGENTS.md missing - agents cannot find entry point"
-      - test -f CLAUDE.md && echo "  [OK] CLAUDE.md - Claude Code entry point exists" || echo "  [WARN] CLAUDE.md missing"
+      - 'test -f AGENTS.md && echo "  [OK] AGENTS.md - Agent entry point exists" || echo "  [FAIL] AGENTS.md missing - agents cannot find entry point"'
+      - 'test -f CLAUDE.md && echo "  [OK] CLAUDE.md - Claude Code entry point exists" || echo "  [WARN] CLAUDE.md missing"'
       - echo ""
       - echo "[2/5] Checking status documents..."
-      - test -f {{.DOCS_DIR}}/11-next-steps.md && echo "  [OK] next-steps.md - Current status available" || echo "  [FAIL] next-steps.md missing - agents cannot determine current status"
-      - test -f {{.STAGES_DIR}}/stage-roadmap.md && echo "  [OK] stage-roadmap.md - Roadmap available" || echo "  [WARN] stage-roadmap.md missing"
+      - 'test -f {{.DOCS_DIR}}/11-next-steps.md && echo "  [OK] next-steps.md - Current status available" || echo "  [FAIL] next-steps.md missing - agents cannot determine current status"'
+      - 'test -f {{.STAGES_DIR}}/stage-roadmap.md && echo "  [OK] stage-roadmap.md - Roadmap available" || echo "  [WARN] stage-roadmap.md missing"'
       - echo ""
       - echo "[3/5] Checking knowledge documents..."
-      - test -f {{.DOCS_DIR}}/01-charter.md && echo "  [OK] charter.md - Project vision available" || echo "  [WARN] charter.md missing"
-      - test -f {{.DOCS_DIR}}/08-autonomous-decisions.md && echo "  [OK] autonomous-decisions.md - ADR log available" || echo "  [WARN] autonomous-decisions.md missing"
-      - test -f {{.DOCS_DIR}}/12-technical-debt.md && echo "  [OK] technical-debt.md - Tech debt ledger available" || echo "  [WARN] technical-debt.md missing"
+      - 'test -f {{.DOCS_DIR}}/01-charter.md && echo "  [OK] charter.md - Project vision available" || echo "  [WARN] charter.md missing"'
+      - 'test -f {{.DOCS_DIR}}/08-autonomous-decisions.md && echo "  [OK] autonomous-decisions.md - ADR log available" || echo "  [WARN] autonomous-decisions.md missing"'
+      - 'test -f {{.DOCS_DIR}}/12-technical-debt.md && echo "  [OK] technical-debt.md - Tech debt ledger available" || echo "  [WARN] technical-debt.md missing"'
       - echo ""
       - echo "[4/5] Checking methodology documents..."
-      - test -f {{.DOCS_DIR}}/02-engineering-principles.md && echo "  [OK] engineering-principles.md" || echo "  [WARN] engineering-principles.md missing"
-      - test -f {{.DOCS_DIR}}/03-stage-based-development.md && echo "  [OK] stage-based-development.md" || echo "  [WARN] stage-based-development.md missing"
-      - test -f {{.DOCS_DIR}}/10-review-practices.md && echo "  [OK] review-practices.md" || echo "  [WARN] review-practices.md missing"
+      - 'test -f {{.DOCS_DIR}}/02-engineering-principles.md && echo "  [OK] engineering-principles.md" || echo "  [WARN] engineering-principles.md missing"'
+      - 'test -f {{.DOCS_DIR}}/03-stage-based-development.md && echo "  [OK] stage-based-development.md" || echo "  [WARN] stage-based-development.md missing"'
+      - 'test -f {{.DOCS_DIR}}/10-review-practices.md && echo "  [OK] review-practices.md" || echo "  [WARN] review-practices.md missing"'
       - echo ""
       - echo "[5/5] Checking for current stage document..."
-      - sh -c 'ls {{.STAGES_DIR}}/stage-[0-9]*.md 2>/dev/null | head -1 | xargs -I {} echo "  [OK] Found stage document: {}"' || echo "  [INFO] No numbered stage document found - may be initial setup"
+      - 'sh -c ''ls {{.STAGES_DIR}}/stage-[0-9]*.md 2>/dev/null | head -1 | xargs -I {} echo "  [OK] Found stage document: {}"'' || echo "  [INFO] No numbered stage document found - may be initial setup"'
       - echo ""
       - echo "Fresh agent check complete."
       - echo ""
@@ -477,7 +484,7 @@ tasks:
       - echo "RDD Project Status"
       - echo "=================="
       - echo ""
-      - test -f {{.DOCS_DIR}}/11-next-steps.md && cat {{.DOCS_DIR}}/11-next-steps.md || echo "Status file (docs/11-next-steps.md) not found"
+      - 'test -f {{.DOCS_DIR}}/11-next-steps.md && cat {{.DOCS_DIR}}/11-next-steps.md || echo "Status file (docs/11-next-steps.md) not found"'
     silent: false
 
   roadmap:
@@ -486,5 +493,426 @@ tasks:
       - echo "Project Roadmap"
       - echo "==============="
       - echo ""
-      - test -f {{.STAGES_DIR}}/stage-roadmap.md && cat {{.STAGES_DIR}}/stage-roadmap.md || echo "Roadmap file (docs/stages/stage-roadmap.md) not found"
+      - 'test -f {{.STAGES_DIR}}/stage-roadmap.md && cat {{.STAGES_DIR}}/stage-roadmap.md || echo "Roadmap file (docs/stages/stage-roadmap.md) not found"'
+    silent: false
+
+  # ===========================================
+  # Performance Benchmark Tasks (Stage 5)
+  # ===========================================
+
+  benchmark:
+    desc: Run all performance benchmarks
+    summary: |
+      Run comprehensive performance benchmarks for RDD operations.
+      Measures hook latency, notification latency, memory usage, and config loading.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/benchmark.sh all
+
+  benchmark:hook:
+    desc: Benchmark hook trigger latency
+    summary: |
+      Measure hook trigger latency (target: < 100ms P95).
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/benchmark.sh hook
+
+  benchmark:notification:
+    desc: Benchmark notification sending latency
+    summary: |
+      Measure notification sending latency (target: < 500ms P95).
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/benchmark.sh notification
+
+  benchmark:memory:
+    desc: Benchmark memory usage
+    summary: |
+      Measure memory usage in idle state (target: < 50MB).
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/benchmark.sh memory
+
+  benchmark:config:
+    desc: Benchmark configuration loading
+    summary: |
+      Measure configuration file loading time.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/benchmark.sh config
+
+  # ===========================================
+  # Version Management Tasks (Stage 5)
+  # ===========================================
+
+  version:
+    desc: Show current RDD version
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/version.sh current
+
+  version:check:
+    desc: Check version compatibility
+    summary: |
+      Check if a version is compatible with current RDD.
+      Use --version flag to specify version to check.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/version.sh check --version {{.VERSION | default "1.0.0"}}
+
+  version:bump:
+    desc: Bump version
+    summary: |
+      Bump version (major/minor/patch).
+      Use --type flag to specify bump type.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/version.sh bump --type {{.TYPE | default "patch"}}
+
+  version:matrix:
+    desc: Show version compatibility matrix
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/version.sh matrix
+
+  # ===========================================
+  # Migration Tasks (Stage 5)
+  # ===========================================
+
+  migrate:plan:
+    desc: Plan migration to new version
+    summary: |
+      Generate migration plan without executing.
+      Use --target flag to specify target version.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/migrate.sh plan --target {{.TARGET | default "latest"}}
+
+  migrate:execute:
+    desc: Execute migration to new version
+    summary: |
+      Execute migration to target version.
+      Creates backup and runs migration scripts.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/migrate.sh execute --target {{.TARGET | default "latest"}}
+
+  migrate:rollback:
+    desc: Rollback to previous version
+    summary: |
+      Rollback to previous version using backup.
+      Use --rollback flag to specify backup path.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/migrate.sh rollback
+
+  migrate:status:
+    desc: Show migration status
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/migrate.sh status
+
+  migrate:validate:
+    desc: Validate migration prerequisites
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/migrate.sh validate
+
+  # ===========================================
+  # Compatibility Tasks (Stage 5)
+  # ===========================================
+
+  compat:check:
+    desc: Run compatibility check
+    summary: |
+      Run full compatibility check on all configuration files.
+      Validates VERSION, config.yml, hooks.yml, and templates.yml.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/compat.sh check
+
+  compat:validate:
+    desc: Validate specific configuration file
+    summary: |
+      Validate a specific configuration file.
+      Use --config flag to specify file path.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/compat.sh validate --config {{.CONFIG | default ".rdd/config.yml"}}
+
+  compat:breaking:
+    desc: Check for breaking changes
+    summary: |
+      Check for breaking changes between versions.
+      Use --from and --to flags to specify versions.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/compat.sh breaking --from {{.FROM | default "0.9.0"}} --to {{.TO | default "1.0.0"}}
+
+  compat:deprecations:
+    desc: Show deprecation warnings
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/compat.sh deprecations
+
+  compat:fix:
+    desc: Auto-fix compatibility issues
+    summary: |
+      Automatically fix compatibility issues.
+      Creates missing configuration files with defaults.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/compat.sh fix
+
+  # ===========================================
+  # Context Recovery Tasks
+  # ===========================================
+
+  recovery:check:
+    desc: Check if recovery is needed
+    summary: |
+      Check if a context recovery is needed after compact.
+      Returns 'true' if recovery is needed, 'false' otherwise.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh needs-recovery
+    silent: false
+
+  recovery:load:
+    desc: Load checkpoint and handoff for recovery
+    summary: |
+      Load checkpoint state and display handoff document
+      for context recovery after compact.
+    cmds:
+      - echo "Loading context recovery information..."
+      - echo ""
+      - echo "=== Checkpoint State ==="
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh load || echo "No checkpoint available"
+      - echo ""
+      - echo "=== Handoff Document ==="
+      - bash {{.RDD_DIR}}/scripts/handoff.sh show || echo "No handoff document available"
+      - echo ""
+      - echo "Recovery information loaded."
+      - echo "Please read the handoff document carefully before continuing."
+    silent: false
+
+  recovery:save:
+    desc: Save checkpoint and generate handoff
+    summary: |
+      Save current checkpoint state and generate handoff document.
+      Use this before ending a session or at regular intervals.
+    cmds:
+      - echo "Saving context recovery information..."
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh save
+      - bash {{.RDD_DIR}}/scripts/handoff.sh generate manual "Manual save"
+      - echo ""
+      - echo "Context recovery information saved."
+    silent: false
+
+  recovery:clear:
+    desc: Clear recovery state
+    summary: |
+      Clear checkpoint and handoff after successful recovery
+      or when starting fresh.
+    cmds:
+      - echo "Clearing recovery state..."
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh clear
+      - bash {{.RDD_DIR}}/scripts/handoff.sh clear
+      - echo "Recovery state cleared."
+    silent: false
+
+  checkpoint:save:
+    desc: Save checkpoint only
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh save
+    silent: false
+
+  checkpoint:show:
+    desc: Show checkpoint state
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh show
+    silent: false
+
+  checkpoint:gate:
+    desc: Update gate status
+    summary: |
+      Update gate status in checkpoint.
+      Usage: task checkpoint:gate -- <gate_num> <status>
+      gate_num: 1-5, status: pending/completed/failed/in_progress
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh gate {{.CLI_ARGS}}
+    silent: false
+
+  handoff:generate:
+    desc: Generate handoff document
+    summary: |
+      Generate handoff document for context transfer.
+      Usage: task handoff:generate -- [trigger] [reason]
+      trigger: manual, gate_complete, decision, timer
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/handoff.sh generate {{.CLI_ARGS}}
+    silent: false
+
+  handoff:show:
+    desc: Show handoff document
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/handoff.sh show
+    silent: false
+
+  handoff:validate:
+    desc: Validate handoff document
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/handoff.sh validate
+    silent: false
+
+  rdd:health:
+    desc: Run comprehensive RDD health check
+    summary: |
+      Run comprehensive health check including structure, tests,
+      and recovery state.
+    cmds:
+      - echo "RDD Health Check"
+      - echo "================"
+      - echo ""
+      - task doctor
+      - echo ""
+      - echo "[Recovery State]"
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh show || echo "No checkpoint found"
+      - bash {{.RDD_DIR}}/scripts/handoff.sh validate || echo "No handoff found"
+      - echo ""
+      - echo "Health check complete."
+    silent: false
+
+  # ===========================================
+  # Security Tasks (Stage 6)
+  # ===========================================
+
+  rdd:security-check:
+    desc: Run security configuration check
+    summary: |
+      Run comprehensive security check on RDD configuration.
+      Checks file permissions, credentials, RBAC, audit logging, and encryption.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/security-check.sh
+    silent: false
+
+  rdd:security-fix:
+    desc: Run security check and auto-fix issues
+    summary: |
+      Run security check and automatically fix fixable issues.
+      Sets correct permissions, generates encryption key, etc.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/security-check.sh --fix
+    silent: false
+
+  rdd:audit:
+    desc: Show audit log status
+    summary: |
+      Display audit log status and recent entries.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/audit.sh status
+    silent: false
+
+  rdd:audit-query:
+    desc: Query audit logs
+    summary: |
+      Query audit logs with optional filter.
+      Usage: task rdd:audit-query -- <filter>
+      Example: task rdd:audit-query -- "PERMISSION_DENIED"
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/audit.sh query "{{.CLI_ARGS}}"
+    silent: false
+
+  rdd:audit-export:
+    desc: Export audit logs
+    summary: |
+      Export audit logs to file.
+      Usage: task rdd:audit-export -- <format> [output_file]
+      Formats: json, csv, text
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/audit.sh export {{.CLI_ARGS}}
+    silent: false
+
+  rdd:encrypt:
+    desc: Encrypt sensitive data
+    summary: |
+      Encrypt a value using RDD encryption.
+      Usage: task rdd:encrypt -- <value>
+    cmds:
+      - bash {{.RDD_DIR}}/lib/crypto.sh encrypt "{{.CLI_ARGS}}"
+    silent: false
+
+  rdd:decrypt:
+    desc: Decrypt sensitive data
+    summary: |
+      Decrypt a value using RDD encryption.
+      Usage: task rdd:decrypt -- <encrypted_value>
+    cmds:
+      - bash {{.RDD_DIR}}/lib/crypto.sh decrypt "{{.CLI_ARGS}}"
+    silent: false
+
+  # ===========================================
+  # Backup & Restore Tasks (Stage 7)
+  # ===========================================
+
+  rdd:backup:
+    desc: Create backup of RDD Framework data
+    summary: |
+      Create a backup of RDD Framework data including configuration,
+      cache, logs, and documentation.
+      Usage: task rdd:backup [--name NAME] [--output DIR]
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/backup.sh {{.CLI_ARGS}}
+    silent: false
+
+  rdd:restore:
+    desc: Restore RDD Framework from backup
+    summary: |
+      Restore RDD Framework from a backup file.
+      Usage: task rdd:restore BACKUP_FILE=path/to/backup.tar.gz
+      Options:
+        --target DIR    Target directory (default: current)
+        --force         Force restore even if version mismatch
+        --dry-run       Show what would be restored
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/restore.sh {{.CLI_ARGS}}
+    silent: false
+
+  rdd:backup-list:
+    desc: List available backups
+    summary: |
+      List all available backups in the backup directory.
+    cmds:
+      - echo "Available Backups"
+      - echo "================="
+      - mkdir -p {{.RDD_DIR}}/backups
+      - ls -lah {{.RDD_DIR}}/backups/ 2>/dev/null || echo "No backups found"
+    silent: false
+
+  # ===========================================
+  # Multi-Project Tasks (Stage 7)
+  # ===========================================
+
+  rdd:projects:
+    desc: List managed projects
+    summary: List all projects managed by RDD Framework.
+    cmds:
+      - echo "Managed Projects"
+      - echo "================"
+      - test -f ~/.rdd/projects.yml && cat ~/.rdd/projects.yml || echo "No projects configured"
+    silent: false
+
+  rdd:project:
+    desc: Switch to a project
+    summary: Switch to a specific project by name.
+    cmds:
+      - cat ~/.rdd/projects.yml
+    silent: false
+
+  rdd:mask:
+    desc: Mask sensitive value
+    summary: |
+      Mask a sensitive value for safe display.
+      Usage: task rdd:mask -- <value> [type]
+      Types: password, token, api_key, url, email
+    cmds:
+      - bash {{.RDD_DIR}}/lib/crypto.sh mask {{.CLI_ARGS}}
+    silent: false
+
+  rdd:permissions:
+    desc: Show current user permissions
+    summary: |
+      Display the current user's role and permissions.
+    cmds:
+      - bash -c 'source {{.RDD_DIR}}/lib/permissions.sh && list_permissions'
+    silent: false
+
+  test:security:
+    desc: Run security unit tests
+    summary: |
+      Run all security-related unit tests including permissions,
+      audit, crypto, and security validation tests.
+    cmds:
+      - echo "Running security unit tests..."
+      - ./tests/lib/bats-core/bin/bats tests/unit/permissions.bats tests/unit/audit.bats tests/unit/crypto.bats tests/unit/security.bats tests/unit/security-check.bats
     silent: false

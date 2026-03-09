@@ -1,0 +1,42 @@
+# RDD Framework Test Dockerfile
+# Used for E2E testing in clean Docker environment
+
+FROM alpine:3.19
+
+# Install dependencies
+RUN apk add --no-cache \
+    bash \
+    curl \
+    git \
+    jq \
+    yq \
+    bats \
+    nodejs \
+    npm \
+    python3 \
+    py3-pip \
+    go \
+    task \
+    || apk add --no-cache \
+    bash curl git jq nodejs npm python3 py3-pip
+
+# Install Task (go-task)
+RUN curl -sL https://taskfile.dev/install.sh | sh
+
+# Install bats-core manually if not available
+RUN if ! command -v bats &> /dev/null; then \
+    git clone https://github.com/bats-core/bats-core.git /opt/bats-core && \
+    ln -s /opt/bats-core/bin/bats /usr/local/bin/bats; \
+    fi
+
+# Set up working directory
+WORKDIR /app
+
+# Copy RDD framework
+COPY . /app/
+
+# Set permissions
+RUN chmod +x /app/.rdd/scripts/*.sh /app/.rdd/hooks/*.sh 2>/dev/null || true
+
+# Run tests by default
+CMD ["bats", "/app/tests/unit/"]
