@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Installation & Distribution
 - **One-line install**: `curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh`
 - **npm package**: `npm install -g @kofj/rdd`
-- **Homebrew formula**: `brew tap kofj/rdd && brew install rdd-framework`
+- **Homebrew formula**: `brew tap kofj/rdd && brew install rdd`
 - **CLI command**: `rdd init`, `rdd migrate`, `rdd stage`, `rdd knowledge`
 - **Upgrade/Uninstall**: `rdd upgrade`, `rdd uninstall`
 - **Example projects**: simple-project, multi-stage-project

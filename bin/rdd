@@ -17,7 +17,7 @@ elif [[ -d "/opt/rdd-framework" ]]; then
     RDD_HOME="/opt/rdd-framework"
 else
     echo "Error: RDD Framework not found"
-    echo "Please install RDD Framework: curl -fsSL https://raw.githubusercontent.com/anthropic/rdd-framework/main/scripts/install/install.sh | sh"
+    echo "Please install RDD Framework: curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh"
     exit 1
 fi
 
@@ -67,7 +67,7 @@ Skills (for Claude Code):
     /rdd-knowledge         Manage knowledge
     /rdd-loop              Control autonomous execution
 
-For more information: https://github.com/anthropic/rdd-framework
+For more information: https://github.com/kofj/rdd
 EOF
 }
 
