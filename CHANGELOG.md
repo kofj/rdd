@@ -10,9 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - GitHub Actions CI/CD workflow for automated releases
 - Release helper script `scripts/release/create-release.sh`
+- Docker test environment for isolated testing
+- `docker/run-tests.sh` script for local and CI testing
+- Docker test job in CI workflow
 
 ### Changed
 - Releases are now automatically created when version tags are pushed
+- ASCII Banner now correctly displays "RDD" instead of "RER"
+- go-task installation now uses official taskfile.dev script with fallback
 
 ## [1.0.0] - 2026-03-09
 
