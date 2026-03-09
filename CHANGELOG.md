@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- GitHub Actions CI/CD workflow for automated releases
+- Release helper script `scripts/release/create-release.sh`
+
+### Changed
+- Releases are now automatically created when version tags are pushed
+
 ## [1.0.0] - 2026-03-09
 
 ### Added
