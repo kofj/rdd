@@ -14,7 +14,7 @@ run_unit_tests() {
     log_step "Running unit tests..."
     cd "${PROJECT_ROOT}"
     if command -v task &> /dev/null; then
-        task test-unit
+        task test:unit
     elif [ -d "tests/unit" ]; then
         bats tests/unit/
     else

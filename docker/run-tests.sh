@@ -24,7 +24,7 @@ build_image() {
 run_container() {
     local command="${1:-test}"
     log_step "Running tests in container..."
-    docker run --rm --name "${CONTAINER_NAME}" -v "${PROJECT_ROOT}:/workspace:ro" "${IMAGE_NAME}:${IMAGE_TAG}" "${command}"
+    docker run --rm --name "${CONTAINER_NAME}" -v "${PROJECT_ROOT}:/workspace" "${IMAGE_NAME}:${IMAGE_TAG}" "${command}"
 }
 
 main() {
