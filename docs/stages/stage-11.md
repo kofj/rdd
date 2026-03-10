@@ -1,4 +1,4 @@
-# Stage 11: E2E 测试框架准备
+# Stage 11: E2E Test Framework Preparation
 
 ## Status
 - [x] Planning
@@ -8,99 +8,99 @@
 **Completion Date**: 2026-03-09
 
 ## Goals
-准备 E2E 测试所需的基础设施，包括 Docker 测试环境、Claude Code 安装和第三方模型 API 配置。
+Prepare the infrastructure needed for E2E testing, including Docker test environment, Claude Code installation, and third-party model API configuration.
 
 ## Non-Goals
-- 实际执行安装测试 (Stage 12)
-- Claude Code 集成测试 (Stage 13)
-- GitHub 发布 (Stage 15+)
+- Actual installation testing (Stage 12)
+- Claude Code integration testing (Stage 13)
+- GitHub release (Stage 15+)
 
 ## Core Hypotheses
-- H1: Docker 容器可以模拟干净的用户环境
-- H2: Claude Code 可以在容器中正常运行
-- H3: 第三方模型 API 可以在容器中访问
-- H4: RDD Skills 可以被 Claude Code 识别
+- H1: Docker containers can simulate clean user environments
+- H2: Claude Code can run normally in containers
+- H3: Third-party model APIs can be accessed in containers
+- H4: RDD Skills can be recognized by Claude Code
 
 ## Acceptance Criteria
 
-### Docker 测试镜像 (11.1) ✅
-- [x] 创建 `tests/e2e/Dockerfile.claude`
-- [x] 基于 Ubuntu 22.04 镜像
-- [x] 安装必要依赖 (bash, curl, git, node, task)
-- [x] 安装 Claude Code CLI
-- [x] 配置环境变量
-- [x] 镜像构建成功
+### Docker Test Image (11.1) ✅
+- [x] Create `tests/e2e/Dockerfile.claude`
+- [x] Based on Ubuntu 22.04 image
+- [x] Install required dependencies (bash, curl, git, node, task)
+- [x] Install Claude Code CLI
+- [x] Configure environment variables
+- [x] Image builds successfully
 
-### Claude Code 安装 (11.2) ✅
-- [x] Claude Code CLI 可执行
-- [x] 版本验证通过
-- [x] 配置目录创建 (~/.claude/)
-- [x] settings.json 配置正确
+### Claude Code Installation (11.2) ✅
+- [x] Claude Code CLI executable
+- [x] Version verification passed
+- [x] Configuration directory created (~/.claude/)
+- [x] settings.json configured correctly
 
-### 第三方模型配置 (11.3) ✅
-- [x] API 端点配置 (使用环境变量)
-- [x] 模型名称配置
-- [x] API 连接测试通过
-- [x] 不在文件中硬编码敏感信息
+### Third-party Model Configuration (11.3) ✅
+- [x] API endpoint configuration (using environment variables)
+- [x] Model name configuration
+- [x] API connection test passed
+- [x] No hardcoded sensitive information in files
 
-### 测试项目模板 (11.4) ✅
-- [x] 创建最小化测试项目
-- [x] 包含基本 RDD 结构
-- [x] 可用于后续测试
+### Test Project Template (11.4) ✅
+- [x] Create minimal test project
+- [x] Includes basic RDD structure
+- [x] Can be used for subsequent tests
 
-### 测试脚本 (11.5) ✅
-- [x] `tests/e2e/setup-test-env.sh` - 环境配置
-- [x] `tests/e2e/run-tests.sh` - 测试运行
-- [x] `tests/e2e/test_helper.bash` - 测试辅助函数
+### Test Scripts (11.5) ✅
+- [x] `tests/e2e/setup-test-env.sh` - Environment setup
+- [x] `tests/e2e/run-tests.sh` - Test execution
+- [x] `tests/e2e/test_helper.bash` - Test helper functions
 
 ## Rollback Plan
-- Docker 镜像可删除重建
-- 测试脚本独立，不影响主代码
+- Docker images can be deleted and rebuilt
+- Test scripts are independent, don't affect main code
 
 ## Known Limitations
-- Docker 容器无图形界面
-- 需要网络访问第三方 API
-- 部分交互式功能可能受限
+- Docker containers have no GUI
+- Requires network access to third-party APIs
+- Some interactive features may be limited
 
 ## Impact on Subsequent Stages
-- Stage 12 依赖测试环境
-- Stage 13 依赖 Claude Code 安装
-- Stage 14 依赖完整测试框架
+- Stage 12 depends on test environment
+- Stage 13 depends on Claude Code installation
+- Stage 14 depends on complete test framework
 
 ---
 
 ## Implementation Notes
 
-### Docker 镜像架构
+### Docker Image Architecture
 
 ```
 tests/e2e/Dockerfile.claude
-├── 基础镜像: ubuntu:22.04 或 alpine:3.19
-├── 依赖安装
+├── Base image: ubuntu:22.04 or alpine:3.19
+├── Dependency installation
 │   ├── bash, curl, git
 │   ├── nodejs, npm
 │   └── go-task
-├── Claude Code 安装
+├── Claude Code installation
 │   └── npm install -g @anthropic-ai/claude-code
-├── 环境配置
+├── Environment configuration
 │   └── ~/.claude/settings.json
-└── RDD 复制
+└── RDD copy
     └── /app/
 ```
 
-### 环境变量配置
+### Environment Variable Configuration
 
-敏感信息通过环境变量注入，不写入文件：
+Sensitive information injected via environment variables, not written to files:
 
 ```bash
-# 启动容器时传入
+# Passed when starting container
 docker run -e ANTHROPIC_AUTH_TOKEN="${TOKEN}" \
            -e ANTHROPIC_BASE_URL="${API_URL}" \
            -e ANTHROPIC_MODEL="${MODEL}" \
            rdd-test:latest
 ```
 
-### settings.json 模板
+### settings.json Template
 
 ```json
 {
@@ -131,18 +131,18 @@ docker run -e ANTHROPIC_AUTH_TOKEN="${TOKEN}" \
 - [ ] High-confidence findings resolved
 
 ### Gate 3: Implementation & Testing Check
-- [x] Docker 镜像构建成功
-- [x] Claude Code 安装验证
-- [x] API 连接测试通过
-- [x] 测试项目创建成功
-- [x] E2E 测试通过 (21/21)
+- [x] Docker image builds successfully
+- [x] Claude Code installation verified
+- [x] API connection test passed
+- [x] Test project created successfully
+- [x] E2E tests passed (21/21)
 
 ### Gate 4: Code Review Check
-- [x] 无敏感信息泄露
-- [x] Dockerfile 最佳实践
-- [x] 脚本可维护性
+- [x] No sensitive information leaked
+- [x] Dockerfile best practices
+- [x] Script maintainability
 
 ### Gate 5: Completion Gate Check
-- [x] 测试环境就绪
-- [x] 后续 Stage 可开始
-- [x] 文档更新完成
+- [x] Test environment ready
+- [x] Subsequent Stages can start
+- [x] Documentation updated

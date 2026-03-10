@@ -1,317 +1,317 @@
-# 工程原则 (Engineering Principles)
+# Engineering Principles
 
-> 本文档定义 RDD 项目的核心工程原则，指导所有技术决策和实现选择。
-
----
-
-## 核心原则 (Core Principles)
-
-### 1. Roadmap 驱动
-
-**原则描述**：人类铺设轨道，定义 Stage 路线；Agent 沿轨道自动前进。Roadmap 变更必须人工审核。
-
-**实践要点**：
-
-- Roadmap 由人类定义，包含清晰的 Stage 序列
-- Agent 按照 Roadmap 定义的顺序执行 Stage
-- 任何 Roadmap 的变更都需要人工确认
-- 每个 Stage 完成后，更新进度并准备进入下一 Stage
-
-**关键规则**：
-
-```
-- Agent 不能自行修改 Roadmap
-- Stage 的增删改必须人工审批
-- 优先级调整需要人工决策
-```
-
-### 2. Stage 最小交付单元
-
-**原则描述**：每个 Stage 都是可验收、可回滚、可 handoff 的最小交付单元。控制 scope，接受阶段性妥协。
-
-**实践要点**：
-
-- 每个 Stage 必须有明确的目标和非目标
-- 每个 Stage 必须有可验证的验收标准
-- 每个 Stage 必须有回滚方案
-- Stage 完成后必须产出可交付的成果
-
-**关键规则**：
-
-```
-- 单个 Stage 工作量控制在 1-3 天
-- 每个 Stage 只验证一小组清晰假设
-- 天然支持中断恢复与多 Agent 协作
-```
-
-### 3. 防腐机制优先
-
-**原则描述**：通过禁止行为清单、四重门禁、文档更新义务，防止项目腐化。
-
-**实践要点**：
-
-- 遵守 9 条禁止行为清单
-- 通过四重门禁检查才能进入下一阶段
-- 文档必须同步更新，不允许"文档待补"状态
-
-**禁止行为清单**：
-
-| 编号 | 禁止行为 | 正确做法 |
-|------|----------|----------|
-| 1 | 无设计文档开始实现 | 必须先完成设计文档，再开始编码 |
-| 2 | Scope 悄悄扩大 | 发现不对立即停下，先更新文档 |
-| 3 | "文档待补"状态声称完成 | 文档必须同步完成，不允许后续补 |
-| 4 | 多个 Stage 核心未知数放同一 Stage | 每个 Stage 只验证一小组清晰假设 |
-| 5 | 依赖"口口相传"来运行测试 | 测试必须可通过 Task 入口复现 |
-| 6 | 编写隐藏平台假设的脚本 | 环境假设必须显式文档化 |
-| 7 | 在理解运行时约束之前引入宽泛接口 | 先验证约束，再设计接口 |
-| 8 | 过早把昂贵检查塞进默认编辑循环 | 昂贵检查应该显式触发，不是默认行为 |
-| 9 | 将技术债当作隐性知识管理 | 所有已知缺口必须在台账中显式记录 |
-
-### 4. 显式知识管理
-
-**原则描述**：技术债必须可见，不以隐性知识管理；ADR 必须记录"对后续影响"；新 Agent 可凭文档自举。
-
-**实践要点**：
-
-- 所有技术债必须在台账中记录
-- ADR（架构决策记录）必须完整
-- 文档足以让新 Agent 理解项目状态
-
-**文档更新义务**：
-
-| 文档 | 更新内容 | 时机 |
-|------|----------|------|
-| `stage-N.md` | 实现差异、验收标准变化 | Stage 完成时 |
-| `stage-N-review-log.md` | findings、采纳/不采纳理由 | Review 完成时 |
-| `08-autonomous-decisions.md` | ADR、假设偏差 | 决策发生时 |
-| `12-technical-debt.md` | 新增/偿还技术债 | Stage 完成时 |
-| `11-next-steps.md` | 进度、下一步入场条件 | Stage 完成时 |
-| `CHANGELOG.md` | 本 Stage 变更摘要 | Stage 完成时 |
-
-### 5. 多模型交叉验证
-
-**原则描述**：主开发模型 + 独立评审模型 + 规则检查。约 50% findings 是误报，每条独立核查。
-
-**实践要点**：
-
-- 使用多个模型进行 Review
-- 第一轮开放，不给维度/提示
-- 独立核查每条 finding
-
-**核查优先级**：
-
-```
-权威来源 > 代码验证 > 追问模型
-```
-
-**核查方法**：
-
-| 方法 | 说明 | 适用场景 |
-|------|------|----------|
-| 权威来源 | 查阅官方文档、规范、最佳实践 | 涉及标准、规范的问题 |
-| 代码验证 | 通过代码运行、测试验证 | 可复现的问题 |
-| 追问模型 | 向评审模型请求更多解释 | 需要进一步澄清 |
-
-### 6. Hook 通知机制
-
-**原则描述**：需要人工介入时自动通知，支持多渠道，分级通知。
-
-**实践要点**：
-
-- 配置通知渠道（企微、邮件、Bark、Telegram、Webhook）
-- 按优先级分级通知
-- P0 级别阻塞 Agent 等待人工介入
-
-**通知分级**：
-
-| 级别 | 阻塞行为 | 默认渠道 | 示例 |
-|------|---------|---------|------|
-| P0 | Agent 暂停，等待人工介入 | 全渠道 | 连续失败、假设证伪、Roadmap 变更 |
-| P1 | Agent 继续，建议尽快处理 | 主要渠道 | 模型分歧、技术债超阈值 |
-| P2 | 不阻塞，信息同步 | 即时渠道 | Stage 完成、新 ADR |
-| P3 | 不阻塞，定期汇总 | 批量渠道 | 日报、周报 |
+> This document defines the core engineering principles for the RDD project, guiding all technical decisions and implementation choices.
 
 ---
 
-## 质量标准 (Quality Standards)
+## Core Principles
 
-### 代码质量标准
+### 1. Roadmap Driven
 
-| 指标 | 目标值 | 最低值 | 验证方式 |
-|------|--------|--------|----------|
-| 单元测试覆盖率 | >= 80% | >= 20% | CI 报告 |
-| E2E 测试 | 至少 2 条高信号路径 | - | 测试通过 |
-| 代码审查 | 100% 代码经过 Review | - | Review 记录 |
-| 静态分析 | 无 Critical/High 问题 | - | CI 报告 |
+**Principle Description**: Humans lay the tracks, defining the Stage sequence; Agents move along the tracks automatically. Roadmap changes require human review.
 
-### 文档质量标准
+**Practice Points**:
 
-| 文档类型 | 质量标准 |
-|----------|----------|
-| Stage 文档 | 目标清晰、非目标明确、验收标准可测试 |
-| ADR | "对后续 Stage 影响"不可留空 |
-| 技术债台账 | 优先级、来源、建议落地 Stage 清晰 |
-| Handoff | 当前进度、阻塞风险、下一步动作明确 |
+- Roadmap is defined by humans, containing a clear Stage sequence
+- Agents execute Stages in the order defined by the Roadmap
+- Any Roadmap changes require human confirmation
+- After each Stage completion, update progress and prepare for the next Stage
 
-### 测试质量标准
+**Key Rules**:
 
 ```
-- 所有测试必须可通过 Task 入口复现
-- E2E 测试必须在真实环境运行（非 mock）
-- 新功能必须有对应的测试用例
-- Bug 修复必须有回归测试
+- Agents cannot modify the Roadmap themselves
+- Adding, removing, or modifying Stages requires human approval
+- Priority adjustments require human decision-making
 ```
+
+### 2. Stage as Minimum Delivery Unit
+
+**Principle Description**: Each Stage is a minimum delivery unit that is verifiable, rollbackable, and handoffable. Control scope, accept阶段性 compromises.
+
+**Practice Points**:
+
+- Each Stage must have clear goals and non-goals
+- Each Stage must have verifiable acceptance criteria
+- Each Stage must have a rollback plan
+- Stage completion must produce deliverable outcomes
+
+**Key Rules**:
+
+```
+- Single Stage workload should be 1-3 days
+- Each Stage only validates a small set of clear hypotheses
+- Naturally supports interruption recovery and multi-Agent collaboration
+```
+
+### 3. Anti-Corruption Mechanism First
+
+**Principle Description**: Prevent project corruption through a list of prohibited behaviors, four gates, and documentation update obligations.
+
+**Practice Points**:
+
+- Adhere to the 9 prohibited behaviors list
+- Must pass four gate checks before entering the next phase
+- Documentation must be updated synchronously, "documentation pending" state is not allowed
+
+**Prohibited Behaviors List**:
+
+| ID | Prohibited Behavior | Correct Practice |
+|----|---------------------|------------------|
+| 1 | Starting implementation without design document | Must complete design document before coding |
+| 2 | Silently expanding scope | Stop immediately when detected, update documentation first |
+| 3 | Claiming completion with "documentation pending" | Documentation must be completed synchronously, not retroactively |
+| 4 | Putting multiple Stage core unknowns in one Stage | Each Stage only validates a small set of clear hypotheses |
+| 5 | Relying on "word of mouth" to run tests | Tests must be reproducible via Task entry point |
+| 6 | Writing scripts with hidden platform assumptions | Environment assumptions must be explicitly documented |
+| 7 | Introducing broad interfaces before understanding runtime constraints | Validate constraints first, then design interfaces |
+| 8 | Prematurely putting expensive checks in default edit loop | Expensive checks should be explicitly triggered, not default behavior |
+| 9 | Managing technical debt as tacit knowledge | All known gaps must be explicitly recorded in the ledger |
+
+### 4. Explicit Knowledge Management
+
+**Principle Description**: Technical debt must be visible, not managed as tacit knowledge; ADRs must record "impact on subsequent Stages"; new Agents can onboard using documentation alone.
+
+**Practice Points**:
+
+- All technical debt must be recorded in the ledger
+- ADR (Architecture Decision Records) must be complete
+- Documentation must be sufficient for new Agents to understand project state
+
+**Documentation Update Obligations**:
+
+| Document | Update Content | Timing |
+|----------|---------------|--------|
+| `stage-N.md` | Implementation differences, acceptance criteria changes | Stage completion |
+| `stage-N-review-log.md` | Findings, adoption/rejection reasons | Review completion |
+| `08-autonomous-decisions.md` | ADR, assumption deviations | Decision occurrence |
+| `12-technical-debt.md` | New/resolved technical debt | Stage completion |
+| `11-next-steps.md` | Progress, next step entry conditions | Stage completion |
+| `CHANGELOG.md` | This Stage's change summary | Stage completion |
+
+### 5. Multi-Model Cross-Validation
+
+**Principle Description**: Main development model + independent review model + rule checking. Approximately 50% of findings are false positives, verify each independently.
+
+**Practice Points**:
+
+- Use multiple models for Review
+- First round is open, no dimensions/hints provided
+- Independently verify each finding
+
+**Verification Priority**:
+
+```
+Authoritative Sources > Code Verification > Model Inquiry
+```
+
+**Verification Methods**:
+
+| Method | Description | Applicable Scenarios |
+|--------|-------------|---------------------|
+| Authoritative Sources | Consult official documentation, specifications, best practices | Issues involving standards, specifications |
+| Code Verification | Verify through code execution, testing | Reproducible issues |
+| Model Inquiry | Request more explanation from the review model | Need further clarification |
+
+### 6. Hook Notification Mechanism
+
+**Principle Description**: Automatic notification when human intervention is needed, supporting multiple channels, tiered notifications.
+
+**Practice Points**:
+
+- Configure notification channels (WeChat Work, Email, Bark, Telegram, Webhook)
+- Tiered notifications by priority
+- P0 level blocks Agent waiting for human intervention
+
+**Notification Tiers**:
+
+| Level | Blocking Behavior | Default Channels | Examples |
+|-------|------------------|------------------|----------|
+| P0 | Agent pauses, waits for human intervention | All channels | Consecutive failures, hypothesis falsified, Roadmap changes |
+| P1 | Agent continues, suggests prompt handling | Primary channels | Model disagreement, tech debt exceeds threshold |
+| P2 | Non-blocking, information sync | Instant channels | Stage completion, new ADR |
+| P3 | Non-blocking, periodic summary | Batch channels | Daily reports, weekly reports |
 
 ---
 
-## 决策原则 (Decision Principles)
+## Quality Standards
 
-### 架构决策原则
+### Code Quality Standards
 
-1. **简单优先**：在满足需求的前提下，选择最简单的方案
-2. **演进式设计**：不做过早的抽象，等待需求明确
-3. **可回滚**：每个决策都要考虑失败后的回滚方案
-4. **显式优于隐式**：显式声明优于隐式约定
+| Metric | Target Value | Minimum Value | Verification Method |
+|--------|--------------|---------------|---------------------|
+| Unit Test Coverage | >= 80% | >= 20% | CI report |
+| E2E Tests | At least 2 high-signal paths | - | Tests pass |
+| Code Review | 100% code reviewed | - | Review records |
+| Static Analysis | No Critical/High issues | - | CI report |
 
-### 技术选型原则
+### Documentation Quality Standards
 
-1. **成熟稳定**：优先选择成熟稳定的技术方案
-2. **团队熟悉**：优先选择团队熟悉的技术栈
-3. **生态完善**：优先选择生态完善的技术
-4. **可维护性**：考虑长期维护成本
+| Document Type | Quality Standards |
+|---------------|-------------------|
+| Stage Document | Clear goals, explicit non-goals, testable acceptance criteria |
+| ADR | "Impact on subsequent Stages" cannot be empty |
+| Technical Debt Ledger | Clear priority, source, suggested landing Stage |
+| Handoff | Clear current progress, blocking risks, next actions |
 
-### 权衡原则
+### Test Quality Standards
 
 ```
-当需要在以下维度权衡时：
-
-1. 功能 vs 稳定 → 优先稳定
-2. 性能 vs 可维护性 → 优先可维护性
-3. 完美 vs 可交付 → 优先可交付（记录技术债）
-4. 通用 vs 专用 → 优先专用（避免过早抽象）
+- All tests must be reproducible via Task entry point
+- E2E tests must run in real environment (not mock)
+- New features must have corresponding test cases
+- Bug fixes must have regression tests
 ```
 
 ---
 
-## Good/Bad Case 示例
+## Decision Principles
 
-### Good Case 1：Stage 边界控制
+### Architecture Decision Principles
 
-**场景**：需要实现用户认证功能
+1. **Simplicity First**: Choose the simplest solution that meets requirements
+2. **Evolutionary Design**: Don't abstract prematurely, wait for requirements to become clear
+3. **Rollbackable**: Every decision must consider failure rollback plan
+4. **Explicit over Implicit**: Explicit declarations over implicit conventions
 
-**Good**：
+### Technology Selection Principles
 
-```
-Stage 1: 用户注册与登录
-- 目标：实现基本的注册和登录功能
-- 非目标：第三方登录、多因素认证
-- 工作量：1 天
+1. **Mature and Stable**: Prefer mature and stable technical solutions
+2. **Team Familiarity**: Prefer technology stacks the team is familiar with
+3. **Complete Ecosystem**: Prefer technologies with complete ecosystems
+4. **Maintainability**: Consider long-term maintenance costs
 
-Stage 2: Token 管理
-- 目标：实现 JWT Token 的生成和验证
-- 非目标：Token 刷新机制
-- 工作量：0.5 天
-
-Stage 3: 第三方登录
-- 目标：支持 GitHub 登录
-- 非目标：其他第三方平台
-- 工作量：1 天
-```
-
-**Bad**：
+### Trade-off Principles
 
 ```
-Stage 1: 完整的用户认证系统
-- 目标：注册、登录、第三方登录、多因素认证、Token 管理
-- 非目标：无
-- 问题：Scope 太大，包含多个核心未知数
-```
+When weighing the following dimensions:
 
-### Good Case 2：技术债管理
-
-**场景**：发现代码中存在待优化的地方
-
-**Good**：
-
-```
-TD-01: 缺少错误重试机制
-- 优先级：降级功能 / 模块级
-- 来源：Stage 2 审阅推后
-- 原始描述："建议增加错误重试，但当前 Stage scope 不包含"
-- 来源文件：src/client.rs:45
-- 建议落地 Stage：Stage 4
-
-行动：在技术债台账中记录，Stage 4 统一处理
-```
-
-**Bad**：
-
-```
-问题：发现缺少错误重试机制
-行动：记在心里，后续会处理
-问题：没有显式记录，可能被遗忘
-```
-
-### Good Case 3：Review 核查
-
-**场景**：Review 发现 "这里应该使用异步 IO"
-
-**Good**：
-
-```
-Finding: 建议使用异步 IO 提升性能
-
-核查过程：
-1. 查阅权威来源：Rust 官方文档说明当前场景无需异步
-2. 代码验证：运行基准测试，同步和异步性能差异 < 5%
-3. 结论：误报，当前实现已满足性能需求
-
-记录：在 review-log.md 中记录不采纳理由
-```
-
-**Bad**：
-
-```
-Finding: 建议使用异步 IO 提升性能
-
-核查过程：
-1. 模型说需要，那就改吧
-2. 没有验证实际性能差异
-3. 问题：可能引入不必要的复杂性
-```
-
-### Good Case 4：文档同步更新
-
-**场景**：实现过程中发现设计需要调整
-
-**Good**：
-
-```
-1. 立即停下编码
-2. 更新 stage-N.md 中的设计文档
-3. 记录变更原因和影响
-4. 继续编码
-5. Stage 完成时，所有文档已同步更新
-```
-
-**Bad**：
-
-```
-1. 继续编码，设计已变更
-2. 心想"文档待会补"
-3. Stage 完成时声称完成
-4. 问题：文档与代码不一致，后续维护困难
+1. Functionality vs Stability → Prefer stability
+2. Performance vs Maintainability → Prefer maintainability
+3. Perfection vs Deliverable → Prefer deliverable (record technical debt)
+4. Generic vs Specific → Prefer specific (avoid premature abstraction)
 ```
 
 ---
 
-## 修订记录
+## Good/Bad Case Examples
 
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| v1.0 | [日期] | 初始版本 | [姓名] |
+### Good Case 1: Stage Boundary Control
+
+**Scenario**: Need to implement user authentication functionality
+
+**Good**:
+
+```
+Stage 1: User Registration and Login
+- Goal: Implement basic registration and login functionality
+- Non-goals: Third-party login, multi-factor authentication
+- Workload: 1 day
+
+Stage 2: Token Management
+- Goal: Implement JWT Token generation and validation
+- Non-goals: Token refresh mechanism
+- Workload: 0.5 day
+
+Stage 3: Third-party Login
+- Goal: Support GitHub login
+- Non-goals: Other third-party platforms
+- Workload: 1 day
+```
+
+**Bad**:
+
+```
+Stage 1: Complete User Authentication System
+- Goal: Registration, login, third-party login, multi-factor authentication, token management
+- Non-goals: None
+- Problem: Scope too large, contains multiple core unknowns
+```
+
+### Good Case 2: Technical Debt Management
+
+**Scenario**: Discovered areas in code that need optimization
+
+**Good**:
+
+```
+TD-01: Missing error retry mechanism
+- Priority: Feature Degradation / Module-level
+- Source: Stage 2 review deferred
+- Original Description: "Suggested adding error retry, but current Stage scope doesn't include it"
+- Source File: src/client.rs:45
+- Suggested Landing Stage: Stage 4
+
+Action: Record in technical debt ledger, handle uniformly in Stage 4
+```
+
+**Bad**:
+
+```
+Issue: Discovered missing error retry mechanism
+Action: Keep in mind, will handle later
+Problem: Not explicitly recorded, likely to be forgotten
+```
+
+### Good Case 3: Review Verification
+
+**Scenario**: Review finds "async IO should be used here"
+
+**Good**:
+
+```
+Finding: Suggest using async IO to improve performance
+
+Verification Process:
+1. Consult authoritative sources: Rust official documentation indicates current scenario doesn't need async
+2. Code verification: Run benchmark tests, sync and async performance difference < 5%
+3. Conclusion: False positive, current implementation meets performance requirements
+
+Record: Document rejection reason in review-log.md
+```
+
+**Bad**:
+
+```
+Finding: Suggest using async IO to improve performance
+
+Verification Process:
+1. Model says it's needed, so change it
+2. No verification of actual performance difference
+3. Problem: May introduce unnecessary complexity
+```
+
+### Good Case 4: Synchronous Documentation Update
+
+**Scenario**: During implementation, discovered design needs adjustment
+
+**Good**:
+
+```
+1. Immediately stop coding
+2. Update design document in stage-N.md
+3. Record reason for change and impact
+4. Continue coding
+5. When Stage completes, all documentation is already synchronized
+```
+
+**Bad**:
+
+```
+1. Continue coding, design has changed
+2. Think "will update documentation later"
+3. Claim completion when Stage ends
+4. Problem: Documentation inconsistent with code, difficult future maintenance
+```
 
 ---
 
-> **注意**：本原则文档是 RDD 项目的核心指导文档，任何变更都需要通过 ADR 记录决策过程。
+## Revision History
+
+| Version | Date | Revision Content | Author |
+|---------|------|------------------|--------|
+| v1.0 | [Date] | Initial version | [Name] |
+
+---
+
+> **Note**: This principles document is the core guiding document for the RDD project. Any changes require recording the decision process through ADR.

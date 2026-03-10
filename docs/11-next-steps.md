@@ -1,82 +1,82 @@
-# 下一步计划 (Next Steps)
+# Next Steps
 
-> 本文档记录 RDD 项目当前状态、进度和下一步计划，支持快速 Handoff。
+> This document records the RDD project's current state, progress, and next steps, supporting quick Handoff.
 
 ---
 
-## 当前状态 (Current State)
+## Current State
 
-### 项目信息
+### Project Information
 
-| 项目名称 | RDD Framework |
-|----------|--------------|
-| 当前阶段 | Phase 3 完成 ✅ |
-| 当前版本 | v1.0.1 (准备发布) |
-| 开始日期 | 2026-03-06 |
-| 最后更新 | 2026-03-10 |
+| Project Name | RDD Framework |
+|--------------|---------------|
+| Current Phase | Phase 3 Completed ✅ |
+| Current Version | v1.0.1 (Ready for Release) |
+| Start Date | 2026-03-06 |
+| Last Updated | 2026-03-10 |
 
-### 当前进度
+### Current Progress
 
 ```
-Phase 1 核心开发: ████████████████████ 100% (11/11 Stage)
-Phase 2 E2E测试:  ████████████████████ 100% (5/5 Stage)
-Phase 3 发布运维: ████████████████████ 100% (3/3 Stage)
+Phase 1 Core Development: ████████████████████ 100% (11/11 Stage)
+Phase 2 E2E Testing:      ████████████████████ 100% (5/5 Stage)
+Phase 3 Release & Ops:    ████████████████████ 100% (3/3 Stage)
 ```
 
-### 测试统计
+### Test Statistics
 
-- **单元测试**: 867/867 通过 (100%)
-- **E2E 测试**: 42/42 通过 (100%)
-- **总计**: 909/909 通过 (100%)
+- **Unit Tests**: 867/867 passed (100%)
+- **E2E Tests**: 42/42 passed (100%)
+- **Total**: 909/909 passed (100%)
 
-### 阶段性总结
+### Phase Summary
 
-**Phase 1: 核心开发 ✅ (完成)**
-- Stage 0-10: 全部完成
-- 技术债: 11/11 已解决
+**Phase 1: Core Development ✅ (Completed)**
+- Stage 0-10: All completed
+- Technical Debt: 11/11 resolved
 
-**Phase 2: E2E 测试与发布 ✅ (完成)**
-- Stage 11: E2E 测试框架准备 ✅
-- Stage 12: 安装流程 E2E 测试 ✅
-- Stage 13: Claude Code 集成测试 ✅
-- Stage 14: 完整工作流 E2E 测试 ✅
-- Stage 15: 代码提交与发布准备 ✅
+**Phase 2: E2E Testing & Release ✅ (Completed)**
+- Stage 11: E2E test framework setup ✅
+- Stage 12: Installation flow E2E tests ✅
+- Stage 13: Claude Code integration tests ✅
+- Stage 14: Complete workflow E2E tests ✅
+- Stage 15: Code commit & release preparation ✅
 
-**Phase 3: 发布与运维 ✅ (完成)**
-- Stage 16: 安装脚本修复 ✅ (ASCII Banner + go-task 官方脚本)
-- Stage 17: GitHub Actions CI/CD ✅ (自动 Release)
-- Stage 18: Docker 测试环境 ✅ (完整安装测试容器化)
-
----
-
-## 发布状态
-
-### 已完成 ✅
-
-- [x] 代码开发完成
-- [x] 单元测试通过 (867/867)
-- [x] E2E 测试通过 (42/42)
-- [x] 文档更新完成
-- [x] 无敏感信息泄露
-- [x] Git 提交完成
-- [x] ASCII Banner 修复 (RDD)
-- [x] go-task 使用官方安装脚本
-- [x] GitHub Actions CI/CD 配置
-- [x] Docker 测试环境
-
-### 待用户确认 ⏳
-
-- [ ] 推送代码到 GitHub: `git push origin main`
-- [ ] 创建发布: `./scripts/release/create-release.sh v1.0.1`
-- [ ] 验证 GitHub Actions 工作流
-- [ ] 发布到 npm (可选)
-- [ ] 部署文档站点 (可选)
+**Phase 3: Release & Operations ✅ (Completed)**
+- Stage 16: Installation script fixes ✅ (ASCII Banner + go-task official script)
+- Stage 17: GitHub Actions CI/CD ✅ (Auto Release)
+- Stage 18: Docker test environment ✅ (Complete installation test containerization)
 
 ---
 
-## 安装方式 (发布后可用)
+## Release Status
 
-### curl | sh (推荐)
+### Completed ✅
+
+- [x] Code development completed
+- [x] Unit tests passed (867/867)
+- [x] E2E tests passed (42/42)
+- [x] Documentation updated
+- [x] No sensitive information leaked
+- [x] Git commit completed
+- [x] ASCII Banner fixed (RDD)
+- [x] go-task using official install script
+- [x] GitHub Actions CI/CD configured
+- [x] Docker test environment
+
+### Pending User Confirmation ⏳
+
+- [ ] Push code to GitHub: `git push origin main`
+- [ ] Create release: `./scripts/release/create-release.sh v1.0.1`
+- [ ] Verify GitHub Actions workflow
+- [ ] Publish to npm (optional)
+- [ ] Deploy documentation site (optional)
+
+---
+
+## Installation Methods (Available after Release)
+
+### curl | sh (Recommended)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh
@@ -88,7 +88,7 @@ curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/insta
 npm install -g @kofj/rdd
 ```
 
-### 手动安装
+### Manual Installation
 
 ```bash
 git clone https://github.com/kofj/rdd.git
@@ -98,85 +98,215 @@ cd rdd-framework
 
 ---
 
-## Docker 测试 (新增)
+## Docker Testing (New)
 
 ```bash
-# 构建并运行所有测试
+# Build and run all tests
 ./docker/run-tests.sh test
 
-# 只运行安装测试
+# Run installation tests only
 ./docker/run-tests.sh install
 
-# 进入容器 shell
+# Enter container shell
 ./docker/run-tests.sh shell
 ```
 
 ---
 
-## E2E 测试覆盖
+## E2E Test Coverage
 
-### 安装测试 (Stage 12)
-| 用例 | 状态 |
-|------|------|
-| INST-01: curl \| sh 安装 | ✅ |
-| INST-02: 手动安装 | ✅ |
-| INST-03: npm 安装 | ✅ |
-| INST-04: rdd CLI 功能 | ✅ |
-| INST-05: rdd init 项目创建 | ✅ |
+### Installation Tests (Stage 12)
+| Test Case | Status |
+|-----------|--------|
+| INST-01: curl \| sh installation | ✅ |
+| INST-02: Manual installation | ✅ |
+| INST-03: npm installation | ✅ |
+| INST-04: rdd CLI functionality | ✅ |
+| INST-05: rdd init project creation | ✅ |
 
-### 集成测试 (Stage 13)
-| 用例 | 状态 |
-|------|------|
-| INT-01: Skills 文件存在 | ✅ |
-| INT-02: Commands 文件存在 | ✅ |
-| INT-03: API 端点可达 | ✅ |
-| INT-04: Skills 格式正确 | ✅ |
-| INT-05: settings.json 格式 | ✅ |
-| INT-06: 无敏感信息泄露 | ✅ |
+### Integration Tests (Stage 13)
+| Test Case | Status |
+|-----------|--------|
+| INT-01: Skills file exists | ✅ |
+| INT-02: Commands file exists | ✅ |
+| INT-03: API endpoint reachable | ✅ |
+| INT-04: Skills format correct | ✅ |
+| INT-05: settings.json format | ✅ |
+| INT-06: No sensitive info leaked | ✅ |
 
-### 工作流测试 (Stage 14)
-| 用例 | 状态 |
-|------|------|
-| WORKFLOW-01: 项目初始化 | ✅ |
+### Workflow Tests (Stage 14)
+| Test Case | Status |
+|-----------|--------|
+| WORKFLOW-01: Project initialization | ✅ |
 | WORKFLOW-02: task doctor | ✅ |
-| WORKFLOW-03: ADR 记录 | ✅ |
-| WORKFLOW-04: 技术债记录 | ✅ |
-| WORKFLOW-05: Handoff 生成 | ✅ |
-| WORKFLOW-06: Checkpoint 持久化 | ✅ |
+| WORKFLOW-03: ADR recording | ✅ |
+| WORKFLOW-04: Technical debt recording | ✅ |
+| WORKFLOW-05: Handoff generation | ✅ |
+| WORKFLOW-06: Checkpoint persistence | ✅ |
 
 ---
 
-## Handoff 信息
+## Handoff Information
 
-### 新 Agent 入场指南
+### New Agent Onboarding Guide
 
-1. 阅读 `docs/stages/stage-roadmap.md` 了解项目状态
-2. 阅读 `CHANGELOG.md` 了解版本历史
-3. 运行 `task test` 验证测试通过
-4. 运行 `bats tests/e2e/` 验证 E2E 测试
+1. Read `docs/stages/stage-roadmap.md` to understand project status
+2. Read `CHANGELOG.md` to understand version history
+3. Run `task test` to verify tests pass
+4. Run `bats tests/e2e/` to verify E2E tests
 
-### 测试命令
+### Test Commands
 
 ```bash
-# 运行单元测试
+# Run unit tests
 task test
 
-# 运行 E2E 测试
+# Run E2E tests
 export PROJECT_ROOT=/path/to/rdd-framework
 export RDD_FRAMEWORK_HOME=/path/to/rdd-framework
 bats tests/e2e/
 
-# 运行 Docker 测试
+# Run Docker tests
 ./docker/run-tests.sh test
 ```
 
 ---
 
-## 修订记录
+## Revision History
 
-| 版本 | 日期 | 修订内容 |
-|------|------|----------|
-| v6.0 | 2026-03-10 | Phase 3 完成，添加 Stage 16-18 |
-| v5.0 | 2026-03-09 | Stage 11-15 完成，E2E 测试全部通过 |
-| v4.0 | 2026-03-09 | 添加 Stage 11-15 E2E 测试计划 |
-| v3.0 | 2026-03-09 | v1.0.0 代码完成 |
+| Version | Date | Revision Content |
+|---------|------|------------------|
+| v6.0 | 2026-03-10 | Phase 3 completed, added Stage 16-18 |
+| v5.0 | 2026-03-09 | Stage 11-15 completed, all E2E tests passed |
+| v4.0 | 2026-03-09 | Added Stage 11-15 E2E test plan |
+| v3.0 | 2026-03-09 | v1.0.0 code completed |
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-10 09:01
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-10 09:01
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-10 09:01
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-10 11:41
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-10 11:41
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-10 11:41
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-10 12:07
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-10 12:07
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-10 12:07
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-10 12:47
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-10 12:47
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-10 12:47
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-10 12:50
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-10 12:50
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-10 12:50
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%

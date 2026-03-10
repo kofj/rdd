@@ -1,4 +1,4 @@
-# Stage 12: 安装流程 E2E 测试
+# Stage 12: Installation Flow E2E Testing
 
 ## Status
 - [x] Planning
@@ -8,86 +8,86 @@
 **Completion Date**: 2026-03-09
 
 ## Goals
-验证完整安装流程在干净环境中可用，确保用户可以通过多种方式安装 RDD Framework。
+Verify that the complete installation flow works in a clean environment, ensuring users can install RDD Framework via multiple methods.
 
 ## Non-Goals
-- Claude Code 集成测试 (Stage 13)
-- 完整工作流测试 (Stage 14)
-- 性能测试
+- Claude Code integration testing (Stage 13)
+- Complete workflow testing (Stage 14)
+- Performance testing
 
 ## Core Hypotheses
-- H1: `curl | sh` 安装方式可在干净环境成功
-- H2: Skills 和 Commands 正确安装到 ~/.claude/
-- H3: `rdd init` 可创建完整项目结构
-- H4: `rdd --version` 和 `task doctor` 正常工作
+- H1: `curl | sh` installation method works in clean environment
+- H2: Skills and Commands are correctly installed to ~/.claude/
+- H3: `rdd init` can create complete project structure
+- H4: `rdd --version` and `task doctor` work properly
 
 ## Acceptance Criteria
 
-### curl | sh 安装测试 (12.1) ✅
-- [x] 从本地文件模拟 curl | sh 安装
-- [x] 检查 ~/.rdd-framework/ 目录创建
-- [x] 检查 PATH 配置正确
-- [x] 检查 rdd 命令可用
-- [x] 清理测试环境
+### curl | sh Installation Test (12.1) ✅
+- [x] Simulate curl | sh installation from local file
+- [x] Check ~/.rdd-framework/ directory created
+- [x] Check PATH configuration correct
+- [x] Check rdd command available
+- [x] Clean test environment
 
-### 手动安装测试 (12.2) ✅
-- [x] 复制 skills 到 ~/.claude/skills/
-- [x] 复制 commands 到 ~/.claude/commands/
-- [x] 复制 scripts 到 ~/.rdd-framework/scripts/
-- [x] 检查文件权限正确
-- [x] 检查所有文件存在
+### Manual Installation Test (12.2) ✅
+- [x] Copy skills to ~/.claude/skills/
+- [x] Copy commands to ~/.claude/commands/
+- [x] Copy scripts to ~/.rdd-framework/scripts/
+- [x] Check file permissions correct
+- [x] Check all files exist
 
-### npm 安装测试 (12.3) ✅
-- [x] 验证 package.json 正确
-- [x] 模拟 npm install -g 流程
-- [x] 检查 postinstall 脚本执行
-- [x] 检查 rdd 命令可用
+### npm Installation Test (12.3) ✅
+- [x] Verify package.json correct
+- [x] Simulate npm install -g flow
+- [x] Check postinstall script execution
+- [x] Check rdd command available
 
-### 命令功能测试 (12.4) ✅
-- [x] `rdd --version` 显示版本
-- [x] `rdd --help` 显示帮助
-- [x] `rdd init <name>` 创建项目
-- [x] `rdd init` 在当前目录初始化
-- [x] `rdd doctor` 健康检查通过
+### Command Functionality Test (12.4) ✅
+- [x] `rdd --version` shows version
+- [x] `rdd --help` shows help
+- [x] `rdd init <name>` creates project
+- [x] `rdd init` initializes in current directory
+- [x] `rdd doctor` health check passes
 
-### 项目结构验证 (12.5) ✅
-- [x] 创建的项目包含 .rdd/ 目录
-- [x] 创建的项目包含 docs/ 目录
-- [x] 创建的项目包含 tests/ 目录
-- [x] 创建的项目包含 Taskfile.yml
-- [x] Taskfile 可执行
+### Project Structure Verification (12.5) ✅
+- [x] Created project contains .rdd/ directory
+- [x] Created project contains docs/ directory
+- [x] Created project contains tests/ directory
+- [x] Created project contains Taskfile.yml
+- [x] Taskfile is executable
 
 ## Rollback Plan
-- 每个测试独立运行
-- 测试后清理环境
-- Docker 容器可重建
+- Each test runs independently
+- Environment cleaned after testing
+- Docker containers can be rebuilt
 
 ## Known Limitations
-- 测试不涉及真实网络下载
-- npm publish 未执行，使用本地模拟
+- Tests don't involve real network downloads
+- npm publish not executed, using local simulation
 
 ## Impact on Subsequent Stages
-- Stage 13 需要安装成功的环境
-- Stage 14 需要可用的项目
+- Stage 13 needs successful installation environment
+- Stage 14 needs usable project
 
 ---
 
 ## Implementation Notes
 
-### 测试用例设计
+### Test Case Design
 
 ```bash
 # tests/e2e/install-flow.bats
 
-@test "INST-01: curl | sh 安装成功" {
-    # 模拟 curl | sh 安装
+@test "INST-01: curl | sh installation success" {
+    # Simulate curl | sh installation
     run bash scripts/install/install.sh --prefix /tmp/rdd-test
     [ "$status" -eq 0 ]
     [ -f "/tmp/rdd-test/bin/rdd" ]
 }
 
-@test "INST-02: 手动安装成功" {
-    # 手动复制文件
+@test "INST-02: manual installation success" {
+    # Manually copy files
     mkdir -p ~/.claude/{skills,commands}
     cp -r .claude/skills/* ~/.claude/skills/
     cp -r .claude/commands/* ~/.claude/commands/
@@ -95,13 +95,13 @@
     [ -f ~/.claude/commands/rdd-init.md ]
 }
 
-@test "INST-03: rdd --version 正常" {
+@test "INST-03: rdd --version works" {
     run rdd --version
     [ "$status" -eq 0 ]
     [[ "$output" =~ "1.0.0" ]]
 }
 
-@test "INST-04: rdd init 创建项目" {
+@test "INST-04: rdd init creates project" {
     run rdd init test-project
     [ "$status" -eq 0 ]
     [ -d "test-project/.rdd" ]
@@ -109,31 +109,31 @@
     [ -f "test-project/Taskfile.yml" ]
 }
 
-@test "INST-05: task doctor 通过" {
+@test "INST-05: task doctor passes" {
     cd test-project
     run task doctor
     [ "$status" -eq 0 ]
 }
 ```
 
-### 测试执行顺序
+### Test Execution Flow
 
 ```
-1. 环境准备
+1. Environment Preparation
    └── docker build -t rdd-test tests/e2e/
 
-2. 安装测试
+2. Installation Tests
    ├── INST-01: curl | sh
-   ├── INST-02: 手动安装
-   └── INST-03: npm 安装
+   ├── INST-02: manual installation
+   └── INST-03: npm installation
 
-3. 功能测试
+3. Functionality Tests
    ├── INST-04: rdd --version
    ├── INST-05: rdd --help
    ├── INST-06: rdd init
    └── INST-07: task doctor
 
-4. 清理
+4. Cleanup
    └── docker rm / docker rmi
 ```
 
@@ -154,16 +154,16 @@
 - [ ] High-confidence findings resolved
 
 ### Gate 3: Implementation & Testing Check
-- [ ] 所有测试用例通过
-- [ ] 测试覆盖率 >= 80%
-- [ ] 无残留测试文件
+- [ ] All test cases passed
+- [ ] Test coverage >= 80%
+- [ ] No residual test files
 
 ### Gate 4: Code Review Check
-- [ ] 测试代码质量
-- [ ] 测试独立性
-- [ ] 清理完整性
+- [ ] Test code quality
+- [ ] Test independence
+- [ ] Cleanup completeness
 
 ### Gate 5: Completion Gate Check
-- [ ] 安装流程验证完成
-- [ ] 文档更新
-- [ ] Stage 13 可开始
+- [ ] Installation flow verification complete
+- [ ] Documentation updated
+- [ ] Stage 13 can start

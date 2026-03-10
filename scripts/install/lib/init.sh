@@ -12,17 +12,56 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
+# Default language
+DEFAULT_LANGUAGE="en"
+SUPPORTED_LANGUAGES=("en" "zh")
+
+# Validate language
+validate_language() {
+    local lang="$1"
+    for supported in "${SUPPORTED_LANGUAGES[@]}"; do
+        if [[ "${lang}" == "${supported}" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 # RDD init function
 rdd_init() {
     local project_name=""
     local project_dir=""
     local interactive=false
+    local language="${DEFAULT_LANGUAGE}"
 
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --interactive|-i)
                 interactive=true
+                shift
+                ;;
+            --lang|-l)
+                if [[ -z "${2:-}" ]]; then
+                    log_error "Option --lang requires a value"
+                    echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
+                    exit 1
+                fi
+                language="$2"
+                if ! validate_language "${language}"; then
+                    log_error "Unsupported language: ${language}"
+                    echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
+                    exit 1
+                fi
+                shift 2
+                ;;
+            --lang=*)
+                language="${1#*=}"
+                if ! validate_language "${language}"; then
+                    log_error "Unsupported language: ${language}"
+                    echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
+                    exit 1
+                fi
                 shift
                 ;;
             --help|-h)
@@ -59,7 +98,7 @@ rdd_init() {
         project_name="$(basename "${project_dir}")"
     fi
 
-    log_step "Initializing RDD project: ${project_name}"
+    log_step "Initializing RDD project: ${project_name} (language: ${language})"
 
     # Create directory structure
     log_info "Creating directory structure..."
@@ -67,15 +106,15 @@ rdd_init() {
 
     # Create configuration files
     log_info "Creating configuration files..."
-    create_config "${project_dir}" "${project_name}"
+    create_config "${project_dir}" "${project_name}" "${language}"
 
     # Create documentation
     log_info "Creating documentation..."
-    create_docs "${project_dir}" "${project_name}"
+    create_docs "${project_dir}" "${project_name}" "${language}"
 
     # Create entry points
     log_info "Creating entry points..."
-    create_entry_points "${project_dir}" "${project_name}"
+    create_entry_points "${project_dir}" "${project_name}" "${language}"
 
     log_success "RDD project initialized at ${project_dir}"
     echo ""
@@ -95,21 +134,25 @@ Usage:
 
 Options:
     --interactive, -i    Use interactive wizard
+    --lang, -l LANG      Document language (en or zh, default: en)
     --help, -h           Show this help message
 
 Arguments:
     NAME                 Project name (optional, uses current directory if not specified)
 
 Examples:
-    rdd init                    Initialize in current directory
-    rdd init my-project         Create new project in my-project/
+    rdd init                    Initialize in current directory (English)
+    rdd init my-project         Create new project in my-project/ (English)
     rdd init --interactive      Use interactive wizard
+    rdd init --lang zh          Initialize with Chinese documentation
+    rdd init -l zh my-project   Create Chinese project in my-project/
 EOF
 }
 
 create_config() {
     local dir="$1"
     local name="$2"
+    local lang="${3:-en}"
     local date
     date=$(date +%Y-%m-%d)
 
@@ -123,6 +166,10 @@ version: "1.0.0"
 project:
   name: "${name}"
   description: "A project using RDD Framework"
+
+# Document language configuration
+# Supported: en (English), zh (Chinese)
+language: "${lang}"
 
 # Stage settings
 stage:
@@ -149,12 +196,67 @@ EOF
 create_docs() {
     local dir="$1"
     local name="$2"
+    local lang="${3:-en}"
     local date
     date=$(date +%Y-%m-%d)
 
     mkdir -p "${dir}/docs/stages"
 
-    cat > "${dir}/docs/01-charter.md" << EOF
+    if [[ "${lang}" == "zh" ]]; then
+        # Chinese documentation templates
+        cat > "${dir}/docs/01-charter.md" << EOF
+# 项目章程
+
+**项目**: ${name}
+**创建日期**: ${date}
+
+## 愿景
+
+[在此描述您的项目愿景]
+
+## 目标
+
+1. [目标 1]
+2. [目标 2]
+3. [目标 3]
+
+## 非目标
+
+1. [本项目不会做的事情]
+
+## 成功标准
+
+- [ ] [可衡量的成功标准 1]
+- [ ] [可衡量的成功标准 2]
+EOF
+
+        cat > "${dir}/docs/11-next-steps.md" << EOF
+# 下一步计划
+
+**最后更新**: ${date}
+
+## 当前状态
+
+**阶段**: 0 (初始化)
+
+## 近期任务
+
+- [ ] 在 docs/01-charter.md 中定义项目愿景
+- [ ] 在 docs/stages/stage-roadmap.md 中创建路线图
+- [ ] 搭建开发环境
+EOF
+
+        cat > "${dir}/CHANGELOG.md" << EOF
+# 变更日志
+
+## [未发布]
+
+### 新增
+- 项目初始化
+EOF
+    else
+        # English documentation templates (default)
+        cat > "${dir}/docs/01-charter.md" << EOF
 # Project Charter
 
 **Project**: ${name}
@@ -180,7 +282,7 @@ create_docs() {
 - [ ] [Measurable success criterion 2]
 EOF
 
-    cat > "${dir}/docs/11-next-steps.md" << EOF
+        cat > "${dir}/docs/11-next-steps.md" << EOF
 # Next Steps
 
 **Last Updated**: ${date}
@@ -196,7 +298,7 @@ EOF
 - [ ] Set up development environment
 EOF
 
-    cat > "${dir}/CHANGELOG.md" << EOF
+        cat > "${dir}/CHANGELOG.md" << EOF
 # Changelog
 
 ## [Unreleased]
@@ -204,13 +306,61 @@ EOF
 ### Added
 - Initial project setup
 EOF
+    fi
 }
 
 create_entry_points() {
     local dir="$1"
     local name="$2"
+    local lang="${3:-en}"
 
-    cat > "${dir}/AGENTS.md" << EOF
+    if [[ "${lang}" == "zh" ]]; then
+        # Chinese entry points
+        cat > "${dir}/AGENTS.md" << EOF
+# Agent 入口文件
+
+> ${name} 的 AI Agent 入口
+
+## 快速开始
+
+1. 阅读 docs/01-charter.md 了解项目愿景
+2. 阅读 docs/11-next-steps.md 了解当前状态
+3. 使用 /rdd-stage-auto 开始开发
+
+## RDD 命令
+
+| 命令 | 用途 |
+|---------|---------|
+| /rdd-init | 初始化项目 |
+| /rdd-stage-auto | 执行阶段 |
+| /rdd-knowledge | 管理知识 |
+EOF
+
+        cat > "${dir}/CLAUDE.md" << EOF
+# Claude Code 入口文件
+
+> Claude Code 快速参考
+
+## 项目: ${name}
+
+## 快速命令
+
+\`\`\`bash
+task doctor      # 检查项目健康状态
+task test        # 运行测试
+task status      # 显示状态
+\`\`\`
+
+## RDD 技能
+
+| 技能 | 用途 |
+|-------|---------|
+| /rdd-stage-auto | 执行阶段并通过门禁 |
+| /rdd-knowledge | 记录决策 |
+EOF
+    else
+        # English entry points (default)
+        cat > "${dir}/AGENTS.md" << EOF
 # Agent Entry Point
 
 > AI Agent entry point for ${name}
@@ -230,7 +380,7 @@ create_entry_points() {
 | /rdd-knowledge | Manage knowledge |
 EOF
 
-    cat > "${dir}/CLAUDE.md" << EOF
+        cat > "${dir}/CLAUDE.md" << EOF
 # Claude Code Entry Point
 
 > Quick reference for Claude Code
@@ -252,6 +402,7 @@ task status      # Show status
 | /rdd-stage-auto | Execute stage with gates |
 | /rdd-knowledge | Record decisions |
 EOF
+    fi
 
     cat > "${dir}/Taskfile.yml" << EOF
 version: '3'

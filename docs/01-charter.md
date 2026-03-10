@@ -1,176 +1,176 @@
-# 项目章程 (Project Charter)
+# Project Charter
 
-> 本文档定义项目的愿景、目标、边界和核心假设，是所有决策的基础参考。
-
----
-
-## 项目愿景 (Project Vision)
-
-<!-- 描述项目的长期愿景，回答"我们想要创造什么？" -->
-
-**愿景陈述**：
-
-[在此填写项目愿景，例如：构建一个高效、可扩展的分布式缓存系统，为业务提供亚毫秒级的数据访问能力。]
-
-**愿景说明**：
-
-- [ ] 愿景是否清晰明确？
-- [ ] 愿景是否可衡量？
-- [ ] 愿景是否与组织目标一致？
+> This document defines the project vision, goals, boundaries, and core assumptions. It serves as the foundational reference for all decisions.
 
 ---
 
-## 目标 (Goals)
+## Project Vision
 
-<!-- 列出项目要达成的具体目标，遵循 SMART 原则 -->
+<!-- Describe the long-term project vision, answering "What do we want to create?" -->
 
-### 业务目标
+**Vision Statement**:
 
-| 编号 | 目标描述 | 衡量标准 | 目标值 | 截止时间 |
-|------|----------|----------|--------|----------|
-| G1 | [目标描述] | [衡量标准] | [目标值] | [日期] |
-| G2 | [目标描述] | [衡量标准] | [目标值] | [日期] |
-| G3 | [目标描述] | [衡量标准] | [目标值] | [日期] |
+[Fill in the project vision here, e.g., Build an efficient, scalable distributed cache system that provides sub-millisecond data access capabilities for business operations.]
 
-### 技术目标
+**Vision Checklist**:
 
-| 编号 | 目标描述 | 衡量标准 | 目标值 | 截止时间 |
-|------|----------|----------|--------|----------|
-| T1 | [目标描述] | [衡量标准] | [目标值] | [日期] |
-| T2 | [目标描述] | [衡量标准] | [目标值] | [日期] |
-| T3 | [目标描述] | [衡量标准] | [目标值] | [日期] |
+- [ ] Is the vision clear and specific?
+- [ ] Is the vision measurable?
+- [ ] Is the vision aligned with organizational goals?
 
 ---
 
-## 非目标 (Non-Goals)
+## Goals
 
-<!-- 明确声明本项目不做的事情，避免 scope creep -->
+<!-- List the specific goals the project aims to achieve, following SMART principles -->
 
-| 编号 | 非目标描述 | 原因 |
-|------|------------|------|
-| NG1 | [非目标描述] | [为什么不做] |
-| NG2 | [非目标描述] | [为什么不做] |
-| NG3 | [非目标描述] | [为什么不做] |
+### Business Goals
 
-**非目标示例**：
+| ID | Goal Description | Metric | Target Value | Deadline |
+|----|------------------|--------|--------------|----------|
+| G1 | [Goal description] | [Metric] | [Target value] | [Date] |
+| G2 | [Goal description] | [Metric] | [Target value] | [Date] |
+| G3 | [Goal description] | [Metric] | [Target value] | [Date] |
 
-- 本项目不负责数据迁移工具的开发（已有专门团队负责）
-- 本项目不涉及前端 UI 重构（超出本次迭代范围）
-- 本项目不支持多租户隔离（留待后续版本）
+### Technical Goals
 
----
-
-## 成功标准 (Success Criteria)
-
-<!-- 定义项目成功的具体标准，必须是可验证的 -->
-
-### 功能成功标准
-
-| 编号 | 成功标准 | 验证方式 | 负责人 |
-|------|----------|----------|--------|
-| SC1 | [成功标准描述] | [如何验证] | [负责人] |
-| SC2 | [成功标准描述] | [如何验证] | [负责人] |
-| SC3 | [成功标准描述] | [如何验证] | [负责人] |
-
-### 质量成功标准
-
-| 指标 | 目标值 | 最低可接受值 | 验证方式 |
-|------|--------|--------------|----------|
-| 可用性 | [如 99.9%] | [如 99.5%] | [监控数据] |
-| 响应时间 | [如 P99 < 100ms] | [如 P99 < 200ms] | [性能测试] |
-| 错误率 | [如 < 0.1%] | [如 < 1%] | [日志统计] |
-| 代码覆盖率 | [如 >= 80%] | [如 >= 60%] | [CI 报告] |
-
-### 里程碑成功标准
-
-| 里程碑 | 日期 | 成功标准 | 验收人 |
-|--------|------|----------|--------|
-| M1 | [日期] | [成功标准] | [验收人] |
-| M2 | [日期] | [成功标准] | [验收人] |
-| M3 | [日期] | [成功标准] | [验收人] |
+| ID | Goal Description | Metric | Target Value | Deadline |
+|----|------------------|--------|--------------|----------|
+| T1 | [Goal description] | [Metric] | [Target value] | [Date] |
+| T2 | [Goal description] | [Metric] | [Target value] | [Date] |
+| T3 | [Goal description] | [Metric] | [Target value] | [Date] |
 
 ---
 
-## 边界 (Boundaries)
+## Non-Goals
 
-<!-- 定义项目的范围边界，明确哪些在范围内，哪些在范围外 -->
+<!-- Explicitly state what the project will NOT do to avoid scope creep -->
 
-### 范围内 (In Scope)
+| ID | Non-Goal Description | Reason |
+|----|---------------------|--------|
+| NG1 | [Non-goal description] | [Why not doing it] |
+| NG2 | [Non-goal description] | [Why not doing it] |
+| NG3 | [Non-goal description] | [Why not doing it] |
 
-- [范围项 1，例如：核心缓存服务的开发与部署]
-- [范围项 2，例如：客户端 SDK 的提供]
-- [范围项 3，例如：监控告警系统的集成]
+**Non-Goal Examples**:
 
-### 范围外 (Out of Scope)
-
-- [范围外项 1，例如：数据迁移工具的开发]
-- [范围外项 2，例如：历史系统的维护]
-- [范围外项 3，例如：第三方系统的改造]
-
-### 技术边界
-
-| 边界类型 | 边界定义 |
-|----------|----------|
-| 技术栈 | [如：Rust + Tokio + etcd] |
-| 部署环境 | [如：Kubernetes + 容器化] |
-| 数据存储 | [如：支持 Redis/Memcached 协议] |
-| 网络协议 | [如：TCP + 自定义协议] |
-
-### 时间边界
-
-| 边界 | 定义 |
-|------|------|
-| 项目启动 | [日期] |
-| MVP 发布 | [日期] |
-| 正式发布 | [日期] |
-| 项目结束 | [日期] |
+- This project is not responsible for developing data migration tools (a dedicated team handles this)
+- This project does not involve frontend UI refactoring (outside the current iteration scope)
+- This project does not support multi-tenant isolation (deferred to future versions)
 
 ---
 
-## 核心假设 (Core Assumptions)
+## Success Criteria
 
-<!-- 列出项目成立所依赖的核心假设，这些假设如果被证伪，可能需要重新评估项目 -->
+<!-- Define specific, verifiable criteria for project success -->
 
-### 技术假设
+### Functional Success Criteria
 
-| 编号 | 假设描述 | 验证状态 | 验证方式 |
-|------|----------|----------|----------|
-| A1 | [假设描述，如：单节点可支持 10 万 QPS] | [ ] 待验证 / [ ] 已验证 / [ ] 已证伪 | [验证方式] |
-| A2 | [假设描述] | [ ] 待验证 / [ ] 已验证 / [ ] 已证伪 | [验证方式] |
-| A3 | [假设描述] | [ ] 待验证 / [ ] 已验证 / [ ] 已证伪 | [验证方式] |
+| ID | Success Criterion | Verification Method | Owner |
+|----|-------------------|---------------------|-------|
+| SC1 | [Success criterion description] | [How to verify] | [Owner] |
+| SC2 | [Success criterion description] | [How to verify] | [Owner] |
+| SC3 | [Success criterion description] | [How to verify] | [Owner] |
 
-### 业务假设
+### Quality Success Criteria
 
-| 编号 | 假设描述 | 验证状态 | 验证方式 |
-|------|----------|----------|----------|
-| B1 | [假设描述，如：业务方可接受 1 秒内的数据最终一致性] | [ ] 待验证 / [ ] 已验证 / [ ] 已证伪 | [验证方式] |
-| B2 | [假设描述] | [ ] 待验证 / [ ] 已验证 / [ ] 已证伪 | [验证方式] |
-| B3 | [假设描述] | [ ] 待验证 / [ ] 已验证 / [ ] 已证伪 | [验证方式] |
+| Metric | Target Value | Minimum Acceptable | Verification Method |
+|--------|--------------|--------------------|---------------------|
+| Availability | [e.g., 99.9%] | [e.g., 99.5%] | [Monitoring data] |
+| Response Time | [e.g., P99 < 100ms] | [e.g., P99 < 200ms] | [Performance testing] |
+| Error Rate | [e.g., < 0.1%] | [e.g., < 1%] | [Log statistics] |
+| Code Coverage | [e.g., >= 80%] | [e.g., >= 60%] | [CI report] |
 
-### 资源假设
+### Milestone Success Criteria
 
-| 编号 | 假设描述 | 验证状态 |
-|------|----------|----------|
-| R1 | [假设描述，如：团队有 3 名全职开发人员] | [ ] 待验证 / [ ] 已验证 |
-| R2 | [假设描述，如：可使用现有的测试环境] | [ ] 待验证 / [ ] 已验证 |
-| R3 | [假设描述] | [ ] 待验证 / [ ] 已验证 |
-
-### 假设验证追踪
-
-<!-- 记录假设的验证过程和结果 -->
-
-| 假设编号 | 验证日期 | 验证结果 | 影响 | 行动 |
-|----------|----------|----------|------|------|
-| A1 | [日期] | [验证/证伪] | [对项目的影响] | [需要采取的行动] |
+| Milestone | Date | Success Criterion | Approver |
+|-----------|------|-------------------|----------|
+| M1 | [Date] | [Success criterion] | [Approver] |
+| M2 | [Date] | [Success criterion] | [Approver] |
+| M3 | [Date] | [Success criterion] | [Approver] |
 
 ---
 
-## 修订记录
+## Boundaries
 
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| v1.0 | [日期] | 初始版本 | [姓名] |
+<!-- Define the project scope boundaries, clarifying what is in scope and out of scope -->
+
+### In Scope
+
+- [Scope item 1, e.g., Core cache service development and deployment]
+- [Scope item 2, e.g., Client SDK provision]
+- [Scope item 3, e.g., Monitoring and alerting system integration]
+
+### Out of Scope
+
+- [Out of scope item 1, e.g., Data migration tool development]
+- [Out of scope item 2, e.g., Legacy system maintenance]
+- [Out of scope item 3, e.g., Third-party system modifications]
+
+### Technical Boundaries
+
+| Boundary Type | Boundary Definition |
+|---------------|---------------------|
+| Tech Stack | [e.g., Rust + Tokio + etcd] |
+| Deployment Environment | [e.g., Kubernetes + Containerization] |
+| Data Storage | [e.g., Supports Redis/Memcached protocols] |
+| Network Protocol | [e.g., TCP + Custom protocol] |
+
+### Time Boundaries
+
+| Boundary | Definition |
+|----------|------------|
+| Project Start | [Date] |
+| MVP Release | [Date] |
+| Official Release | [Date] |
+| Project End | [Date] |
 
 ---
 
-> **注意**：本章程的任何变更都需要人工审核确认。使用 ADR 记录重大变更的决策过程。
+## Core Assumptions
+
+<!-- List the core assumptions the project relies on. If these assumptions are falsified, the project may need reevaluation -->
+
+### Technical Assumptions
+
+| ID | Assumption Description | Verification Status | Verification Method |
+|----|------------------------|---------------------|---------------------|
+| A1 | [Assumption description, e.g., Single node can support 100K QPS] | [ ] Pending / [ ] Verified / [ ] Falsified | [Verification method] |
+| A2 | [Assumption description] | [ ] Pending / [ ] Verified / [ ] Falsified | [Verification method] |
+| A3 | [Assumption description] | [ ] Pending / [ ] Verified / [ ] Falsified | [Verification method] |
+
+### Business Assumptions
+
+| ID | Assumption Description | Verification Status | Verification Method |
+|----|------------------------|---------------------|---------------------|
+| B1 | [Assumption description, e.g., Business can accept eventual consistency within 1 second] | [ ] Pending / [ ] Verified / [ ] Falsified | [Verification method] |
+| B2 | [Assumption description] | [ ] Pending / [ ] Verified / [ ] Falsified | [Verification method] |
+| B3 | [Assumption description] | [ ] Pending / [ ] Verified / [ ] Falsified | [Verification method] |
+
+### Resource Assumptions
+
+| ID | Assumption Description | Verification Status |
+|----|------------------------|---------------------|
+| R1 | [Assumption description, e.g., Team has 3 full-time developers] | [ ] Pending / [ ] Verified |
+| R2 | [Assumption description, e.g., Can use existing test environment] | [ ] Pending / [ ] Verified |
+| R3 | [Assumption description] | [ ] Pending / [ ] Verified |
+
+### Assumption Verification Tracking
+
+<!-- Record the verification process and results for assumptions -->
+
+| Assumption ID | Verification Date | Verification Result | Impact | Action |
+|---------------|-------------------|---------------------|--------|--------|
+| A1 | [Date] | [Verified/Falsified] | [Impact on project] | [Action to take] |
+
+---
+
+## Revision History
+
+| Version | Date | Revision Content | Author |
+|---------|------|------------------|--------|
+| v1.0 | [Date] | Initial version | [Name] |
+
+---
+
+> **Note**: Any changes to this charter require human review and confirmation. Use ADR to record the decision-making process for major changes.

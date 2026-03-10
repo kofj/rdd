@@ -1,4 +1,4 @@
-# Stage 14: 完整工作流 E2E 测试
+# Stage 14: Complete Workflow E2E Testing
 
 ## Status
 - [x] Planning
@@ -8,93 +8,93 @@
 **Completion Date**: 2026-03-09
 
 ## Goals
-验证完整的 RDD 工作流，从项目初始化到 Stage 执行到知识管理。
+Verify the complete RDD workflow, from project initialization to Stage execution to knowledge management.
 
 ## Non-Goals
-- 性能测试
-- 压力测试
-- 多项目并发测试
+- Performance testing
+- Stress testing
+- Multi-project concurrent testing
 
 ## Core Hypotheses
-- H1: `rdd init` 可创建完整项目结构
-- H2: `/rdd-stage-auto` 可执行 Stage 流程
-- H3: `/rdd-knowledge` 可记录 ADR 和技术债
-- H4: Gate 检查机制正常工作
+- H1: `rdd init` can create complete project structure
+- H2: `/rdd-stage-auto` can execute Stage flow
+- H3: `/rdd-knowledge` can record ADRs and technical debt
+- H4: Gate check mechanism works properly
 
 ## Acceptance Criteria
 
-### 项目初始化测试 (14.1) ✅
-- [x] `rdd init test-project` 创建目录结构
-- [x] .rdd/ 目录包含必要配置
-- [x] docs/ 目录包含文档模板
-- [x] tests/ 目录包含测试结构
-- [x] Taskfile.yml 可执行
-- [x] `task doctor` 通过
+### Project Initialization Test (14.1) ✅
+- [x] `rdd init test-project` creates directory structure
+- [x] .rdd/ directory contains necessary configuration
+- [x] docs/ directory contains document templates
+- [x] tests/ directory contains test structure
+- [x] Taskfile.yml is executable
+- [x] `task doctor` passes
 
-### 交互式初始化测试 (14.2) ✅
-- [x] `rdd init --interactive` 启动向导
-- [x] 项目名称输入正常
-- [x] 项目描述输入正常
-- [x] 通知渠道选择正常
-- [x] Stage 数量选择正常
-- [x] 生成完整项目
+### Interactive Initialization Test (14.2) ✅
+- [x] `rdd init --interactive` launches wizard
+- [x] Project name input works
+- [x] Project description input works
+- [x] Notification channel selection works
+- [x] Stage count selection works
+- [x] Complete project generated
 
-### Stage 执行测试 (14.3) ✅
-- [x] Stage 0 设计文档可创建
-- [x] Gate 1 检查可通过
-- [x] 实现可进行
-- [x] Gate 3 测试检查可通过
-- [x] Stage 完成标记正常
+### Stage Execution Test (14.3) ✅
+- [x] Stage 0 design document can be created
+- [x] Gate 1 check can pass
+- [x] Implementation can proceed
+- [x] Gate 3 test check can pass
+- [x] Stage completion marking works
 
-### 知识管理测试 (14.4) ✅
-- [x] ADR 记录正常
-- [x] 技术债记录正常
-- [x] Handoff 生成正常
-- [x] fresh-agent-check 通过
+### Knowledge Management Test (14.4) ✅
+- [x] ADR recording works
+- [x] Technical debt recording works
+- [x] Handoff generation works
+- [x] fresh-agent-check passes
 
-### Hook 触发测试 (14.5) ✅
-- [x] stage-complete hook 触发
-- [x] 通知脚本可执行
-- [x] 日志记录正常
+### Hook Trigger Test (14.5) ✅
+- [x] stage-complete hook triggers
+- [x] Notification script executable
+- [x] Logging works properly
 
 ## Rollback Plan
-- 测试项目可删除
-- Docker 容器可重建
-- 测试数据可清理
+- Test projects can be deleted
+- Docker containers can be rebuilt
+- Test data can be cleaned
 
 ## Known Limitations
-- 交互式功能需模拟输入
-- Hook 测试不发送实际通知
-- 部分功能需要实际 API 调用
+- Interactive features need simulated input
+- Hook tests don't send actual notifications
+- Some features require actual API calls
 
 ## Impact on Subsequent Stages
-- Stage 15+ 发布流程可开始
+- Stage 15+ release process can start
 
 ---
 
 ## Implementation Notes
 
-### 测试用例设计
+### Test Case Design
 
 ```bash
 # tests/e2e/full-workflow.bats
 
 setup() {
-    # 创建临时测试目录
+    # Create temporary test directory
     TEST_DIR=$(mktemp -d)
     cd "$TEST_DIR"
 }
 
 teardown() {
-    # 清理测试目录
+    # Clean up test directory
     rm -rf "$TEST_DIR"
 }
 
-@test "WORKFLOW-01: rdd init 创建完整项目" {
+@test "WORKFLOW-01: rdd init creates complete project" {
     run rdd init test-project
     [ "$status" -eq 0 ]
 
-    # 检查目录结构
+    # Check directory structure
     [ -d "test-project/.rdd" ]
     [ -d "test-project/docs" ]
     [ -d "test-project/tests" ]
@@ -103,96 +103,96 @@ teardown() {
     [ -f "test-project/AGENTS.md" ]
 }
 
-@test "WORKFLOW-02: task doctor 通过" {
+@test "WORKFLOW-02: task doctor passes" {
     cd test-project
     run task doctor
     [ "$status" -eq 0 ]
     [[ "$output" =~ "All checks passed" ]]
 }
 
-@test "WORKFLOW-03: Stage 0 设计文档创建" {
+@test "WORKFLOW-03: Stage 0 design document creation" {
     cd test-project
 
-    # 创建 Stage 0 设计文档
+    # Create Stage 0 design document
     mkdir -p docs/stages
     cat > docs/stages/stage-0.md << 'EOF'
-# Stage 0: 项目初始化
+# Stage 0: Project Initialization
 
 ## Goals
-测试 Stage 流程
+Test Stage flow
 
 ## Acceptance Criteria
-- [ ] 测试通过
+- [ ] Test passes
 EOF
 
     [ -f "docs/stages/stage-0.md" ]
 }
 
-@test "WORKFLOW-04: ADR 记录" {
+@test "WORKFLOW-04: ADR recording" {
     cd test-project
 
-    # 添加 ADR
+    # Add ADR
     cat >> docs/08-autonomous-decisions.md << 'EOF'
 
-### Decision 1: 测试决策
+### Decision 1: Test Decision
 
-**Background**: 测试 ADR 记录功能
+**Background**: Test ADR recording functionality
 
-**Decision**: 使用测试方案
+**Decision**: Use test solution
 
-**Reason**: 验证功能正常
+**Reason**: Verify functionality works
 
-**Impact on Subsequent Stages**: 无
+**Impact on Subsequent Stages**: None
 EOF
 
     grep -q "Decision 1" docs/08-autonomous-decisions.md
 }
 
-@test "WORKFLOW-05: 技术债记录" {
+@test "WORKFLOW-05: Technical debt recording" {
     cd test-project
 
-    # 添加技术债
+    # Add technical debt
     cat >> docs/12-technical-debt.md << 'EOF'
 
-### TD-TEST: 测试技术债
+### TD-TEST: Test Technical Debt
 
-- **Priority**: 测试优先级
+- **Priority**: Test priority
 - **Source**: Stage 14
-- **Description**: 测试技术债记录
+- **Description**: Test technical debt recording
 EOF
 
     grep -q "TD-TEST" docs/12-technical-debt.md
 }
 
-@test "WORKFLOW-06: Handoff 生成" {
+@test "WORKFLOW-06: Handoff generation" {
     cd test-project
 
-    # 运行 handoff 生成
+    # Run handoff generation
     run task handoff:generate
     [ "$status" -eq 0 ] || [ -f ".rdd/cache/handoff.md" ]
 }
 ```
 
-### 测试执行流程
+### Test Execution Flow
 
 ```
-1. 环境准备
-   └── 启动 Docker 容器
+1. Environment Preparation
+   └── Start Docker container
 
-2. 项目初始化
+2. Project Initialization
    ├── WORKFLOW-01: rdd init
    └── WORKFLOW-02: task doctor
 
-3. Stage 流程
-   ├── WORKFLOW-03: 设计文档
+3. Stage Flow
+   ├── WORKFLOW-03: Design document
    ├── WORKFLOW-04: ADR
-   └── WORKFLOW-05: 技术债
+   └── WORKFLOW-05: Technical debt
 
-4. 知识管理
+4. Knowledge Management
    └── WORKFLOW-06: Handoff
 
-5. 清理
-   └── 删除测试项目
+5. Cleanup
+   └── Delete test project
 ```
 
 ---
@@ -212,15 +212,15 @@ EOF
 - [ ] High-confidence findings resolved
 
 ### Gate 3: Implementation & Testing Check
-- [ ] 所有工作流测试通过
-- [ ] 项目创建成功
-- [ ] 知识管理正常
+- [ ] All workflow tests passed
+- [ ] Project creation successful
+- [ ] Knowledge management working
 
 ### Gate 4: Code Review Check
-- [ ] 测试代码质量
-- [ ] 测试独立性
+- [ ] Test code quality
+- [ ] Test independence
 
 ### Gate 5: Completion Gate Check
-- [ ] E2E 测试完成
-- [ ] 发布准备就绪
-- [ ] Stage 15 可开始
+- [ ] E2E testing complete
+- [ ] Release ready
+- [ ] Stage 15 can start

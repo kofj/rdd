@@ -1,603 +1,603 @@
-# 技术债台账 (Technical Debt Ledger)
+# Technical Debt Ledger
 
-> 本文档记录 RDD 项目中的所有技术债，确保技术债可见、可追踪、可管理。
-
----
-
-## 技术债管理原则 (Debt Management Principles)
-
-### 什么是技术债
-
-技术债是项目开发过程中为了快速交付而做出的有意识的妥协，这些妥协会在未来需要额外的工作来修复。
-
-**技术债的特征**：
-
-- 有意识的选择（而非错误）
-- 有明确的记录
-- 有明确的偿还计划
-- 会影响未来的开发效率或系统质量
-
-### 技术债 vs Bug vs 待办事项
-
-| 类型 | 特征 | 处理方式 |
-|------|------|----------|
-| 技术债 | 有意识的妥协，需要未来额外工作 | 记录在技术债台账 |
-| Bug | 非预期的错误，需要立即修复 | 创建 Issue 或立即修复 |
-| 待办事项 | 计划中的功能改进 | 记录在 Roadmap 或 Backlog |
-
-### 技术债管理核心原则
-
-```
-1. 可见性原则
-   - 所有已知技术债必须在台账中显式记录
-   - 不以隐性知识管理技术债
-   - 定期审查技术债状态
-
-2. 分类原则
-   - 按优先级分类
-   - 按影响范围分类
-   - 按来源分类
-
-3. 计划原则
-   - 每个技术债都有建议落地 Stage
-   - 阻塞性技术债优先处理
-   - 定期评估技术债优先级
-
-4. 记录原则
-   - 记录来源和原始描述
-   - 记录对后续 Stage 的影响
-   - 记录偿还后的验证结果
-```
-
-### 技术债四规则
-
-1. **必须记录**：发现技术债必须立即记录，不拖延
-2. **必须分类**：按优先级和影响范围分类
-3. **必须计划**：指定建议落地 Stage 或专项处理
-4. **必须验证**：偿还后验证确实解决了问题
+> This document records all technical debts in the RDD project, ensuring technical debt is visible, traceable, and manageable.
 
 ---
 
-## 发现渠道 (Discovery Channels)
+## Debt Management Principles
 
-### 四大发现渠道
+### What is Technical Debt
 
-| 渠道 | 来源 | 发现时机 | 记录要求 |
-|------|------|----------|----------|
-| A. Stage 文档 | "非目标"和"已知限制"章节 | Stage 规划时 | 主动记录 |
-| B. 审阅日志 | "推后/不接受"区 | Review 完成时 | 从 review-log 提取 |
-| C. ADR | "对后续 Stage 的影响"字段 | 决策发生时 | 提取有行动含义的条目 |
-| D. 代码扫描 | TODO/FIXME/HACK/XXX 注释 | Stage 完成时 | 自动扫描 |
+Technical debt is conscious compromises made during project development to enable rapid delivery, which require additional work to fix in the future.
 
-### 渠道 A：Stage 文档提取
+**Characteristics of Technical Debt**:
 
-从 Stage 文档的以下章节提取技术债：
+- Conscious choice (not mistakes)
+- Clearly recorded
+- Has a clear repayment plan
+- Affects future development efficiency or system quality
 
-**非目标章节**：
+### Technical Debt vs Bug vs Todo
 
-```markdown
-## 非目标
-- 第三方登录（留待 Stage 4）
-- 多因素认证（留待后续版本）
+| Type | Characteristics | Handling |
+|------|-----------------|----------|
+| Technical Debt | Conscious compromise, requires future extra work | Record in debt ledger |
+| Bug | Unexpected error, requires immediate fix | Create Issue or fix immediately |
+| Todo | Planned feature improvements | Record in Roadmap or Backlog |
 
-→ 提取为技术债：
-TD-XX: 第三方登录功能待实现
-TD-XX: 多因素认证功能待实现
+### Core Principles of Debt Management
+
+```
+1. Visibility Principle
+   - All known technical debt must be explicitly recorded in the ledger
+   - Do not manage technical debt as tacit knowledge
+   - Regularly review technical debt status
+
+2. Classification Principle
+   - Classify by priority
+   - Classify by impact scope
+   - Classify by source
+
+3. Planning Principle
+   - Each technical debt has a suggested landing Stage
+   - Blocking technical debt is prioritized
+   - Regularly evaluate technical debt priority
+
+4. Recording Principle
+   - Record source and original description
+   - Record impact on subsequent Stages
+   - Record verification results after repayment
 ```
 
-**已知限制章节**：
+### Technical Debt Four Rules
+
+1. **Must Record**: Technical debt discovered must be recorded immediately, not delayed
+2. **Must Classify**: Classify by priority and impact scope
+3. **Must Plan**: Specify suggested landing Stage or dedicated handling
+4. **Must Verify**: Verify after repayment that the problem is actually resolved
+
+---
+
+## Discovery Channels
+
+### Four Discovery Channels
+
+| Channel | Source | Discovery Timing | Recording Requirement |
+|---------|--------|------------------|------------------------|
+| A. Stage Document | "Non-goals" and "Known Limitations" sections | During Stage planning | Proactive recording |
+| B. Review Log | "Deferred/Rejected" area | After Review completion | Extract from review-log |
+| C. ADR | "Impact on Subsequent Stages" field | When decision occurs | Extract actionable items |
+| D. Code Scan | TODO/FIXME/HACK/XXX comments | At Stage completion | Automatic scan |
+
+### Channel A: Stage Document Extraction
+
+Extract technical debt from the following sections of Stage documents:
+
+**Non-goals Section**:
 
 ```markdown
-## 已知限制
-- 当前仅支持单机部署，不支持分布式
-- 缓存过期策略简单，仅支持 TTL
+## Non-goals
+- Third-party login (deferred to Stage 4)
+- Multi-factor authentication (deferred to future version)
 
-→ 提取为技术债：
-TD-XX: 分布式部署支持
-TD-XX: 缓存过期策略优化
+→ Extract as technical debt:
+TD-XX: Third-party login feature to be implemented
+TD-XX: Multi-factor authentication feature to be implemented
 ```
 
-### 渠道 B：审阅日志提取
-
-从 Review 日志的"推后/不接受"区提取：
+**Known Limitations Section**:
 
 ```markdown
-## Findings 详情
+## Known Limitations
+- Currently only supports standalone deployment, not distributed
+- Simple cache expiration strategy, only supports TTL
 
-### Finding 3: 建议增加错误重试机制
-- **核查结果**：推后处理
-- **理由**：当前 Stage scope 不包含，记录为技术债
-- **建议落地 Stage**：Stage 4
-
-→ 提取为技术债：
-TD-XX: 错误重试机制
+→ Extract as technical debt:
+TD-XX: Distributed deployment support
+TD-XX: Cache expiration strategy optimization
 ```
 
-### 渠道 C：ADR 提取
+### Channel B: Review Log Extraction
 
-从 ADR 的"对后续 Stage 的影响"字段提取：
+Extract from Review log's "Deferred/Rejected" area:
 
 ```markdown
-### 决策 2：使用简单的 TTL 过期策略
+## Findings Details
 
-**对后续 Stage 的影响**：
-- 当前策略简单，可能导致缓存命中率不高
-- 后续需要实现更智能的过期策略（如 LRU）
-- 影响 Stage 5 的缓存优化
+### Finding 3: Suggest adding error retry mechanism
+- **Verification Result**: Deferred
+- **Reason**: Current Stage scope doesn't include, recorded as technical debt
+- **Suggested Landing Stage**: Stage 4
 
-→ 提取为技术债：
-TD-XX: 缓存智能过期策略
+→ Extract as technical debt:
+TD-XX: Error retry mechanism
 ```
 
-### 渠道 D：代码扫描
+### Channel C: ADR Extraction
 
-扫描代码中的注释标记：
+Extract from ADR's "Impact on Subsequent Stages" field:
 
-| 标记 | 含义 | 处理方式 |
-|------|------|----------|
-| TODO | 待实现的功能 | 评估是否记录为技术债 |
-| FIXME | 已知问题需要修复 | 必须记录为技术债 |
-| HACK | 临时解决方案 | 必须记录为技术债 |
-| XXX | 危险或有问题的代码 | 必须记录为技术债 |
+```markdown
+### Decision 2: Use simple TTL expiration strategy
 
-**扫描命令示例**：
+**Impact on Subsequent Stages**:
+- Current strategy is simple, may lead to low cache hit rate
+- Need to implement smarter expiration strategy later (like LRU)
+- Affects Stage 5 cache optimization
+
+→ Extract as technical debt:
+TD-XX: Intelligent cache expiration strategy
+```
+
+### Channel D: Code Scan
+
+Scan comment markers in code:
+
+| Marker | Meaning | Handling |
+|--------|---------|----------|
+| TODO | Feature to be implemented | Evaluate if should be recorded as tech debt |
+| FIXME | Known issue needing fix | Must record as tech debt |
+| HACK | Temporary solution | Must record as tech debt |
+| XXX | Dangerous or problematic code | Must record as tech debt |
+
+**Scan Command Example**:
 
 ```bash
-# 扫描所有 TODO/FIXME/HACK/XXX
+# Scan all TODO/FIXME/HACK/XXX
 grep -rn "TODO\|FIXME\|HACK\|XXX" src/
 
-# 生成报告
+# Generate report
 grep -rn "TODO\|FIXME\|HACK\|XXX" src/ > tech-debt-scan.txt
 ```
 
 ---
 
-## 优先级排序 (Priority Sorting)
+## Priority Sorting
 
-### 两轴优先级模型
+### Two-Axis Priority Model
 
-技术债按两个维度分类：
+Technical debt is classified along two dimensions:
 
-**轴一：影响域**
+**Axis One: Impact Domain**
 
-| 影响域 | 说明 | 示例 |
-|--------|------|------|
-| 架构级 | 影响整体架构或多个模块 | 数据库迁移、协议变更 |
-| 模块级 | 影响单个模块 | 模块重构、接口优化 |
-| 局部 | 影响单个文件或函数 | 代码优化、注释补充 |
+| Impact Domain | Description | Example |
+|---------------|-------------|---------|
+| Architecture-level | Affects overall architecture or multiple modules | Database migration, protocol changes |
+| Module-level | Affects a single module | Module refactoring, interface optimization |
+| Local | Affects a single file or function | Code optimization, comment addition |
 
-**轴二：阻塞性**
+**Axis Two: Blocking Nature**
 
-| 阻塞性 | 说明 | 影响 |
-|--------|------|------|
-| 阻塞后续 Stage | 阻塞后续开发工作 | 必须立即处理 |
-| 降级功能 | 影响功能完整性或质量 | 应尽快处理 |
-| 技术优化 | 纯技术改进，不影响功能 | 可延后处理 |
+| Blocking Nature | Description | Impact |
+|-----------------|-------------|--------|
+| Blocks Subsequent Stage | Blocks subsequent development work | Must handle immediately |
+| Feature Degradation | Affects feature completeness or quality | Should handle as soon as possible |
+| Tech Optimization | Pure technical improvement, doesn't affect features | Can defer handling |
 
-### 排序规则
+### Sorting Rules
 
 ```
-优先级排序（从高到低）：
+Priority Sorting (from high to low):
 
-1. 阻塞后续 Stage → 下个 Stage 前必须解决
-   - 任何影响域，只要阻塞后续 Stage
-   - 必须安排在最近的 Stage 处理
+1. Blocks Subsequent Stage → Must resolve before next Stage
+   - Any impact domain, as long as it blocks subsequent Stage
+   - Must be scheduled for the nearest Stage
 
-2. 降级功能 + 架构级 → 专项迭代处理
-   - 影响范围大，需要专门计划
-   - 安排专项 Stage 或迭代处理
+2. Feature Degradation + Architecture-level → Dedicated iteration handling
+   - Large impact scope, needs dedicated planning
+   - Schedule dedicated Stage or iteration
 
-3. 降级功能 + 模块级/局部 → 对应 Stage 顺带解决
-   - 在相关功能的 Stage 中处理
-   - 不单独安排 Stage
+3. Feature Degradation + Module-level/Local → Handle in relevant Stage
+   - Handle in Stage related to the feature
+   - No separate Stage needed
 
-4. 纯技术优化 → 待基准测试驱动
-   - 有明确性能需求时再处理
-   - 或安排在技术债清理迭代
+4. Pure Tech Optimization → Driven by benchmarks
+   - Handle when there are clear performance requirements
+   - Or schedule in tech debt cleanup iteration
 ```
 
-### 阈值触发
+### Threshold Triggers
 
-当技术债积累达到阈值时，触发专项处理：
+When technical debt accumulation reaches threshold, trigger dedicated handling:
 
-| 阈值 | 触发动作 |
-|------|----------|
-| "降级功能 + 架构级"积压超过 3 条 | 安排专项迭代处理 |
-| "阻塞后续 Stage"超过 1 条 | 立即处理，暂停其他开发 |
-| 技术债总数超过 10 条 | 进行技术债清理迭代 |
+| Threshold | Trigger Action |
+|-----------|----------------|
+| "Feature Degradation + Architecture-level" backlog exceeds 3 items | Schedule dedicated iteration handling |
+| "Blocks Subsequent Stage" exceeds 1 item | Handle immediately, pause other development |
+| Total tech debt exceeds 10 items | Conduct tech debt cleanup iteration |
 
 ---
 
-## 台账格式 (Ledger Format)
+## Ledger Format
 
-### 技术债记录格式
+### Technical Debt Record Format
 
 ```markdown
-### TD-NN：简短标题
+### TD-NN: Short Title
 
-- **优先级**：[阻塞/降级功能/技术优化] / [架构级/模块级/局部]
-- **来源**：[原型期主动妥协 / 审阅推后 / 自主决策妥协]（Stage 编号）
-- **原始描述**：（引用原始文档表述）
-- **来源文件**：（文件路径和行号）
-- **发现日期**：[日期]
-- **建议落地 Stage**：（Stage N 或"专项"或"按需"）
-- **当前状态**：[ ] 待处理 / [ ] 进行中 / [x] 已解决 / [x] 不适用
-- **解决日期**：[日期]
-- **解决方案**：[简要描述解决方案]
+- **Priority**: [Blocking/Feature Degradation/Tech Optimization] / [Architecture-level/Module-level/Local]
+- **Source**: [Prototype active compromise / Review deferred / Autonomous decision compromise] (Stage Number)
+- **Original Description**: (Quote original document statement)
+- **Source File**: (File path and line number)
+- **Discovery Date**: [Date]
+- **Suggested Landing Stage**: (Stage N or "Dedicated" or "As Needed")
+- **Current Status**: [ ] Pending / [ ] In Progress / [x] Resolved / [x] Not Applicable
+- **Resolution Date**: [Date]
+- **Resolution**: [Brief description of resolution]
 ```
 
-### 字段说明
+### Field Descriptions
 
-| 字段 | 必填 | 说明 |
-|------|------|------|
-| 编号 | 是 | 格式：TD-01、TD-02 等 |
-| 标题 | 是 | 简洁概括技术债内容 |
-| 优先级 | 是 | 按"阻塞性 / 影响域"格式填写 |
-| 来源 | 是 | 标明来源类型和相关 Stage |
-| 原始描述 | 是 | 引用原始表述，保持可追溯性 |
-| 来源文件 | 是 | 文件路径和行号（如有） |
-| 发现日期 | 是 | 记录发现时间 |
-| 建议落地 Stage | 是 | 指定计划处理的 Stage |
-| 当前状态 | 是 | 更新处理状态 |
-| 解决日期 | 否 | 解决后填写 |
-| 解决方案 | 否 | 解决后简要描述 |
+| Field | Required | Description |
+|-------|----------|-------------|
+| Number | Yes | Format: TD-01, TD-02, etc. |
+| Title | Yes | Concise summary of technical debt content |
+| Priority | Yes | Fill in "Blocking Nature / Impact Domain" format |
+| Source | Yes | Identify source type and related Stage |
+| Original Description | Yes | Quote original statement, maintain traceability |
+| Source File | Yes | File path and line number (if applicable) |
+| Discovery Date | Yes | Record discovery time |
+| Suggested Landing Stage | Yes | Specify planned handling Stage |
+| Current Status | Yes | Update handling status |
+| Resolution Date | No | Fill in after resolution |
+| Resolution | No | Brief description after resolution |
 
 ---
 
-## 技术债索引 (Debt Index)
+## Technical Debt Index
 
-<!-- 在此处添加新的技术债记录 -->
+<!-- Add new technical debt records here -->
 
-### 待处理技术债
+### Pending Technical Debt
 
-| 编号 | 标题 | 优先级 | 建议 Stage | 状态 |
-|------|------|--------|------------|------|
-| (无) | - | - | - | - |
+| Number | Title | Priority | Suggested Stage | Status |
+|--------|-------|----------|-----------------|--------|
+| (None) | - | - | - | - |
 
-### 进行中技术债
+### In Progress Technical Debt
 
-| 编号 | 标题 | 优先级 | 当前 Stage | 状态 |
-|------|------|--------|------------|------|
+| Number | Title | Priority | Current Stage | Status |
+|--------|-------|----------|---------------|--------|
 | - | - | - | - | - |
 
-### 已解决技术债
+### Resolved Technical Debt
 
-| 编号 | 标题 | 优先级 | 解决日期 | 解决方案 |
-|------|------|--------|----------|----------|
-| TD-01 | Hook 脚本未正确 source notify.sh | 阻塞 / 模块级 | 2026-03-07 | 添加 source 语句到所有 Hook 脚本 |
-| TD-02 | 无 Hook 触发机制 | 阻塞 / 模块级 | 2026-03-07 | 创建 rdd-hooks skill 定义触发规则 |
-| TD-03 | 脚本可能无执行权限 | 阻塞 / 局部 | 2026-03-07 | chmod +x 所有 .sh 文件 |
-| TD-04 | 路径硬编码 | 降级功能 / 模块级 | 2026-03-07 | 使用 RDD_DIR 环境变量和相对路径 |
-| TD-05 | 单元测试覆盖率为 0% | 阻塞 / 模块级 | 2026-03-07 | 实现 bats-core 测试框架，500+ 测试用例 |
-| TD-06 | 无 E2E 测试 | 阻塞 / 模块级 | 2026-03-07 | 创建 tests/e2e/ 目录，21 个 E2E 测试 |
-| TD-07 | 无 BDD 测试 | 降级功能 / 模块级 | 2026-03-07 | 创建 tests/bdd/ 目录，10+ BDD 测试 |
-| TD-08 | 无自动上下文恢复 | 降级功能 / 架构级 | 2026-03-08 | 实现 checkpoint.sh 和 handoff.sh 脚本 |
-| TD-09 | 凭证明文存储 | 阻塞 / 模块级 | 2026-03-07 | 添加 expand_env_vars 函数支持 ${VAR} |
-| TD-10 | 无状态持久化 | 降级功能 / 架构级 | 2026-03-08 | 实现 checkpoint.sh 状态持久化 |
-| TD-11 | Taskfile YAML 解析问题 | 降级功能 / 局部 | 2026-03-08 | 修复 YAML 语法问题 |
-
----
+| Number | Title | Priority | Resolution Date | Resolution |
+|--------|-------|----------|-----------------|------------|
+| TD-01 | Hook scripts not correctly sourcing notify.sh | Blocking / Module-level | 2026-03-07 | Added source statement to all Hook scripts |
+| TD-02 | No Hook trigger mechanism | Blocking / Module-level | 2026-03-07 | Created rdd-hooks skill to define trigger rules |
+| TD-03 | Scripts may lack execute permission | Blocking / Local | 2026-03-07 | chmod +x all .sh files |
+| TD-04 | Hardcoded paths | Feature Degradation / Module-level | 2026-03-07 | Use RDD_DIR environment variable and relative paths |
+| TD-05 | Unit test coverage at 0% | Blocking / Module-level | 2026-03-07 | Implemented bats-core testing framework, 500+ test cases |
+| TD-06 | No E2E tests | Blocking / Module-level | 2026-03-07 | Created tests/e2e/ directory, 21 E2E tests |
+| TD-07 | No BDD tests | Feature Degradation / Module-level | 2026-03-07 | Created tests/bdd/ directory, 10+ BDD tests |
+| TD-08 | No automatic context recovery | Feature Degradation / Architecture-level | 2026-03-08 | Implemented checkpoint.sh and handoff.sh scripts |
+| TD-09 | Credentials stored in plaintext | Blocking / Module-level | 2026-03-07 | Added expand_env_vars function supporting ${VAR} |
+| TD-10 | No state persistence | Feature Degradation / Architecture-level | 2026-03-08 | Implemented checkpoint.sh state persistence |
+| TD-11 | Taskfile YAML parsing issue | Feature Degradation / Local | 2026-03-08 | Fixed YAML syntax issues |
 
 ---
 
-## 技术债详情
+---
+
+## Technical Debt Details
 
 ---
 
-### TD-05：单元测试覆盖率为 0% ✅ 已解决
+### TD-05: Unit Test Coverage at 0% ✅ Resolved
 
-- **优先级**：阻塞后续 Stage / 模块级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："功能逻辑未经测试"
-- **来源文件**：.rdd/scripts/notify.sh, .rdd/hooks/*.sh
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 2
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：实现 bats-core 测试框架，创建 500+ 测试用例，覆盖率 >= 95%
+- **Priority**: Blocks Subsequent Stage / Module-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Feature logic untested"
+- **Source File**: .rdd/scripts/notify.sh, .rdd/hooks/*.sh
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 2
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: Implemented bats-core testing framework, created 500+ test cases, coverage >= 95%
 
-**影响评估**：
-- 解决后：所有核心脚本有完整单元测试保障
-- 验证：task test:unit 通过 500+ 测试
-
----
-
-### TD-06：无 E2E 测试 ✅ 已解决
-
-- **优先级**：阻塞后续 Stage / 模块级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："无端到端测试"
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 2
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：创建 tests/e2e/ 目录，实现 21 个 E2E 测试场景
-
-**影响评估**：
-- 解决后：完整工作流可自动验证
-- 验证：task test:e2e 通过 21 个 E2E 测试
+**Impact Assessment**:
+- After resolution: All core scripts have complete unit test coverage
+- Verification: task test:unit passes 500+ tests
 
 ---
 
-### TD-07：无 BDD 测试 ✅ 已解决
+### TD-06: No E2E Tests ✅ Resolved
 
-- **优先级**：降级功能 / 模块级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："无行为驱动测试"
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 2
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：创建 tests/bdd/ 目录，实现 10+ BDD 测试场景
+- **Priority**: Blocks Subsequent Stage / Module-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "No end-to-end tests"
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 2
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: Created tests/e2e/ directory, implemented 21 E2E test scenarios
 
-**影响评估**：
-- 解决后：用户行为预期可自动验证
-- 验证：task test:bdd 通过所有 BDD 测试
-
----
-
-### TD-08：无自动上下文恢复 ✅ 已解决
-
-- **优先级**：降级功能 / 架构级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："Compact 后无法自动恢复工作状态"
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 3
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-08
-- **解决方案**：实现 checkpoint.sh 和 handoff.sh 脚本，支持自动状态持久化和恢复
-
-**影响评估**：
-- 解决后：Agent Compact 后可自动恢复上下文
-- 验证：E2E 测试验证恢复流程
+**Impact Assessment**:
+- After resolution: Complete workflows can be automatically verified
+- Verification: task test:e2e passes 21 E2E tests
 
 ---
 
-### TD-10：无状态持久化 ✅ 已解决
+### TD-07: No BDD Tests ✅ Resolved
 
-- **优先级**：降级功能 / 架构级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："工作进度无法持久化保存"
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 3
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-08
-- **解决方案**：实现 checkpoint.sh 状态持久化，支持 Gate 状态保存和恢复
+- **Priority**: Feature Degradation / Module-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "No behavior-driven tests"
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 2
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: Created tests/bdd/ directory, implemented 10+ BDD test scenarios
 
-**影响评估**：
-- 解决后：工作进度可持久化保存
-- 验证：task checkpoint:save/show 命令可用
-
----
-
-### TD-01：Hook 脚本未正确 source notify.sh ✅ 已解决
-
-- **优先级**：阻塞后续 Stage / 模块级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："Hook 脚本调用未定义的函数"
-- **来源文件**：.rdd/hooks/*.sh
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 1
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：所有 Hook 脚本添加 `source "${SCRIPTS_DIR}/notify.sh"`
-
-**影响评估**：
-- 解决后：Hook 脚本可以正确调用 notify.sh 函数
-- 验证：手动测试所有 Hook 脚本可正常执行
+**Impact Assessment**:
+- After resolution: User behavior expectations can be automatically verified
+- Verification: task test:bdd passes all BDD tests
 
 ---
 
-### TD-02：无 Hook 触发机制 ✅ 已解决
+### TD-08: No Automatic Context Recovery ✅ Resolved
 
-- **优先级**：阻塞后续 Stage / 模块级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："Hooks 脚本存在但无触发方式"
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 1
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：创建 rdd-hooks skill 定义触发规则
+- **Priority**: Feature Degradation / Architecture-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Cannot automatically recover work state after Compact"
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 3
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-08
+- **Resolution**: Implemented checkpoint.sh and handoff.sh scripts, supporting automatic state persistence and recovery
 
-**影响评估**：
-- 解决后：Skills 可以通过环境变量触发 Hooks
-- 验证：rdd-hooks skill 文档完整定义触发时机
-
----
-
-### TD-03：脚本可能无执行权限 ✅ 已解决
-
-- **优先级**：阻塞后续 Stage / 局部
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："脚本可能无执行权限"
-- **来源文件**：.rdd/scripts/*.sh, .rdd/hooks/*.sh
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 1
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：chmod +x 所有 .sh 文件
-
-**影响评估**：
-- 解决后：所有脚本可执行
-- 验证：ls -la 显示所有 .sh 有 x 权限
+**Impact Assessment**:
+- After resolution: Agent can automatically recover context after Compact
+- Verification: E2E tests verify recovery process
 
 ---
 
-### TD-04：路径硬编码 ✅ 已解决
+### TD-10: No State Persistence ✅ Resolved
 
-- **优先级**：降级功能 / 模块级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："路径硬编码 `/data/works/play/sbd/`"
-- **来源文件**：多个文件
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 1
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：使用 RDD_DIR 环境变量和相对路径
+- **Priority**: Feature Degradation / Architecture-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Work progress cannot be persistently saved"
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 3
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-08
+- **Resolution**: Implemented checkpoint.sh state persistence, supporting Gate state save and restore
 
-**影响评估**：
-- 解决后：框架可在任意项目目录运行
-- 验证：notify.sh 使用 `RDD_DIR="${RDD_DIR:-$(dirname "$0")/..}"`
-
----
-
-### TD-09：凭证明文存储 ✅ 已解决
-
-- **优先级**：阻塞后续 Stage / 模块级
-- **来源**：Stage 0 已知限制（Stage 0）
-- **原始描述**："hooks.yml 中敏感信息明文存储"
-- **来源文件**：.rdd/hooks.yml
-- **发现日期**：2026-03-06
-- **建议落地 Stage**：Stage 1
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-07
-- **解决方案**：添加 expand_env_vars 函数支持 ${VAR} 环境变量引用
-
-**影响评估**：
-- 解决后：配置文件可使用 ${WECOM_WEBHOOK_URL} 等环境变量
-- 验证：expand_env_vars 函数测试通过
+**Impact Assessment**:
+- After resolution: Work progress can be persistently saved
+- Verification: task checkpoint:save/show commands available
 
 ---
 
-### TD-11：Taskfile YAML 解析问题 ✅ 已解决
+### TD-01: Hook Scripts Not Correctly Sourcing notify.sh ✅ Resolved
 
-- **优先级**：降级功能 / 局部
-- **来源**：代码扫描（Stage 2）
-- **原始描述**："Taskfile.yml 在某些 task 版本下无法解析，包含冒号的 echo 命令导致 YAML 解析错误"
-- **来源文件**：Taskfile.yml
-- **发现日期**：2026-03-07
-- **建议落地 Stage**：Stage 2
-- **当前状态**：[x] 已解决
-- **解决日期**：2026-03-08
-- **解决方案**：修复 YAML 语法，使用正确的多行字符串格式
+- **Priority**: Blocks Subsequent Stage / Module-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Hook scripts call undefined functions"
+- **Source File**: .rdd/hooks/*.sh
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 1
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: All Hook scripts added `source "${SCRIPTS_DIR}/notify.sh"`
 
-**影响评估**：
-- 解决后：所有 task 命令正常工作
-- 验证：task --list 显示所有任务
-
----
-
-### TD-01：[示例技术债标题]
-
-- **优先级**：降级功能 / 模块级
-- **来源**：审阅推后（Stage 2）
-- **原始描述**："建议增加错误重试机制，但当前 Stage scope 不包含"
-- **来源文件**：src/client.rs:45
-- **发现日期**：[日期]
-- **建议落地 Stage**：Stage 4
-- **当前状态**：[ ] 待处理
-- **解决日期**：-
-- **解决方案**：-
-
-**影响评估**：
-
-- 当前影响：错误重试需要手动处理
-- 潜在风险：网络不稳定时可能失败
-- 对后续 Stage 影响：Stage 4 的错误处理需要考虑
+**Impact Assessment**:
+- After resolution: Hook scripts can correctly call notify.sh functions
+- Verification: Manual testing confirms all Hook scripts execute normally
 
 ---
 
-### TD-02：[示例技术债标题]
+### TD-02: No Hook Trigger Mechanism ✅ Resolved
 
-- **优先级**：技术优化 / 局部
-- **来源**：代码扫描（Stage 3）
-- **原始描述**："TODO: 优化这个算法的时间复杂度"
-- **来源文件**：src/utils.rs:120
-- **发现日期**：[日期]
-- **建议落地 Stage**：按需
-- **当前状态**：[ ] 待处理
-- **解决日期**：-
-- **解决方案**：-
+- **Priority**: Blocks Subsequent Stage / Module-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Hooks scripts exist but no way to trigger them"
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 1
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: Created rdd-hooks skill defining trigger rules
 
-**影响评估**：
-
-- 当前影响：小数据量下性能可接受
-- 潜在风险：大数据量时可能变慢
-- 对后续 Stage 影响：无直接影响，可按需优化
+**Impact Assessment**:
+- After resolution: Skills can trigger Hooks via environment variables
+- Verification: rdd-hooks skill documentation fully defines trigger timing
 
 ---
 
-## 技术债统计
+### TD-03: Scripts May Lack Execute Permission ✅ Resolved
 
-### 按优先级统计
+- **Priority**: Blocks Subsequent Stage / Local
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Scripts may not have execute permission"
+- **Source File**: .rdd/scripts/*.sh, .rdd/hooks/*.sh
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 1
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: chmod +x all .sh files
 
-| 优先级 | 数量 | 占比 |
-|--------|------|------|
-| 阻塞后续 Stage | 0 | 0% |
-| 降级功能 + 架构级 | 0 | 0% |
-| 降级功能 + 模块级 | 0 | 0% |
-| 降级功能 + 局部 | 0 | 0% |
-| 技术优化 + 架构级 | 0 | 0% |
-| 技术优化 + 模块级 | 0 | 0% |
-| 技术优化 + 局部 | 0 | 0% |
-| **已解决** | **11** | **100%** |
-| **总计** | **11** | **100%** |
+**Impact Assessment**:
+- After resolution: All scripts are executable
+- Verification: ls -la shows all .sh have x permission
 
-### 按来源统计
+---
 
-| 来源 | 数量 | 占比 |
-|------|------|------|
-| Stage 文档（非目标/已知限制） | 10 | 90.9% |
-| 审阅日志（推后/不接受） | 0 | 0% |
-| ADR（对后续影响） | 0 | 0% |
-| 代码扫描（TODO/FIXME/HACK/XXX） | 1 | 9.1% |
-| **总计** | **11** | **100%** |
+### TD-04: Hardcoded Paths ✅ Resolved
 
-### 按状态统计
+- **Priority**: Feature Degradation / Module-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Paths hardcoded to `/data/works/play/sbd/`"
+- **Source File**: Multiple files
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 1
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: Use RDD_DIR environment variable and relative paths
 
-| 状态 | 数量 | 占比 |
-|------|------|------|
-| 待处理 | 0 | 0% |
-| 进行中 | 0 | 0% |
-| 已解决 | 11 | 100% |
-| 不适用 | 0 | 0% |
-| **总计** | **11** | **100%** |
+**Impact Assessment**:
+- After resolution: Framework can run in any project directory
+- Verification: notify.sh uses `RDD_DIR="${RDD_DIR:-$(dirname "$0")/..}"`
 
-### 按 Stage 分布
+---
 
-| Stage | 待处理 | 已解决 | 总计 |
-|-------|--------|--------|------|
+### TD-09: Credentials Stored in Plaintext ✅ Resolved
+
+- **Priority**: Blocks Subsequent Stage / Module-level
+- **Source**: Stage 0 Known Limitations (Stage 0)
+- **Original Description**: "Sensitive information in hooks.yml stored in plaintext"
+- **Source File**: .rdd/hooks.yml
+- **Discovery Date**: 2026-03-06
+- **Suggested Landing Stage**: Stage 1
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-07
+- **Resolution**: Added expand_env_vars function supporting ${VAR} environment variable references
+
+**Impact Assessment**:
+- After resolution: Configuration files can use environment variables like ${WECOM_WEBHOOK_URL}
+- Verification: expand_env_vars function tests pass
+
+---
+
+### TD-11: Taskfile YAML Parsing Issue ✅ Resolved
+
+- **Priority**: Feature Degradation / Local
+- **Source**: Code Scan (Stage 2)
+- **Original Description**: "Taskfile.yml cannot be parsed in some task versions, echo commands with colons cause YAML parsing errors"
+- **Source File**: Taskfile.yml
+- **Discovery Date**: 2026-03-07
+- **Suggested Landing Stage**: Stage 2
+- **Current Status**: [x] Resolved
+- **Resolution Date**: 2026-03-08
+- **Resolution**: Fixed YAML syntax, using correct multi-line string format
+
+**Impact Assessment**:
+- After resolution: All task commands work normally
+- Verification: task --list shows all tasks
+
+---
+
+### TD-01: [Example Technical Debt Title]
+
+- **Priority**: Feature Degradation / Module-level
+- **Source**: Review Deferred (Stage 2)
+- **Original Description**: "Suggest adding error retry mechanism, but current Stage scope doesn't include"
+- **Source File**: src/client.rs:45
+- **Discovery Date**: [Date]
+- **Suggested Landing Stage**: Stage 4
+- **Current Status**: [ ] Pending
+- **Resolution Date**: -
+- **Resolution**: -
+
+**Impact Assessment**:
+
+- Current Impact: Error retry needs manual handling
+- Potential Risk: May fail when network is unstable
+- Impact on Subsequent Stages: Stage 4 error handling needs consideration
+
+---
+
+### TD-02: [Example Technical Debt Title]
+
+- **Priority**: Tech Optimization / Local
+- **Source**: Code Scan (Stage 3)
+- **Original Description**: "TODO: Optimize time complexity of this algorithm"
+- **Source File**: src/utils.rs:120
+- **Discovery Date**: [Date]
+- **Suggested Landing Stage**: As Needed
+- **Current Status**: [ ] Pending
+- **Resolution Date**: -
+- **Resolution**: -
+
+**Impact Assessment**:
+
+- Current Impact: Performance acceptable for small data volumes
+- Potential Risk: May slow down for large data volumes
+- Impact on Subsequent Stages: No direct impact, can optimize as needed
+
+---
+
+## Technical Debt Statistics
+
+### By Priority
+
+| Priority | Count | Percentage |
+|----------|-------|------------|
+| Blocks Subsequent Stage | 0 | 0% |
+| Feature Degradation + Architecture-level | 0 | 0% |
+| Feature Degradation + Module-level | 0 | 0% |
+| Feature Degradation + Local | 0 | 0% |
+| Tech Optimization + Architecture-level | 0 | 0% |
+| Tech Optimization + Module-level | 0 | 0% |
+| Tech Optimization + Local | 0 | 0% |
+| **Resolved** | **11** | **100%** |
+| **Total** | **11** | **100%** |
+
+### By Source
+
+| Source | Count | Percentage |
+|--------|-------|------------|
+| Stage Document (Non-goals/Known Limitations) | 10 | 90.9% |
+| Review Log (Deferred/Rejected) | 0 | 0% |
+| ADR (Impact on Subsequent) | 0 | 0% |
+| Code Scan (TODO/FIXME/HACK/XXX) | 1 | 9.1% |
+| **Total** | **11** | **100%** |
+
+### By Status
+
+| Status | Count | Percentage |
+|--------|-------|------------|
+| Pending | 0 | 0% |
+| In Progress | 0 | 0% |
+| Resolved | 11 | 100% |
+| Not Applicable | 0 | 0% |
+| **Total** | **11** | **100%** |
+
+### By Stage Distribution
+
+| Stage | Pending | Resolved | Total |
+|-------|---------|----------|-------|
 | Stage 0 | 0 | 0 | 0 |
 | Stage 1 | 0 | 5 | 5 |
 | Stage 2 | 0 | 4 | 4 |
 | Stage 3 | 0 | 2 | 2 |
 | Stage 4+ | 0 | 0 | 0 |
-| **总计** | **0** | **11** | **11** |
+| **Total** | **0** | **11** | **11** |
 
 ---
 
-## 定期审查
+## Regular Review
 
-### 审查频率
+### Review Frequency
 
-- 每个 Stage 完成时：审查技术债状态
-- 每周：审查优先级和计划
-- 每月：全面审查技术债台账
+- At each Stage completion: Review technical debt status
+- Weekly: Review priority and plans
+- Monthly: Comprehensive review of technical debt ledger
 
-### 审查内容
+### Review Content
 
-| 审查项 | 说明 |
-|--------|------|
-| 状态更新 | 确认技术债状态是否正确 |
-| 优先级调整 | 根据最新情况调整优先级 |
-| 计划调整 | 调整建议落地 Stage |
-| 新增识别 | 识别新的技术债 |
-| 已解决验证 | 验证已解决的技术债确实解决了问题 |
+| Review Item | Description |
+|-------------|-------------|
+| Status Update | Confirm if technical debt status is correct |
+| Priority Adjustment | Adjust priority based on latest situation |
+| Plan Adjustment | Adjust suggested landing Stage |
+| New Identification | Identify new technical debt |
+| Resolved Verification | Verify resolved technical debt actually resolved the problem |
 
-### 审查记录
+### Review Records
 
-| 审查日期 | 审查人 | 审查结果 | 行动项 |
-|----------|--------|----------|--------|
-| [日期] | [姓名] | [结果] | [行动项] |
-
----
-
-## 修订记录
-
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| v1.0 | [日期] | 初始版本 | [姓名] |
+| Review Date | Reviewer | Review Result | Action Items |
+|-------------|----------|---------------|--------------|
+| [Date] | [Name] | [Result] | [Action Items] |
 
 ---
 
-> **关键提醒**：技术债必须显式记录，不以隐性知识管理。"将技术债当作隐性知识管理"是 RDD 禁止行为之一。
+## Revision History
+
+| Version | Date | Revision Content | Author |
+|---------|------|------------------|--------|
+| v1.0 | [Date] | Initial version | [Name] |
+
+---
+
+> **Key Reminder**: Technical debt must be explicitly recorded, not managed as tacit knowledge. "Managing technical debt as tacit knowledge" is one of the prohibited behaviors in RDD.

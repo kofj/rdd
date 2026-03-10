@@ -1,426 +1,426 @@
-# Stage Based Development 规范
+# Stage Based Development Specification
 
-> 本文档定义 RDD 项目中 Stage 的开发规范，包括定义、完成标准、规模规则、测试策略和产物要求。
+> This document defines the development specifications for Stages in RDD projects, including definitions, completion criteria, sizing rules, testing strategies, and artifact requirements.
 
 ---
 
-## Stage 定义 (Stage Definition)
+## Stage Definition
 
-### 什么是 Stage
+### What is a Stage
 
-Stage 是 RDD 开发中最小的交付单元，具有以下特征：
+A Stage is the smallest delivery unit in RDD development with the following characteristics:
 
-- **可验收**：有明确的验收标准，完成后可独立验收
-- **可回滚**：有回滚方案，失败时可安全回退
-- **可 Handoff**：有完整的文档，可交接给其他 Agent
-- **最小化**：控制 scope，接受阶段性妥协
+- **Verifiable**: Has clear acceptance criteria, can be independently verified upon completion
+- **Rollbackable**: Has a rollback plan, can safely roll back on failure
+- **Handoffable**: Has complete documentation, can be handed off to other Agents
+- **Minimal**: Controls scope, accepts stage-level compromises
 
-### Stage 与 Task 的区别
+### Difference Between Stage and Task
 
-| 维度 | Stage | Task |
-|------|-------|------|
-| 粒度 | 最小交付单元 | 实现步骤 |
-| 时间 | 1-3 天 | 数小时 |
-| 验收 | 有独立验收标准 | 隶属于 Stage |
-| 文档 | 需要完整文档 | 无需独立文档 |
-| 回滚 | 有独立回滚方案 | 随 Stage 回滚 |
+| Dimension | Stage | Task |
+|-----------|-------|------|
+| Granularity | Minimum delivery unit | Implementation step |
+| Duration | 1-3 days | Several hours |
+| Acceptance | Has independent acceptance criteria | Belongs to Stage |
+| Documentation | Requires complete documentation | No independent documentation needed |
+| Rollback | Has independent rollback plan | Rolls back with Stage |
 
-### Stage 生命周期
+### Stage Lifecycle
 
 ```
-[规划中] → [进行中] → [完成]
-    ↓           ↓
-  [阻塞]     [失败] → [回滚]
+[Planning] → [In Progress] → [Completed]
+     ↓            ↓
+  [Blocked]   [Failed] → [Rollback]
 ```
 
 ---
 
-## Stage 完成标准 (Stage Completion Criteria)
+## Stage Completion Criteria
 
-### Gate 检查清单
+### Gate Checklist
 
-每个 Stage 完成前必须通过以下门禁检查：
+Before completing each Stage, the following gate checks must pass:
 
-#### Gate 1：设计文档检查
+#### Gate 1: Design Document Check
 
-| 检查项 | 要求 | 状态 |
-|--------|------|------|
-| 设计文档是否完成 | 必须完成 | [ ] |
-| 目标是否清晰 | 必须明确 | [ ] |
-| 非目标是否显式声明 | 必须声明 | [ ] |
-| 验收标准是否可测试 | 必须可测试 | [ ] |
-| 回滚方案是否存在 | 必须存在 | [ ] |
+| Check Item | Requirement | Status |
+|------------|-------------|--------|
+| Design document completed | Must be completed | [ ] |
+| Goals clear | Must be clear | [ ] |
+| Non-goals explicitly stated | Must be stated | [ ] |
+| Acceptance criteria testable | Must be testable | [ ] |
+| Rollback plan exists | Must exist | [ ] |
 
-#### Gate 2：方案 Review 检查
+#### Gate 2: Design Review Check
 
-| 检查项 | 要求 | 状态 |
-|--------|------|------|
-| 多模型 Review 是否触发 | 已触发 | [ ] |
-| AI 初筛是否完成 | 已完成 | [ ] |
-| 高置信度 findings 是否修复 | 已修复 | [ ] |
+| Check Item | Requirement | Status |
+|------------|-------------|--------|
+| Multi-model review triggered | Triggered | [ ] |
+| AI initial screening completed | Completed | [ ] |
+| High-confidence findings resolved | Resolved | [ ] |
 
-#### Gate 3：实现与测试检查
+#### Gate 3: Implementation and Testing Check
 
-| 检查项 | 要求 | 状态 |
-|--------|------|------|
-| 实现是否完成 | 已完成 | [ ] |
-| 单元测试覆盖率 | >= 20% | [ ] |
-| E2E 测试 | 至少 2 条高信号路径 | [ ] |
-| 真实环境验证 | 非 mock | [ ] |
-| 干净环境验证 | 已通过 | [ ] |
+| Check Item | Requirement | Status |
+|------------|-------------|--------|
+| Implementation completed | Completed | [ ] |
+| Unit test coverage | >= 20% | [ ] |
+| E2E tests | At least 2 high-signal paths | [ ] |
+| Real environment verification | Not mock | [ ] |
+| Clean environment verification | Passed | [ ] |
 
-#### Gate 4：代码 Review 检查
+#### Gate 4: Code Review Check
 
-| 检查项 | 要求 | 状态 |
-|--------|------|------|
-| 三角校验是否完成 | 主开发 + 独立评审 + 规则检查 | [ ] |
-| 所有阻塞性 findings 是否修复 | 已修复 | [ ] |
-| 所有验收标准是否达成 | 已达成 | [ ] |
+| Check Item | Requirement | Status |
+|------------|-------------|--------|
+| Triangulation completed | Main dev + independent reviewer + rule check | [ ] |
+| All blocking findings resolved | Resolved | [ ] |
+| All acceptance criteria met | Met | [ ] |
 
-#### Gate 5：完成门禁检查
+#### Gate 5: Completion Gate Check
 
-| 检查项 | 要求 | 状态 |
-|--------|------|------|
-| 主要假设被验证或证伪 | 已记录 | [ ] |
-| 测试可通过 Task 入口复现 | 已验证 | [ ] |
-| 无未文档化的手工步骤 | 已确认 | [ ] |
-| 实现与设计一致（差异已记录） | 已确认 | [ ] |
-| 新能力有 CLI 子命令（如适用） | 已实现 | [ ] |
-| 技术债台账已更新 | 已更新 | [ ] |
-| ADR 已记录（"对后续 Stage 影响"不可留空） | 已记录 | [ ] |
-| fresh-agent-check 通过 | 已通过 | [ ] |
+| Check Item | Requirement | Status |
+|------------|-------------|--------|
+| Main hypotheses verified or falsified | Recorded | [ ] |
+| Tests reproducible via Task entry point | Verified | [ ] |
+| No undocumented manual steps | Confirmed | [ ] |
+| Implementation consistent with design (differences recorded) | Confirmed | [ ] |
+| New capabilities have CLI subcommands (if applicable) | Implemented | [ ] |
+| Technical debt ledger updated | Updated | [ ] |
+| ADR recorded ("impact on subsequent Stages" cannot be empty) | Recorded | [ ] |
+| fresh-agent-check passed | Passed | [ ] |
 
-### 文档完成标准
+### Documentation Completion Criteria
 
-Stage 完成时必须同步更新的文档：
+Documents that must be synchronously updated when a Stage completes:
 
-| 文档 | 内容要求 | 检查 |
-|------|----------|------|
-| `stage-N.md` | 实现差异、验收标准变化 | [ ] |
-| `stage-N-review-log.md` | findings、采纳/不采纳理由 | [ ] |
-| `08-autonomous-decisions.md` | ADR、假设偏差 | [ ] |
-| `12-technical-debt.md` | 新增/偿还技术债 | [ ] |
-| `11-next-steps.md` | 进度、下一步入场条件 | [ ] |
-| `CHANGELOG.md` | 本 Stage 变更摘要 | [ ] |
+| Document | Content Requirements | Check |
+|----------|----------------------|-------|
+| `stage-N.md` | Implementation differences, acceptance criteria changes | [ ] |
+| `stage-N-review-log.md` | Findings, adoption/rejection reasons | [ ] |
+| `08-autonomous-decisions.md` | ADR, assumption deviations | [ ] |
+| `12-technical-debt.md` | New/resolved technical debt | [ ] |
+| `11-next-steps.md` | Progress, next step entry conditions | [ ] |
+| `CHANGELOG.md` | This Stage's change summary | [ ] |
 
 ---
 
-## Stage 规模规则 (Stage Sizing Rules)
+## Stage Sizing Rules
 
-### 时间规模
+### Time Sizing
 
-| 规模 | 工作量 | 适用场景 |
-|------|--------|----------|
-| 小 | 0.5-1 天 | 单一功能、小优化、Bug 修复 |
-| 中 | 1-2 天 | 功能模块、中等复杂度变更 |
-| 大 | 2-3 天 | 较大功能、架构调整 |
+| Size | Workload | Applicable Scenarios |
+|------|----------|----------------------|
+| Small | 0.5-1 day | Single feature, small optimization, bug fix |
+| Medium | 1-2 days | Feature module, medium complexity changes |
+| Large | 2-3 days | Larger features, architecture adjustments |
 
-**规则**：单个 Stage 不超过 3 天工作量。超过则需要拆分。
+**Rule**: Single Stage should not exceed 3 days of work. If exceeded, it needs to be split.
 
-### 复杂度规模
+### Complexity Sizing
 
-| 维度 | 低复杂度 | 中复杂度 | 高复杂度 |
-|------|----------|----------|----------|
-| 依赖关系 | 无外部依赖 | 1-2 个依赖 | 3+ 个依赖 |
-| 未知数 | 无未知数 | 1 个核心未知数 | 2+ 个核心未知数 |
-| 影响范围 | 局部修改 | 模块级别 | 架构级别 |
-| 回滚难度 | 简单回滚 | 需要数据迁移 | 需要多步回滚 |
+| Dimension | Low Complexity | Medium Complexity | High Complexity |
+|-----------|----------------|-------------------|-----------------|
+| Dependencies | No external dependencies | 1-2 dependencies | 3+ dependencies |
+| Unknowns | No unknowns | 1 core unknown | 2+ core unknowns |
+| Impact Scope | Local modifications | Module level | Architecture level |
+| Rollback Difficulty | Simple rollback | Requires data migration | Requires multi-step rollback |
 
-**规则**：高复杂度 Stage 需要进一步拆分或增加缓冲时间。
+**Rule**: High complexity Stages need further splitting or buffer time added.
 
-### Scope 规则
+### Scope Rules
 
 ```
 DO:
-- 每个 Stage 只验证一小组清晰假设
-- 明确声明非目标
-- 接受阶段性妥协
-- 留下清晰的下一步
+- Each Stage only validates a small set of clear hypotheses
+- Explicitly state non-goals
+- Accept stage-level compromises
+- Leave clear next steps
 
 DON'T:
-- 多个 Stage 核心未知数放同一 Stage
-- Scope 悄悄扩大
-- 追求完美主义
-- 跳过非目标声明
+- Put multiple Stage core unknowns in one Stage
+- Silently expand scope
+- Pursue perfectionism
+- Skip non-goal declaration
 ```
 
-### 拆分指导
+### Splitting Guidelines
 
-当 Stage 规模过大时，按以下原则拆分：
+When a Stage is too large, split according to these principles:
 
-1. **按功能拆分**：将大功能拆分为多个小功能
-2. **按层次拆分**：将架构层次拆分为多个 Stage
-3. **按风险拆分**：将高风险部分独立为 Stage
-4. **按依赖拆分**：将依赖关系拆分为多个 Stage
+1. **Split by Function**: Break large features into smaller features
+2. **Split by Layer**: Break architecture layers into multiple Stages
+3. **Split by Risk**: Isolate high-risk parts as independent Stages
+4. **Split by Dependency**: Break dependencies into multiple Stages
 
 ---
 
-## 测试策略 (Testing Strategy)
+## Testing Strategy
 
-### 测试层次
+### Testing Layers
 
 ```
         ┌─────────────────┐
-        │    E2E 测试      │  ← 至少 2 条高信号路径
-        │   (真实环境)     │
+        │    E2E Tests    │  ← At least 2 high-signal paths
+        │ (Real Env)      │
         └────────┬────────┘
                  │
         ┌────────┴────────┐
-        │   集成测试       │  ← 关键路径集成
-        │  (组件交互)      │
+        │ Integration     │  ← Key path integration
+        │ Tests           │
         └────────┬────────┘
                  │
         ┌────────┴────────┐
-        │   单元测试       │  ← 覆盖率 >= 20%
-        │   (函数级别)     │
+        │   Unit Tests    │  ← Coverage >= 20%
+        │ (Function level)│
         └─────────────────┘
 ```
 
-### 单元测试要求
+### Unit Test Requirements
 
-| 要求 | 说明 |
-|------|------|
-| 覆盖率 | >= 20%（最低） / >= 80%（目标） |
-| 隔离性 | 测试之间相互独立 |
-| 可重复 | 多次运行结果一致 |
-| 命名 | 测试名称描述行为 |
+| Requirement | Description |
+|-------------|-------------|
+| Coverage | >= 20% (minimum) / >= 80% (target) |
+| Isolation | Tests are independent of each other |
+| Repeatability | Consistent results across multiple runs |
+| Naming | Test names describe behavior |
 
-### E2E 测试要求
+### E2E Test Requirements
 
-| 要求 | 说明 |
-|------|------|
-| 数量 | 至少 2 条高信号路径 |
-| 环境 | 真实环境，非 mock |
-| 验证 | 验证完整业务流程 |
-| 清理 | 测试后清理环境 |
+| Requirement | Description |
+|-------------|-------------|
+| Quantity | At least 2 high-signal paths |
+| Environment | Real environment, not mock |
+| Verification | Verify complete business flow |
+| Cleanup | Clean up environment after test |
 
-### 测试环境要求
+### Test Environment Requirements
 
-| 环境 | 用途 | 要求 |
-|------|------|------|
-| 本地环境 | 开发和调试 | 快速迭代 |
-| 干净环境 | 二级验证 | 无残留状态 |
-| 真实环境 | E2E 测试 | 接近生产 |
+| Environment | Purpose | Requirements |
+|-------------|---------|--------------|
+| Local Environment | Development and debugging | Fast iteration |
+| Clean Environment | Secondary verification | No residual state |
+| Real Environment | E2E testing | Close to production |
 
-### 测试入口
+### Test Entry Points
 
-所有测试必须可通过 Task 入口复现：
+All tests must be reproducible via Task entry point:
 
 ```yaml
-# Taskfile.yml 示例
+# Taskfile.yml example
 tasks:
   test:
-    desc: 运行所有测试
+    desc: Run all tests
     cmds:
       - cargo test
 
   test-unit:
-    desc: 运行单元测试
+    desc: Run unit tests
     cmds:
       - cargo test --lib
 
   test-e2e:
-    desc: 运行 E2E 测试
+    desc: Run E2E tests
     cmds:
       - cargo test --test e2e
 ```
 
 ---
 
-## 每个 Stage 必须留下什么 (Stage Artifacts)
+## Stage Artifacts
 
-### 必须产物
+### Required Artifacts
 
-每个 Stage 完成后必须留下以下产物：
+Each Stage must leave the following artifacts upon completion:
 
-#### 1. 代码产物
+#### 1. Code Artifacts
 
-| 产物 | 说明 | 检查 |
-|------|------|------|
-| 实现代码 | 完成功能的代码 | [ ] |
-| 单元测试 | 覆盖率 >= 20% | [ ] |
-| E2E 测试 | 至少 2 条高信号路径 | [ ] |
-| 配置文件 | 相关配置变更 | [ ] |
+| Artifact | Description | Check |
+|----------|-------------|-------|
+| Implementation code | Code implementing the feature | [ ] |
+| Unit tests | Coverage >= 20% | [ ] |
+| E2E tests | At least 2 high-signal paths | [ ] |
+| Configuration files | Related configuration changes | [ ] |
 
-#### 2. 文档产物
+#### 2. Documentation Artifacts
 
-| 文档 | 说明 | 检查 |
-|------|------|------|
-| `stage-N.md` | Stage 设计和实现记录 | [ ] |
-| `stage-N-review-log.md` | Review 记录 | [ ] |
-| ADR 更新 | 架构决策记录 | [ ] |
-| 技术债更新 | 新增/偿还记录 | [ ] |
-| 进度更新 | next-steps.md | [ ] |
-| 变更日志 | CHANGELOG.md | [ ] |
+| Document | Description | Check |
+|----------|-------------|-------|
+| `stage-N.md` | Stage design and implementation record | [ ] |
+| `stage-N-review-log.md` | Review record | [ ] |
+| ADR update | Architecture decision record | [ ] |
+| Technical debt update | New/resolved record | [ ] |
+| Progress update | next-steps.md | [ ] |
+| Change log | CHANGELOG.md | [ ] |
 
-#### 3. 可验证产物
+#### 3. Verifiable Artifacts
 
-| 产物 | 说明 | 检查 |
-|------|------|------|
-| 可运行的功能 | 功能可正常运行 | [ ] |
-| 可复现的测试 | 测试可通过 Task 运行 | [ ] |
-| 可回滚的版本 | 有明确的回滚点 | [ ] |
+| Artifact | Description | Check |
+|----------|-------------|-------|
+| Runnable functionality | Feature runs normally | [ ] |
+| Reproducible tests | Tests can run via Task | [ ] |
+| Rollbackable version | Has clear rollback point | [ ] |
 
-### 可选产物
+### Optional Artifacts
 
-根据 Stage 类型，可选留下以下产物：
+Depending on Stage type, optionally leave the following artifacts:
 
-| 产物 | 适用场景 |
-|------|----------|
-| 性能基准 | 性能优化 Stage |
-| API 文档 | API 开发 Stage |
-| 部署脚本 | 部署相关 Stage |
-| 迁移脚本 | 数据迁移 Stage |
+| Artifact | Applicable Scenarios |
+|----------|----------------------|
+| Performance benchmarks | Performance optimization Stage |
+| API documentation | API development Stage |
+| Deployment scripts | Deployment-related Stage |
+| Migration scripts | Data migration Stage |
 
 ---
 
-## 示例 Stage 流程 (Example Stage Flow)
+## Example Stage Flow
 
-### 示例 Stage：实现用户登录功能
+### Example Stage: Implement User Login Functionality
 
-#### Stage 规划
-
-```markdown
-# Stage 2: 实现用户登录功能
-
-## 状态
-[ ] 规划中 / [x] 进行中 / [ ] 完成
-
-## 目标
-实现基本的用户登录功能，支持用户名密码登录。
-
-## 非目标
-- 第三方登录（GitHub、微信等）
-- 多因素认证
-- 密码重置功能
-- 记住登录状态
-
-## 核心假设
-- 用户已通过 Stage 1 完成注册
-- 密码已加密存储
-- 使用 JWT 进行身份验证
-
-## 验收标准
-- [ ] 用户可以使用正确的用户名密码登录
-- [ ] 登录失败时返回明确的错误信息
-- [ ] 登录成功后返回有效的 JWT Token
-- [ ] 单元测试覆盖率 >= 20%
-- [ ] E2E 测试通过
-
-## 回滚方案
-删除登录相关代码，回退到 Stage 1 完成状态。
-
-## 已知限制
-- 仅支持用户名密码登录
-- Token 有效期固定为 24 小时
-- 不支持并发登录限制
-
-## 对后续 Stage 的影响
-- Stage 3 将基于此实现 Token 刷新机制
-- Stage 4 将扩展支持第三方登录
-```
-
-#### Gate 1：设计文档检查
-
-```
-[✓] 设计文档是否完成 → 已完成
-[✓] 目标是否清晰 → 目标明确：实现用户登录功能
-[✓] 非目标是否显式声明 → 已声明：第三方登录、多因素认证等
-[✓] 验收标准是否可测试 → 5 条可测试标准
-[✓] 回滚方案是否存在 → 删除代码回退
-```
-
-#### Gate 2：方案 Review
-
-```
-触发 Review → 收到 findings → AI 初筛 → 核查每条
-
-Finding 1: 建议使用 bcrypt 而非 SHA256
-核查: 查阅权威来源，bcrypt 确实更适合密码存储
-决策: 采纳，更新设计
-
-Finding 2: JWT 应该包含过期时间
-核查: 代码验证，已在设计中声明 24 小时有效期
-决策: 已满足，无需修改
-```
-
-#### Gate 3：实现与测试
-
-```
-[✓] 实现完成
-[✓] 单元测试覆盖率: 35%
-[✓] E2E 测试: 3 条高信号路径
-[✓] 真实环境验证: 通过
-[✓] 干净环境验证: 通过
-```
-
-#### Gate 4：代码 Review
-
-```
-[✓] 三角校验完成
-[✓] 阻塞性 findings 已修复
-[✓] 验收标准已达成
-```
-
-#### Gate 5：完成门禁
-
-```
-[✓] 假设已验证：用户可正常登录
-[✓] 测试可通过 Task 入口复现
-[✓] 无未文档化的手工步骤
-[✓] 实现与设计一致
-[✓] 技术债已记录：Token 刷新机制待实现
-[✓] ADR 已记录：选择 bcrypt 作为密码哈希算法
-[✓] fresh-agent-check 通过
-```
-
-#### 文档更新
+#### Stage Planning
 
 ```markdown
-# stage-2.md 更新
+# Stage 2: Implement User Login Functionality
 
-## 实现差异
-- 使用 bcrypt 替代 SHA256 进行密码验证
-- Token 有效期配置化，从环境变量读取
+## Status
+[ ] Planning / [x] In Progress / [ ] Completed
 
-## 验收标准变化
-- 新增：Token 有效期可配置
+## Goals
+Implement basic user login functionality with username and password support.
+
+## Non-Goals
+- Third-party login (GitHub, WeChat, etc.)
+- Multi-factor authentication
+- Password reset functionality
+- Remember login state
+
+## Core Assumptions
+- Users have completed registration through Stage 1
+- Passwords are encrypted and stored
+- JWT is used for authentication
+
+## Acceptance Criteria
+- [ ] Users can log in with correct username and password
+- [ ] Clear error messages returned on login failure
+- [ ] Valid JWT Token returned on successful login
+- [ ] Unit test coverage >= 20%
+- [ ] E2E tests pass
+
+## Rollback Plan
+Delete login-related code, revert to Stage 1 completion state.
+
+## Known Limitations
+- Only supports username and password login
+- Token validity fixed at 24 hours
+- No concurrent login restriction support
+
+## Impact on Subsequent Stages
+- Stage 3 will implement Token refresh mechanism based on this
+- Stage 4 will extend to support third-party login
+```
+
+#### Gate 1: Design Document Check
+
+```
+[✓] Design document completed → Completed
+[✓] Goals clear → Clear goal: Implement user login functionality
+[✓] Non-goals explicitly stated → Stated: third-party login, MFA, etc.
+[✓] Acceptance criteria testable → 5 testable criteria
+[✓] Rollback plan exists → Delete code and revert
+```
+
+#### Gate 2: Design Review
+
+```
+Trigger Review → Receive findings → AI initial screening → Verify each finding
+
+Finding 1: Recommend using bcrypt instead of SHA256
+Verify: Consult authoritative sources, bcrypt is indeed better for password storage
+Decision: Adopt, update design
+
+Finding 2: JWT should include expiration time
+Verify: Code verification, 24-hour validity already declared in design
+Decision: Already satisfied, no changes needed
+```
+
+#### Gate 3: Implementation and Testing
+
+```
+[✓] Implementation completed
+[✓] Unit test coverage: 35%
+[✓] E2E tests: 3 high-signal paths
+[✓] Real environment verification: Passed
+[✓] Clean environment verification: Passed
+```
+
+#### Gate 4: Code Review
+
+```
+[✓] Triangulation completed
+[✓] Blocking findings resolved
+[✓] Acceptance criteria met
+```
+
+#### Gate 5: Completion Gate
+
+```
+[✓] Hypotheses verified: Users can log in normally
+[✓] Tests reproducible via Task entry point
+[✓] No undocumented manual steps
+[✓] Implementation consistent with design
+[✓] Technical debt recorded: Token refresh mechanism to be implemented
+[✓] ADR recorded: Selected bcrypt as password hashing algorithm
+[✓] fresh-agent-check passed
+```
+
+#### Documentation Update
+
+```markdown
+# stage-2.md update
+
+## Implementation Differences
+- Used bcrypt instead of SHA256 for password verification
+- Token validity configurable, read from environment variable
+
+## Acceptance Criteria Changes
+- Added: Token validity period configurable
 
 # stage-2-review-log.md
 
 ## Findings
-1. 建议使用 bcrypt → 采纳
-2. JWT 应包含过期时间 → 已满足，无需修改
+1. Recommend using bcrypt → Adopted
+2. JWT should include expiration time → Already satisfied, no changes needed
 
 # 08-autonomous-decisions.md
 
-### 决策 2：使用 bcrypt 作为密码哈希算法
+### Decision 2: Use bcrypt as Password Hashing Algorithm
 
-**背景**：Review 建议使用 bcrypt 替代 SHA256
+**Background**: Review recommended using bcrypt instead of SHA256
 
-**决策内容**：采用 bcrypt 进行密码哈希
+**Decision Content**: Adopt bcrypt for password hashing
 
-**原因**：bcrypt 专为密码存储设计，包含盐值和可调成本
+**Reason**: bcrypt is designed for password storage, includes salt and adjustable cost
 
-**对后续 Stage 的影响**：Stage 3 的 Token 验证需要兼容 bcrypt
+**Impact on Subsequent Stages**: Stage 3's Token verification needs to be compatible with bcrypt
 
 # 12-technical-debt.md
 
-### TD-01: Token 刷新机制待实现
-- 优先级：降级功能 / 模块级
-- 来源：Stage 2 非目标
-- 原始描述："Token 有效期固定为 24 小时，不支持刷新"
-- 建议落地 Stage：Stage 3
+### TD-01: Token Refresh Mechanism to be Implemented
+- Priority: Feature Degradation / Module-level
+- Source: Stage 2 non-goals
+- Original Description: "Token validity fixed at 24 hours, no refresh support"
+- Suggested Landing Stage: Stage 3
 ```
 
 ---
 
-## 修订记录
+## Revision History
 
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| v1.0 | [日期] | 初始版本 | [姓名] |
+| Version | Date | Revision Content | Author |
+|---------|------|------------------|--------|
+| v1.0 | [Date] | Initial version | [Name] |
 
 ---
 
-> **注意**：本规范是 RDD 开发的核心指导，任何变更都需要通过 ADR 记录决策过程。
+> **Note**: This specification is the core guidance for RDD development. Any changes require recording the decision process through ADR.

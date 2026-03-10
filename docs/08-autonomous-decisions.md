@@ -1,1204 +1,1202 @@
-# 自主决策记录 (Autonomous Decisions Record)
+# Autonomous Decisions Record (ADR)
 
-> 本文档记录 RDD 项目中的架构决策和技术选择，确保决策过程可追溯、可理解。
+> This document records architecture decisions and technology choices in the RDD project, ensuring the decision-making process is traceable and understandable.
 
 ---
 
-## ADR 格式说明 (ADR Format Description)
+## ADR Format Description
 
-### 什么是 ADR
+### What is an ADR
 
-ADR (Architecture Decision Record) 是记录架构决策的轻量级文档格式。每个决策记录包含：
+ADR (Architecture Decision Record) is a lightweight document format for recording architecture decisions. Each decision record contains:
 
-- 决策的背景和上下文
-- 做出的决策内容
-- 做出该决策的原因
-- 该决策对后续 Stage 的影响
+- Background and context of the decision
+- The decision content made
+- The reason for making that decision
+- The impact of that decision on subsequent Stages
 
-### ADR 格式模板
+### ADR Format Template
 
 ```markdown
-### 决策 N：[决策标题]
+### Decision N: [Decision Title]
 
-**背景**：是什么让这个决策浮现出来
+**Background**: What triggered this decision
 
-**决策内容**：选择了什么路径
+**Decision Content**: What path was chosen
 
-**原因**：为什么这样选择
+**Reason**: Why this choice was made
 
-**对后续 Stage 的影响**：（不能留空）
+**Impact on Subsequent Stages**: (Cannot be empty)
 ```
 
-### 字段说明
+### Field Descriptions
 
-| 字段 | 必填 | 说明 |
-|------|------|------|
-| 决策编号 | 是 | 格式：决策 1、决策 2 等 |
-| 决策标题 | 是 | 简洁概括决策内容 |
-| 背景 | 是 | 描述触发这个决策的上下文 |
-| 决策内容 | 是 | 明确描述做出的决策 |
-| 原因 | 是 | 解释为什么做出这个决策 |
-| 对后续 Stage 的影响 | 是 | 必须填写，描述对后续工作的影响 |
+| Field | Required | Description |
+|-------|----------|-------------|
+| Decision Number | Yes | Format: Decision 1, Decision 2, etc. |
+| Decision Title | Yes | Concise summary of decision content |
+| Background | Yes | Describe the context that triggered this decision |
+| Decision Content | Yes | Clearly describe the decision made |
+| Reason | Yes | Explain why this decision was made |
+| Impact on Subsequent Stages | Yes | Must be filled in, describe impact on subsequent work |
 
-### 何时记录 ADR
+### When to Record an ADR
 
-以下情况需要记录 ADR：
+Record an ADR in the following situations:
 
-1. **架构决策**：影响系统架构的重大决策
-2. **技术选型**：选择技术栈、框架、库等
-3. **设计权衡**：在多个方案间做出权衡
-4. **假设变更**：核心假设被验证或证伪
-5. **非目标声明**：明确不做某些事情
-6. **技术债决策**：接受技术债的决策
+1. **Architecture Decisions**: Major decisions affecting system architecture
+2. **Technology Selection**: Choosing tech stacks, frameworks, libraries, etc.
+3. **Design Trade-offs**: Making trade-offs between multiple options
+4. **Assumption Changes**: Core assumptions verified or falsified
+5. **Non-goal Declarations**: Explicitly stating what will not be done
+6. **Technical Debt Decisions**: Decisions to accept technical debt
 
-### ADR 编写规范
+### ADR Writing Guidelines
 
 ```
 DO:
-- 每个决策独立记录
-- 背景描述清晰，让新人能理解
-- 决策内容明确，不含糊
-- 原因充分，有理有据
-- 影响具体，指向明确的 Stage
+- Record each decision independently
+- Clear background description so newcomers can understand
+- Unambiguous decision content
+- Well-founded reasons
+- Specific impact pointing to clear Stages
 
 DON'T:
-- "对后续 Stage 影响"留空
-- 记录琐碎的日常决策
-- 决策内容模棱两可
-- 不记录原因或影响
+- Leave "Impact on Subsequent Stages" empty
+- Record trivial daily decisions
+- Ambiguous decision content
+- Not record reasons or impact
 ```
 
 ---
 
-## ADR 索引 (ADR Index)
+## ADR Index
 
-<!-- 在此处添加新的 ADR 索引 -->
+<!-- Add new ADR index here -->
 
-| 编号 | 标题 | 日期 | 相关 Stage | 状态 |
-|------|------|------|------------|------|
-| 决策 1 | Hook 脚本使用 source 引入共享函数 | 2026-03-07 | Stage 1 | 生效 |
-| 决策 2 | Hook 触发通过 rdd-hooks skill 统一管理 | 2026-03-07 | Stage 1 | 生效 |
-| 决策 3 | 使用相对路径和 PROJECT_ROOT 环境变量 | 2026-03-07 | Stage 1 | 生效 |
-| 决策 4 | 凭证使用 ${VAR} 环境变量引用 | 2026-03-07 | Stage 1 | 生效 |
-| 决策 5 | 选择 bats-core 作为 Shell 测试框架 | 2026-03-07 | Stage 2 | 生效 |
-| 决策 6 | 测试分层策略：单元/BDD/E2E 三层测试 | 2026-03-07 | Stage 2 | 生效 |
-| 决策 7 | 错误分类体系：可恢复/不可恢复两大类 | 2026-03-07 | Stage 4 | 生效 |
-| 决策 8 | 重试策略：指数退避 + 抖动 | 2026-03-07 | Stage 4 | 生效 |
-| 决策 9 | 降级策略：五级降级 (Level 0-4) | 2026-03-07 | Stage 4 | 生效 |
-| 决策 10 | 日志格式：结构化 JSON 日志 | 2026-03-07 | Stage 4 | 生效 |
-| 决策 11 | 指标格式：Prometheus 文本格式 | 2026-03-07 | Stage 4 | 生效 |
-| 决策 12 | 熔断器：基于失败计数的熔断模式 | 2026-03-07 | Stage 4 | 生效 |
-| 决策 13 | RBAC 权限模型：三角色设计 (admin/developer/viewer) | 2026-03-07 | Stage 6 | 生效 |
-| 决策 14 | 审计日志采用文件存储 + JSON 格式方案 | 2026-03-07 | Stage 6 | 生效 |
-| 决策 15 | 敏感数据处理：环境变量 + 可选 Vault 集成 | 2026-03-07 | Stage 6 | 生效 |
-| 决策 16 | Shell 脚本安全加固：输入验证 + 注入防护 | 2026-03-07 | Stage 6 | 生效 |
-| 决策 17 | 性能基准测试：自定义 bash 脚本方案 | 2026-03-07 | Stage 5 | 生效 |
-| 决策 18 | 版本管理：语义化版本 + 兼容性矩阵 | 2026-03-07 | Stage 5 | 生效 |
-| 决策 19 | 迁移策略：备份 + 原子迁移 + 回滚支持 | 2026-03-07 | Stage 5 | 生效 |
-| 决策 20 | 兼容性检查：YAML schema 验证 + 破坏性变更检测 | 2026-03-07 | Stage 5 | 生效 |
-| 决策 21 | 安装方式：curl \| sh 一键安装优先 | 2026-03-09 | Stage 8 | 生效 |
-| 决策 22 | Skills 分发：复制到 ~/.claude/skills/ | 2026-03-09 | Stage 8 | 生效 |
-| 决策 23 | 发布渠道：GitHub Release + npm | 2026-03-09 | Stage 9 | 生效 |
-| 决策 24 | 命令命名：rdd (简短命令友好) | 2026-03-09 | Stage 8 | 生效 |
-
----
-
-## ADR 记录
+| Number | Title | Date | Related Stage | Status |
+|--------|-------|------|---------------|--------|
+| Decision 1 | Hook scripts use source to import shared functions | 2026-03-07 | Stage 1 | Active |
+| Decision 2 | Hook triggering managed by rdd-hooks skill | 2026-03-07 | Stage 1 | Active |
+| Decision 3 | Use relative paths and PROJECT_ROOT environment variable | 2026-03-07 | Stage 1 | Active |
+| Decision 4 | Credentials use ${VAR} environment variable references | 2026-03-07 | Stage 1 | Active |
+| Decision 5 | Choose bats-core as Shell testing framework | 2026-03-07 | Stage 2 | Active |
+| Decision 6 | Testing strategy: Unit/BDD/E2E three-layer testing | 2026-03-07 | Stage 2 | Active |
+| Decision 7 | Error classification system: Recoverable/Non-recoverable two categories | 2026-03-07 | Stage 4 | Active |
+| Decision 8 | Retry strategy: Exponential backoff + jitter | 2026-03-07 | Stage 4 | Active |
+| Decision 9 | Degradation strategy: Five-level degradation (Level 0-4) | 2026-03-07 | Stage 4 | Active |
+| Decision 10 | Log format: Structured JSON logs | 2026-03-07 | Stage 4 | Active |
+| Decision 11 | Metrics format: Prometheus text format | 2026-03-07 | Stage 4 | Active |
+| Decision 12 | Circuit breaker: Failure count-based circuit breaker pattern | 2026-03-07 | Stage 4 | Active |
+| Decision 13 | RBAC permission model: Three-role design (admin/developer/viewer) | 2026-03-07 | Stage 6 | Active |
+| Decision 14 | Audit log using file storage + JSON format solution | 2026-03-07 | Stage 6 | Active |
+| Decision 15 | Sensitive data handling: Environment variables + optional Vault integration | 2026-03-07 | Stage 6 | Active |
+| Decision 16 | Shell script security hardening: Input validation + injection protection | 2026-03-07 | Stage 6 | Active |
+| Decision 17 | Performance benchmarking: Custom bash script solution | 2026-03-07 | Stage 5 | Active |
+| Decision 18 | Version management: Semantic versioning + compatibility matrix | 2026-03-07 | Stage 5 | Active |
+| Decision 19 | Migration strategy: Backup + atomic migration + rollback support | 2026-03-07 | Stage 5 | Active |
+| Decision 20 | Compatibility checking: YAML schema validation + breaking change detection | 2026-03-07 | Stage 5 | Active |
+| Decision 21 | Installation method: curl \| sh one-click installation priority | 2026-03-09 | Stage 8 | Active |
+| Decision 22 | Skills distribution: Copy to ~/.claude/skills/ | 2026-03-09 | Stage 8 | Active |
+| Decision 23 | Release channels: GitHub Release + npm | 2026-03-09 | Stage 9 | Active |
+| Decision 24 | Command naming: rdd (short command friendly) | 2026-03-09 | Stage 8 | Active |
 
 ---
 
-### 决策 1：Hook 脚本使用 source 引入共享函数
+## ADR Records
 
-**背景**：Hook 脚本需要调用 notify.sh 中定义的 log_info、log_warn、log_error、send_notification 等函数。当前 Hook 脚本直接调用这些函数但没有 source notify.sh，导致 "command not found" 错误。
+---
 
-**决策内容**：所有 Hook 脚本在开头统一使用 `source "${SCRIPTS_DIR}/notify.sh"` 引入共享函数，并确保 SCRIPTS_DIR 正确设置。
+### Decision 1: Hook Scripts Use Source to Import Shared Functions
 
-**原因**：
-1. 保持代码 DRY（Don't Repeat Yourself）
-2. 便于维护，函数修改只需改一处
-3. 符合 Shell 脚本最佳实践
-4. 便于单元测试
+**Background**: Hook scripts need to call functions defined in notify.sh such as log_info, log_warn, log_error, send_notification. Currently Hook scripts call these functions directly without sourcing notify.sh, resulting in "command not found" errors.
 
-**对后续 Stage 的影响**：
-- Stage 2 测试可以直接测试 notify.sh 函数，无需复制代码
-- 未来新增 Hook 只需 source 即可使用所有函数
-- Stage 3 可依赖稳定的 Hook 机制实现恢复通知
+**Decision Content**: All Hook scripts uniformly use `source "${SCRIPTS_DIR}/notify.sh"` at the beginning to import shared functions, ensuring SCRIPTS_DIR is correctly set.
+
+**Reason**:
+1. Maintain code DRY (Don't Repeat Yourself)
+2. Easy to maintain, function modifications only need to be done in one place
+3. Follows Shell script best practices
+4. Facilitates unit testing
+
+**Impact on Subsequent Stages**:
+- Stage 2 tests can directly test notify.sh functions without copying code
+- Future new Hooks only need to source to use all functions
+- Stage 3 can rely on stable Hook mechanism for recovery notifications
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 1
 
 **Alternatives Considered**:
-1. 每个脚本内定义函数 - 代码重复，维护困难
-2. 使用符号链接 - 不适用于函数，仅适用于文件
+1. Define functions in each script - Code duplication, difficult maintenance
+2. Use symbolic links - Not applicable to functions, only files
 
 ---
 
-### 决策 21：安装方式采用 curl | sh 一键安装优先
+### Decision 21: Installation Method Using curl | sh One-Click Installation Priority
 
-**背景**：用户需要能够轻松安装 RDD Framework，当前没有安装方法。需要选择一种最方便用户的安装方式。
+**Background**: Users need to be able to easily install the RDD Framework, currently there is no installation method. Need to choose the most convenient installation method for users.
 
-**决策内容**：
-1. 首选安装方式：`curl -fsSL https://.../install.sh | sh`
-2. 支持平台：macOS, Linux (x86_64, ARM64)
-3. 安装目录：`~/.rdd-framework/`
-4. 自动配置 PATH 和 Skills
+**Decision Content**:
+1. Preferred installation method: `curl -fsSL https://.../install.sh | sh`
+2. Supported platforms: macOS, Linux (x86_64, ARM64)
+3. Installation directory: `~/.rdd-framework/`
+4. Auto-configure PATH and Skills
 
-**原因**：
-1. 最简单的安装方式，无依赖
-2. 不需要预先安装 Node.js 或其他运行时
-3. 符合主流 CLI 工具安装习惯（如 Homebrew, nvm, rustup）
-4. 脚本可检查依赖并给出友好提示
+**Reason**:
+1. Simplest installation method, no dependencies
+2. No need to pre-install Node.js or other runtimes
+3. Follows mainstream CLI tool installation habits (like Homebrew, nvm, rustup)
+4. Script can check dependencies and provide friendly prompts
 
-**对后续 Stage 的影响**：
-- Stage 8 只需编写安装脚本，无需额外基础设施
-- Stage 9 可扩展 npm 包作为备选安装方式
-- 用户可在 5 分钟内完成安装和首次使用
+**Impact on Subsequent Stages**:
+- Stage 8 only needs to write installation script, no extra infrastructure needed
+- Stage 9 can extend npm package as alternative installation method
+- Users can complete installation and first use within 5 minutes
 
 **Date**: 2026-03-09
 
 **Related Stage**: Stage 8
 
 **Alternatives Considered**:
-1. 仅 npm 包 - 需要 Node.js 环境，限制用户群
-2. 仅 Homebrew - 仅限 macOS 用户
-3. 手动下载 - 用户体验差，易出错
+1. npm package only - Requires Node.js environment, limits user base
+2. Homebrew only - macOS users only
+3. Manual download - Poor user experience, error-prone
 
 ---
 
-### 决策 22：Skills 通过复制方式分发到 ~/.claude/skills/
+### Decision 22: Skills Distributed by Copying to ~/.claude/skills/
 
-**背景**：Claude Code 需要能够识别和使用 RDD skills。需要确定如何将 skills 安装到用户系统。
+**Background**: Claude Code needs to be able to recognize and use RDD skills. Need to determine how to install skills to user systems.
 
-**决策内容**：
-1. 安装时复制 skills 到 `~/.claude/skills/`
-2. 复制 commands 到 `~/.claude/commands/`
-3. 保留原始文件不变，独立副本
-4. 提供 `rdd upgrade` 命令更新 skills
+**Decision Content**:
+1. Copy skills to `~/.claude/skills/` during installation
+2. Copy commands to `~/.claude/commands/`
+3. Keep original files unchanged, independent copies
+4. Provide `rdd upgrade` command to update skills
 
-**原因**：
-1. 最可靠的分发方式，无符号链接跨平台问题
-2. 用户可以自定义 skills 而不影响全局
-3. Claude Code 能够正确识别和加载
-4. 卸载时直接删除目录即可
+**Reason**:
+1. Most reliable distribution method, no cross-platform symlink issues
+2. Users can customize skills without affecting global settings
+3. Claude Code can correctly recognize and load
+4. Uninstallation is simply deleting the directory
 
-**对后续 Stage 的影响**：
-- Stage 8 安装脚本需实现复制逻辑
-- 用户可在项目内 `.claude/skills/` 覆盖全局 skills
-- 支持多版本共存（未来）
+**Impact on Subsequent Stages**:
+- Stage 8 installation script needs to implement copy logic
+- Users can override global skills in project `.claude/skills/`
+- Supports multi-version coexistence (future)
 
 **Date**: 2026-03-09
 
 **Related Stage**: Stage 8
 
 **Alternatives Considered**:
-1. 符号链接 - Windows 兼容性问题
-2. 运行时动态加载 - 需要修改 Claude Code
-3. 项目内 skills - 每个项目需要单独配置
+1. Symbolic links - Windows compatibility issues
+2. Runtime dynamic loading - Requires modifying Claude Code
+3. Project-level skills - Each project needs separate configuration
 
 ---
 
-### 决策 23：发布渠道采用 GitHub Release + npm
+### Decision 23: Release Channels Using GitHub Release + npm
 
-**背景**：需要选择发布渠道让用户获取框架。
+**Background**: Need to choose release channels for users to obtain the framework.
 
-**决策内容**：
-1. 主要渠道：GitHub Release（安装脚本下载源）
-2. 次要渠道：npm 全局包（覆盖 Node.js 用户）
-3. 版本管理：语义化版本，GitHub Releases 管理
+**Decision Content**:
+1. Primary channel: GitHub Release (installation script download source)
+2. Secondary channel: npm global package (covers Node.js users)
+3. Version management: Semantic versioning, GitHub Releases management
 
-**原因**：
-1. GitHub Release 免费、可靠、无需额外配置
-2. npm 覆盖 Node.js 开发者群体
-3. 不依赖付费服务
-4. 版本发布流程简单
+**Reason**:
+1. GitHub Release is free, reliable, no extra configuration needed
+2. npm covers Node.js developer community
+3. No dependency on paid services
+4. Simple release process
 
-**对后续 Stage 的影响**：
-- Stage 8 使用 GitHub Release 作为下载源
-- Stage 9 实现 npm 包发布
-- CI/CD 自动化发布流程
+**Impact on Subsequent Stages**:
+- Stage 8 uses GitHub Release as download source
+- Stage 9 implements npm package publishing
+- CI/CD automated release process
 
 **Date**: 2026-03-09
 
 **Related Stage**: Stage 9
 
 **Alternatives Considered**:
-1. 仅 GitHub Release - 覆盖面有限
-2. 仅 npm - 需要 Node.js 环境
-3. Homebrew + npm + GitHub - 维护成本高
+1. GitHub Release only - Limited coverage
+2. npm only - Requires Node.js environment
+3. Homebrew + npm + GitHub - High maintenance cost
 
 ---
 
-### 决策 24：命令命名采用 rdd（简短命令友好）
+### Decision 24: Command Naming Using rdd (Short Command Friendly)
 
-**背景**：用户需要在命令行使用 RDD 命令，需要确定命令名称。
+**Background**: Users need to use RDD commands on the command line, need to determine the command name.
 
-**决策内容**：
-1. 主命令：`rdd`（简短，易记）
-2. 子命令：`rdd init`, `rdd migrate`, `rdd stage`, `rdd knowledge`
-3. Claude Code skills：保持 `/rdd-*` 格式（由 Claude Code 规范决定）
+**Decision Content**:
+1. Main command: `rdd` (short, memorable)
+2. Subcommands: `rdd init`, `rdd migrate`, `rdd stage`, `rdd knowledge`
+3. Claude Code skills: Keep `/rdd-*` format (determined by Claude Code specification)
 
-**原因**：
-1. 简短命令减少输入，提高效率
-2. 与其他 CLI 工具命名习惯一致
-3. 子命令结构清晰
-4. 易于记忆和使用
+**Reason**:
+1. Short commands reduce typing, improve efficiency
+2. Consistent with other CLI tool naming conventions
+3. Clear subcommand structure
+4. Easy to remember and use
 
-**对后续 Stage 的影响**：
-- Stage 8 安装脚本创建 `rdd` 命令
-- 文档使用 `rdd` 命令示例
-- Skills 保持 `/rdd-init` 格式
+**Impact on Subsequent Stages**:
+- Stage 8 installation script creates `rdd` command
+- Documentation uses `rdd` command examples
+- Skills keep `/rdd-init` format
 
 **Date**: 2026-03-09
 
 **Related Stage**: Stage 8
 
 **Alternatives Considered**:
-1. `rdd-framework` - 过长，输入不便
-2. `rdd-cli` - 不必要的后缀
-3. `@kofj/rdd` - npm scope 命名，不适合 CLI
+1. `rdd-framework` - Too long, inconvenient to type
+2. `rdd-cli` - Unnecessary suffix
+3. `@kofj/rdd` - npm scope naming, not suitable for CLI
 
 ---
 
-### 决策 2：Hook 触发通过 rdd-hooks skill 统一管理
+### Decision 2: Hook Triggering Managed by rdd-hooks Skill
 
-**背景**：当前 Hooks 脚本存在但没有任何机制触发它们。需要在合适的时机调用这些脚本。
+**Background**: Currently Hooks scripts exist but there is no mechanism to trigger them. Need to call these scripts at appropriate times.
 
-**决策内容**：创建 rdd-hooks skill 定义触发规则，各 skill 在适当时机通过环境变量传递参数并调用 Hook 脚本。
+**Decision Content**: Create rdd-hooks skill to define trigger rules, each skill calls Hook scripts at appropriate times through environment variables passing parameters.
 
-**原因**：
-1. 集中管理所有 Hook 触发逻辑
-2. 便于测试和调试
-3. 遵循 RDD 单一职责原则
-4. 各 skill 无需了解 Hook 实现细节
+**Reason**:
+1. Centrally manage all Hook trigger logic
+2. Easy to test and debug
+3. Follows RDD single responsibility principle
+4. Each skill doesn't need to know Hook implementation details
 
-**对后续 Stage 的影响**：
-- Stage 2 可以测试 Hook 触发流程
-- Stage 3 可依赖此机制发送恢复通知
-- Stage 4 可扩展更多 Hook 类型
+**Impact on Subsequent Stages**:
+- Stage 2 can test Hook trigger flow
+- Stage 3 can rely on this mechanism to send recovery notifications
+- Stage 4 can extend more Hook types
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 1
 
 **Alternatives Considered**:
-1. 在每个 skill 中直接调用 - 分散，难维护
-2. 创建独立 Hook 服务 - 过度设计，增加复杂度
+1. Direct calls in each skill - Scattered, hard to maintain
+2. Create independent Hook service - Over-engineering, increases complexity
 
 ---
 
-### 决策 3：使用相对路径和 PROJECT_ROOT 环境变量
+### Decision 3: Use Relative Paths and PROJECT_ROOT Environment Variable
 
-**背景**：当前代码中硬编码了 `/data/works/play/sbd/` 路径，导致框架无法在其他项目中使用。
+**Background**: Current code has hardcoded `/data/works/play/sbd/` path, making the framework unusable in other projects.
 
-**决策内容**：
-1. 所有路径使用相对路径（相对于脚本所在目录）
-2. 支持 PROJECT_ROOT 环境变量覆盖项目根目录
-3. 在 skills 中使用 `.` 或 `${PROJECT_ROOT:-.}` 形式
+**Decision Content**:
+1. All paths use relative paths (relative to script directory)
+2. Support PROJECT_ROOT environment variable to override project root directory
+3. Use `.` or `${PROJECT_ROOT:-.}` form in skills
 
-**原因**：
-1. 使框架可移植到任意项目
-2. 保持向后兼容（默认当前目录）
-3. 符合 12-Factor App 原则
-4. 简化部署流程
+**Reason**:
+1. Makes framework portable to any project
+2. Maintains backward compatibility (defaults to current directory)
+3. Follows 12-Factor App principles
+4. Simplifies deployment process
 
-**对后续 Stage 的影响**：
-- Stage 2 测试可在临时目录运行
-- Stage 4 多项目支持变得简单
-- rdd-init 可直接在新项目创建结构
+**Impact on Subsequent Stages**:
+- Stage 2 tests can run in temporary directories
+- Stage 4 multi-project support becomes simple
+- rdd-init can directly create structure in new projects
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 1
 
 **Alternatives Considered**:
-1. 绝对路径配置文件 - 需要每个项目单独配置
-2. 自动检测项目根 - 不可靠，可能误判
+1. Absolute path configuration file - Requires separate configuration per project
+2. Auto-detect project root - Unreliable, may misjudge
 
 ---
 
-### 决策 4：凭证使用 ${VAR} 环境变量引用
+### Decision 4: Credentials Use ${VAR} Environment Variable References
 
-**背景**：当前 hooks.yml 中 Webhook URL、Bot Token 等敏感信息需要明文存储，存在安全风险。
+**Background**: Current hooks.yml has sensitive information like Webhook URLs, Bot Tokens stored in plaintext, posing security risks.
 
-**决策内容**：支持 `${VAR}` 和 `$VAR` 形式的环境变量引用，配置文件中只存储变量名而非实际值。
+**Decision Content**: Support ${VAR} and $VAR forms of environment variable references, configuration files only store variable names not actual values.
 
-**原因**：
-1. 符合安全最佳实践
-2. 便于 CI/CD 集成
-3. 支持不同环境不同配置
-4. 避免敏感信息泄露到版本控制
+**Reason**:
+1. Follows security best practices
+2. Facilitates CI/CD integration
+3. Supports different environments with different configurations
+4. Avoids sensitive information leaking into version control
 
-**对后续 Stage 的影响**：
-- Stage 2 测试可使用 mock 环境变量
-- Stage 4 CI/CD 集成可直接使用 CI 环境变量
-- 可安全提交配置文件示例
+**Impact on Subsequent Stages**:
+- Stage 2 tests can use mock environment variables
+- Stage 4 CI/CD integration can directly use CI environment variables
+- Can safely commit configuration file examples
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 1
 
 **Alternatives Considered**:
-1. 加密存储 - 增加复杂度，需要密钥管理
-2. 单独 secrets 文件 - 增加配置复杂度
-3. 仅环境变量 - 不便于本地开发
+1. Encrypted storage - Increases complexity, needs key management
+2. Separate secrets file - Increases configuration complexity
+3. Environment variables only - Inconvenient for local development
 
 ---
 
-### 决策 5：选择 bats-core 作为 Shell 测试框架
+### Decision 5: Choose bats-core as Shell Testing Framework
 
-**背景**：Stage 2 需要建立测试体系，为 notify.sh 和 Hook 脚本提供单元测试和 BDD 测试能力。当前没有任何测试框架。
+**Background**: Stage 2 needs to establish a testing system, providing unit testing and BDD testing capabilities for notify.sh and Hook scripts. Currently there is no testing framework.
 
-**决策内容**：选择 bats-core 作为 Shell 脚本测试框架，用于单元测试和 BDD 测试。
+**Decision Content**: Choose bats-core as the Shell script testing framework for unit testing and BDD testing.
 
-**原因**：
-1. 原生 BDD 风格语法（@test "description"），符合 Stage 2 的 BDD 测试需求
-2. TAP (Test Anything Protocol) 输出，易于 CI 集成
-3. 活跃的社区和丰富的文档
-4. 支持环境变量 mock 和函数覆盖
-5. 可扩展通过 bats-support、bats-assert 等库
+**Reason**:
+1. Native BDD style syntax (@test "description"), fits Stage 2 BDD testing needs
+2. TAP (Test Anything Protocol) output, easy CI integration
+3. Active community and rich documentation
+4. Supports environment variable mocking and function overriding
+5. Extensible through bats-support, bats-assert libraries
 
-**对后续 Stage 的影响**：
-- Stage 2：建立完整的单元测试和 BDD 测试体系
-- Stage 3：可测试上下文恢复逻辑
-- Stage 4：CI/CD 可直接使用 bats 输出
+**Impact on Subsequent Stages**:
+- Stage 2: Establish complete unit testing and BDD testing system
+- Stage 3: Can test context recovery logic
+- Stage 4: CI/CD can directly use bats output
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 2
 
 **Alternatives Considered**:
-1. shunit2 - xUnit 风格，不适合 BDD 场景
-2. shellcheck - 静态分析，非测试框架
-3. 自定义测试脚本 - 重复造轮子，功能有限
+1. shunit2 - xUnit style, not suitable for BDD scenarios
+2. shellcheck - Static analysis, not a testing framework
+3. Custom test scripts - Reinventing the wheel, limited functionality
 
 ---
 
-### 决策 6：测试分层策略：单元/BDD/E2E 三层测试
+### Decision 6: Testing Strategy: Unit/BDD/E2E Three-Layer Testing
 
-**背景**：需要为 RDD 框架建立完整测试体系，确保各层级测试覆盖不同的验证需求。
+**Background**: Need to establish a complete testing system for the RDD framework, ensuring tests at different levels cover different verification needs.
 
-**决策内容**：采用三层测试策略：
+**Decision Content**: Adopt a three-layer testing strategy:
 
-1. **单元测试层 (tests/unit/)**：测试单个函数和脚本逻辑
-   - notify.sh 各函数测试
-   - Hook 脚本测试
-   - 工具函数测试
-   - 目标覆盖率 >= 80%
+1. **Unit Test Layer (tests/unit/)**: Test individual functions and script logic
+   - notify.sh function tests
+   - Hook script tests
+   - Utility function tests
+   - Target coverage >= 80%
 
-2. **BDD 测试层 (tests/bdd/)**：测试用户行为场景
-   - Given/When/Then 格式
-   - 验证 Hook 触发流程
-   - 验证通知发送流程
-   - 验证错误处理
+2. **BDD Test Layer (tests/bdd/)**: Test user behavior scenarios
+   - Given/When/Then format
+   - Verify Hook trigger flow
+   - Verify notification sending flow
+   - Verify error handling
 
-3. **E2E 测试层 (tests/e2e/)**：端到端集成测试
-   - 完整工作流测试
-   - 真实环境验证
-   - Agent 行为模拟
+3. **E2E Test Layer (tests/e2e/)**: End-to-end integration testing
+   - Complete workflow testing
+   - Real environment verification
+   - Agent behavior simulation
 
-**原因**：
-1. 分层测试隔离关注点
-2. 单元测试快速反馈，BDD 验证行为，E2E 验证集成
-3. 符合测试金字塔原则
-4. 便于定位问题层级
+**Reason**:
+1. Layered testing isolates concerns
+2. Unit tests for fast feedback, BDD verifies behavior, E2E verifies integration
+3. Follows testing pyramid principle
+4. Facilitates problem level identification
 
-**对后续 Stage 的影响**：
-- Stage 2：实现三层测试框架和基础测试用例
-- Stage 3：可添加上下文恢复的 E2E 测试
-- Stage 4：CI/CD 可分层运行测试
+**Impact on Subsequent Stages**:
+- Stage 2: Implement three-layer testing framework and basic test cases
+- Stage 3: Can add context recovery E2E tests
+- Stage 4: CI/CD can run tests in layers
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 2
 
 **Alternatives Considered**:
-1. 仅单元测试 - 无法验证行为和集成
-2. 仅 E2E 测试 - 反馈慢，调试困难
-3. 无分层 - 测试混乱，职责不清
+1. Unit tests only - Cannot verify behavior and integration
+2. E2E tests only - Slow feedback, difficult debugging
+3. No layers - Testing chaos, unclear responsibilities
 
 ---
 
-### 决策 7：错误分类体系采用可恢复/不可恢复两大类
+### Decision 7: Error Classification System Using Recoverable/Non-recoverable Two Categories
 
-**背景**：Stage 4 需要建立完善的错误处理机制，需要对错误进行分类以决定处理策略。
+**Background**: Stage 4 needs to establish a comprehensive error handling mechanism, need to classify errors to determine handling strategies.
 
-**决策内容**：采用两级错误分类体系：
-1. **可恢复错误 (Recoverable)**：可通过重试、降级或熔断自动处理
-   - 临时性错误：网络超时、服务不可用、限流
-   - 可降级错误：通知渠道失败、模板渲染失败
-   - 需熔断错误：持续失败的通知渠道
+**Decision Content**: Adopt a two-level error classification system:
+1. **Recoverable Errors**: Can be automatically handled through retry, degradation, or circuit breaker
+   - Temporary errors: Network timeout, service unavailable, rate limiting
+   - Degradeable errors: Notification channel failure, template rendering failure
+   - Circuit breaker needed errors: Continuously failing notification channels
 
-2. **不可恢复错误 (Non-Recoverable)**：需要人工干预
-   - 配置错误：格式错误、缺失必需配置
-   - 逻辑错误：无效触发类型、模板语法错误
-   - 环境错误：缺失工具、权限不足
-   - 系统错误：内存不足、磁盘满
+2. **Non-Recoverable Errors**: Require human intervention
+   - Configuration errors: Format errors, missing required configuration
+   - Logic errors: Invalid trigger type, template syntax errors
+   - Environment errors: Missing tools, insufficient permissions
+   - System errors: Out of memory, disk full
 
-**原因**：
-1. 简化错误处理逻辑，二分法清晰易理解
-2. 可恢复错误可自动处理，减少人工干预
-3. 不可恢复错误明确需要人工介入
-4. 符合业界最佳实践
+**Reason**:
+1. Simplifies error handling logic, binary classification is clear and easy to understand
+2. Recoverable errors can be handled automatically, reducing human intervention
+3. Non-recoverable errors clearly need human involvement
+4. Follows industry best practices
 
-**对后续 Stage 的影响**：
-- Stage 5 可基于错误分类进行性能分析
-- Stage 6 审计日志可记录错误分类
-- 所有后续 Stage 都需要使用统一的错误分类
+**Impact on Subsequent Stages**:
+- Stage 5 can perform performance analysis based on error classification
+- Stage 6 audit logs can record error classification
+- All subsequent Stages need to use unified error classification
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 4
 
 **Alternatives Considered**:
-1. 三级分类（可恢复/部分可恢复/不可恢复）- 过于复杂
-2. 多标签分类 - 不便于决策
-3. 无分类 - 混乱，难以处理
+1. Three-level classification (Recoverable/Partially Recoverable/Non-recoverable) - Too complex
+2. Multi-label classification - Not convenient for decision making
+3. No classification - Chaotic, difficult to handle
 
 ---
 
-### 决策 8：重试策略采用指数退避 + 抖动
+### Decision 8: Retry Strategy Using Exponential Backoff + Jitter
 
-**背景**：通知发送等操作可能因临时故障失败，需要自动重试机制。
+**Background**: Operations like notification sending may fail due to temporary faults, need automatic retry mechanism.
 
-**决策内容**：采用指数退避（Exponential Backoff）加抖动（Jitter）的重试策略：
-- 初始延迟：1秒
-- 最大延迟：30秒
-- 退避倍数：2
-- 抖动范围：±50% 随机化
-- 最大重试次数：3次
+**Decision Content**: Adopt exponential backoff plus jitter retry strategy:
+- Initial delay: 1 second
+- Maximum delay: 30 seconds
+- Backoff multiplier: 2
+- Jitter range: ±50% randomization
+- Maximum retry count: 3
 
-**原因**：
-1. 指数退避避免立即重试导致的资源浪费
-2. 抖动防止多个客户端同时重试（惊群效应）
-3. 最大延迟限制避免过长等待
-4. 最大重试次数限制避免无限重试
-5. 符合 AWS/Google Cloud 的最佳实践
+**Reason**:
+1. Exponential backoff avoids resource waste from immediate retries
+2. Jitter prevents thundering herd (multiple clients retrying simultaneously)
+3. Maximum delay limit avoids overly long waits
+4. Maximum retry count limit avoids infinite retries
+5. Follows AWS/Google Cloud best practices
 
-**对后续 Stage 的影响**：
-- Stage 5 性能测试需要考虑重试对延迟的影响
-- 所有网络操作都应使用统一的重试策略
-- Stage 7 文档需要说明重试行为
+**Impact on Subsequent Stages**:
+- Stage 5 performance testing needs to consider retry impact on latency
+- All network operations should use unified retry strategy
+- Stage 7 documentation needs to explain retry behavior
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 4
 
 **Alternatives Considered**:
-1. 固定间隔重试 - 可能导致惊群效应
-2. 线性退避 - 恢复不够快或等待过长
-3. 无重试 - 可靠性差
+1. Fixed interval retry - May cause thundering herd
+2. Linear backoff - Not fast enough recovery or too long wait
+3. No retry - Poor reliability
 
 ---
 
-### 决策 9：降级策略采用五级降级 (Level 0-4)
+### Decision 9: Degradation Strategy Using Five-Level Degradation (Level 0-4)
 
-**背景**：当系统部分功能不可用时，需要优雅降级以保持核心功能可用。
+**Background**: When parts of the system are unavailable, need graceful degradation to maintain core functionality availability.
 
-**决策内容**：采用五级降级策略：
-- **Level 0 (Full)**：全部功能可用，所有通知渠道正常
-- **Level 1 (Reduced)**：主要渠道正常，备用渠道待命
-- **Level 2 (Essential)**：仅关键通知 (P0/P1)，减少重试
-- **Level 3 (Minimal)**：仅 P0 通知，无重试，静态内容
-- **Level 4 (Safe Mode)**：无外部调用，仅本地日志
+**Decision Content**: Adopt five-level degradation strategy:
+- **Level 0 (Full)**: All functionality available, all notification channels normal
+- **Level 1 (Reduced)**: Primary channels normal, standby channels on standby
+- **Level 2 (Essential)**: Only critical notifications (P0/P1), reduced retries
+- **Level 3 (Minimal)**: Only P0 notifications, no retries, static content
+- **Level 4 (Safe Mode)**: No external calls, local logs only
 
-**原因**：
-1. 渐进式降级避免突然失效
-2. 分级明确，便于监控和告警
-3. Level 4 安全模式确保最小可用性
-4. 可基于失败率自动调整降级级别
-5. 便于运维人员快速理解系统状态
+**Reason**:
+1. Progressive degradation avoids sudden failure
+2. Clear levels, easy to monitor and alert
+3. Level 4 safe mode ensures minimum availability
+4. Can automatically adjust degradation level based on failure rate
+5. Easy for operators to quickly understand system state
 
-**对后续 Stage 的影响**：
-- Stage 5 性能测试需要验证各级降级行为
-- Stage 6 权限系统可与降级级别联动
-- Stage 7 运维手册需要说明各级降级的处理方法
+**Impact on Subsequent Stages**:
+- Stage 5 performance testing needs to verify degradation behavior at each level
+- Stage 6 permission system can link with degradation level
+- Stage 7 operations manual needs to explain handling for each degradation level
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 4
 
 **Alternatives Considered**:
-1. 二级降级（正常/降级）- 粒度太粗
-2. 无限级别 - 过于复杂
-3. 无降级机制 - 可靠性差
+1. Two-level degradation (Normal/Degraded) - Too coarse
+2. Infinite levels - Too complex
+3. No degradation mechanism - Poor reliability
 
 ---
 
-### 决策 10：日志格式采用结构化 JSON 日志
+### Decision 10: Log Format Using Structured JSON Logs
 
-**背景**：需要可观测性支持故障排查和性能分析。
+**Background**: Need observability support for troubleshooting and performance analysis.
 
-**决策内容**：采用结构化 JSON 日志格式：
-- 必需字段：timestamp, level, message
-- 上下文字段：component, trace_id, span_id
-- 错误字段：error_code, error_category
-- 性能字段：duration_ms
-- RDD 字段：rdd_stage, rdd_project
+**Decision Content**: Adopt structured JSON log format:
+- Required fields: timestamp, level, message
+- Context fields: component, trace_id, span_id
+- Error fields: error_code, error_category
+- Performance fields: duration_ms
+- RDD fields: rdd_stage, rdd_project
 
-**原因**：
-1. JSON 格式机器可读，便于日志聚合
-2. 结构化字段便于搜索和过滤
-3. trace_id 支持追踪单个请求
-4. 与 ELK、Loki 等主流日志系统兼容
-5. 便于后期分析和监控
+**Reason**:
+1. JSON format is machine-readable, easy for log aggregation
+2. Structured fields easy for searching and filtering
+3. trace_id supports tracing individual requests
+4. Compatible with mainstream log systems like ELK, Loki
+5. Facilitates later analysis and monitoring
 
-**对后续 Stage 的影响**：
-- Stage 5 可利用 duration_ms 进行性能分析
-- Stage 6 审计日志可复用相同格式
-- Stage 7 运维手册需要说明日志格式
+**Impact on Subsequent Stages**:
+- Stage 5 can use duration_ms for performance analysis
+- Stage 6 audit logs can reuse same format
+- Stage 7 operations manual needs to explain log format
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 4
 
 **Alternatives Considered**:
-1. 纯文本日志 - 不便于解析和搜索
-2. CSV 格式 - 字段扩展不便
-3. 二进制格式 - 不便于调试
+1. Plain text logs - Not easy to parse and search
+2. CSV format - Inconvenient field expansion
+3. Binary format - Not easy for debugging
 
 ---
 
-### 决策 11：指标格式采用 Prometheus 文本格式
+### Decision 11: Metrics Format Using Prometheus Text Format
 
-**背景**：需要暴露系统指标以支持监控和告警。
+**Background**: Need to expose system metrics to support monitoring and alerting.
 
-**决策内容**：采用 Prometheus 文本格式暴露指标：
-- Counter 类型：rdd_notifications_total, rdd_errors_total
-- Gauge 类型：rdd_circuit_breaker_state, rdd_degradation_level
-- Histogram 类型：rdd_notification_duration_seconds
-- 输出文件：${RDD_DIR}/cache/metrics.prom
+**Decision Content**: Adopt Prometheus text format to expose metrics:
+- Counter type: rdd_notifications_total, rdd_errors_total
+- Gauge type: rdd_circuit_breaker_state, rdd_degradation_level
+- Histogram type: rdd_notification_duration_seconds
+- Output file: ${RDD_DIR}/cache/metrics.prom
 
-**原因**：
-1. Prometheus 是云原生监控的事实标准
-2. 文本格式简单，无依赖
-3. 支持 Counter/Gauge/Histogram 三种类型
-4. 与 Grafana 等可视化工具兼容
-5. 可被 Prometheus 直接抓取
+**Reason**:
+1. Prometheus is the de facto standard for cloud-native monitoring
+2. Text format is simple, no dependencies
+3. Supports Counter/Gauge/Histogram types
+4. Compatible with visualization tools like Grafana
+5. Can be directly scraped by Prometheus
 
-**对后续 Stage 的影响**：
-- Stage 5 性能测试可利用 Histogram 数据
-- Stage 7 可提供 Grafana Dashboard 模板
-- 未来可添加 HTTP endpoint 支持实时抓取
+**Impact on Subsequent Stages**:
+- Stage 5 performance testing can use Histogram data
+- Stage 7 can provide Grafana Dashboard templates
+- Future can add HTTP endpoint for real-time scraping
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 4
 
 **Alternatives Considered**:
-1. StatsD 格式 - 需要 statsd exporter
-2. OpenTelemetry - 过于复杂
-3. 自定义格式 - 兼容性差
+1. StatsD format - Requires statsd exporter
+2. OpenTelemetry - Too complex
+3. Custom format - Poor compatibility
 
 ---
 
-### 决策 12：熔断器采用基于失败计数的熔断模式
+### Decision 12: Circuit Breaker Using Failure Count-Based Circuit Breaker Pattern
 
-**背景**：当某个通知渠道持续失败时，需要快速失败避免资源浪费。
+**Background**: When a notification channel continuously fails, need fast failure to avoid resource waste.
 
-**决策内容**：采用基于失败计数的熔断器模式：
-- **CLOSED**：正常状态，请求通过
-- **OPEN**：熔断状态，请求直接失败
-- **HALF_OPEN**：半开状态，允许测试请求
+**Decision Content**: Adopt failure count-based circuit breaker pattern:
+- **CLOSED**: Normal state, requests pass through
+- **OPEN**: Circuit breaker state, requests fail directly
+- **HALF_OPEN**: Half-open state, allows test requests
 
-参数配置：
-- 失败阈值：5次连续失败后打开
-- 成功阈值：3次连续成功后关闭
-- 超时时间：60秒后尝试半开
-- 状态存储：JSON 文件
+Parameter configuration:
+- Failure threshold: Open after 5 consecutive failures
+- Success threshold: Close after 3 consecutive successes
+- Timeout: Try half-open after 60 seconds
+- State storage: JSON file
 
-**原因**：
-1. 熔断器防止级联故障
-2. 三态模型简单可靠
-3. 基于计数而非时间窗口，实现简单
-4. JSON 文件存储无需外部依赖
-5. 可独立于其他功能使用
+**Reason**:
+1. Circuit breaker prevents cascading failures
+2. Three-state model is simple and reliable
+3. Count-based rather than time window, simple implementation
+4. JSON file storage requires no external dependencies
+5. Can be used independently of other features
 
-**对后续 Stage 的影响**：
-- Stage 5 可基于熔断器状态进行性能分析
-- Stage 7 运维手册需要说明熔断器状态
-- 后续可扩展为分布式熔断器
+**Impact on Subsequent Stages**:
+- Stage 5 can perform performance analysis based on circuit breaker state
+- Stage 7 operations manual needs to explain circuit breaker states
+- Later can extend to distributed circuit breaker
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 4
 
 **Alternatives Considered**:
-1. 无熔断器 - 故障会持续影响系统
-2. 时间窗口熔断 - 实现复杂，需要滑动窗口
-3. 令牌桶 - 适合限流，不适合熔断
+1. No circuit breaker - Failures will continuously affect system
+2. Time window circuit breaker - Complex implementation, needs sliding window
+3. Token bucket - Suitable for rate limiting, not circuit breaking
 
 ---
 
-### 决策 5：使用 Rust 作为主要开发语言
+### Decision 5: Use Rust as Main Development Language
 
-**背景**：项目需要高性能、内存安全的后端服务，团队有 Rust 开发经验。
+**Background**: Project needs high-performance, memory-safe backend services, team has Rust development experience.
 
-**决策内容**：选择 Rust 作为主要开发语言，配合 Tokio 异步运行时。
+**Decision Content**: Choose Rust as the main development language, with Tokio async runtime.
 
-**原因**：
-1. Rust 提供内存安全保证，减少运行时错误
-2. Tokio 生态成熟，适合构建高性能网络服务
-3. 团队有 Rust 开发经验，学习成本低
-4. 静态类型系统有利于大型项目的维护
+**Reason**:
+1. Rust provides memory safety guarantees, reduces runtime errors
+2. Tokio ecosystem is mature, suitable for building high-performance network services
+3. Team has Rust development experience, low learning cost
+4. Static type system benefits large project maintenance
 
-**对后续 Stage 的影响**：
-- Stage 2：需要引入 Tokio 和相关异步库
-- Stage 3：需要设计异步 API 接口
-- Stage 4：需要考虑 Rust 的部署和分发方案
-
----
-
-### 决策 2：使用 etcd 作为分布式配置存储
-
-**背景**：项目需要分布式配置管理，支持多节点部署。
-
-**决策内容**：选择 etcd 作为分布式配置存储，配合 etcd-client 库。
-
-**原因**：
-1. etcd 提供 CP 特性，适合配置管理场景
-2. 支持 Watch 机制，实时感知配置变更
-3. 提供 Lease 机制，支持分布式锁
-4. 与 Kubernetes 生态兼容
-
-**对后续 Stage 的影响**：
-- Stage 5：需要实现 etcd 连接池管理
-- Stage 6：需要设计配置变更的通知机制
-- Stage 7：需要实现分布式锁保证一致性
+**Impact on Subsequent Stages**:
+- Stage 2: Need to introduce Tokio and related async libraries
+- Stage 3: Need to design async API interfaces
+- Stage 4: Need to consider Rust deployment and distribution solutions
 
 ---
 
-### 示例 ADR (Example ADR)
+### Decision 2: Use etcd as Distributed Configuration Storage
 
-以下是一个完整的 ADR 示例：
+**Background**: Project needs distributed configuration management, supports multi-node deployment.
 
-### 决策 3：采用分层架构设计
+**Decision Content**: Choose etcd as distributed configuration storage, with etcd-client library.
 
-**背景**：项目初期需要确定整体架构风格，以支持后续的功能扩展和维护。
+**Reason**:
+1. etcd provides CP properties, suitable for configuration management scenarios
+2. Supports Watch mechanism, real-time configuration change awareness
+3. Provides Lease mechanism, supports distributed locks
+4. Compatible with Kubernetes ecosystem
 
-**决策内容**：采用分层架构，分为以下层次：
+**Impact on Subsequent Stages**:
+- Stage 5: Need to implement etcd connection pool management
+- Stage 6: Need to design configuration change notification mechanism
+- Stage 7: Need to implement distributed locks for consistency
+
+---
+
+### Example ADR
+
+Below is a complete ADR example:
+
+### Decision 3: Adopt Layered Architecture Design
+
+**Background**: Project needs to determine overall architecture style in the early stage to support subsequent feature expansion and maintenance.
+
+**Decision Content**: Adopt layered architecture, divided into the following layers:
 
 ```
 ┌─────────────────────────────────────┐
-│           API Layer                 │  ← 对外接口
+│           API Layer                 │  ← External interfaces
 ├─────────────────────────────────────┤
-│         Service Layer               │  ← 业务逻辑
+│         Service Layer               │  ← Business logic
 ├─────────────────────────────────────┤
-│         Repository Layer            │  ← 数据访问
+│         Repository Layer            │  ← Data access
 ├─────────────────────────────────────┤
-│         Infrastructure Layer        │  ← 基础设施
+│         Infrastructure Layer        │  ← Infrastructure
 └─────────────────────────────────────┘
 ```
 
-**原因**：
-1. 分层架构职责清晰，便于团队协作
-2. 每层可独立测试，提高代码质量
-3. 便于后续替换底层实现（如数据库）
-4. 符合团队熟悉的架构风格
+**Reason**:
+1. Layered architecture has clear responsibilities, facilitates team collaboration
+2. Each layer can be tested independently, improves code quality
+3. Facilitates future replacement of underlying implementations (like databases)
+4. Matches team's familiar architecture style
 
-**对后续 Stage 的影响**：
-- Stage 1：定义各层接口和依赖关系
-- Stage 2：实现 Infrastructure Layer（日志、配置）
-- Stage 3：实现 Repository Layer（数据访问）
-- Stage 4：实现 Service Layer（核心业务）
-- Stage 5：实现 API Layer（对外接口）
-- 后续 Stage：每层可独立演进，但需注意接口兼容
+**Impact on Subsequent Stages**:
+- Stage 1: Define interfaces and dependencies for each layer
+- Stage 2: Implement Infrastructure Layer (logging, configuration)
+- Stage 3: Implement Repository Layer (data access)
+- Stage 4: Implement Service Layer (core business)
+- Stage 5: Implement API Layer (external interfaces)
+- Subsequent Stages: Each layer can evolve independently, but need attention to interface compatibility
 
-**技术债记录**：
-- TD-02：初期可能存在跨层调用，需要在后续 Stage 中重构
-- 建议 Stage 6 专门处理代码规范化
+**Technical Debt Record**:
+- TD-02: May have cross-layer calls initially, need refactoring in subsequent Stages
+- Suggest Stage 6 specifically handle code standardization
 
 ---
 
-### 决策 13：RBAC 权限模型：三角色设计 (admin/developer/viewer)
+### Decision 13: RBAC Permission Model: Three-Role Design (admin/developer/viewer)
 
-**背景**：RDD Framework 需要权限控制系统来管理不同用户对框架操作的访问权限，确保安全性和合规性。
+**Background**: RDD Framework needs a permission control system to manage different users' access to framework operations, ensuring security and compliance.
 
-**决策内容**：采用基于角色的访问控制 (RBAC) 模型，定义三个角色：
+**Decision Content**: Adopt Role-Based Access Control (RBAC) model, defining three roles:
 
-1. **Admin (管理员)**：
-   - 完全控制权限
-   - 用户和角色管理
-   - 配置修改
-   - 审计日志访问
+1. **Admin**:
+   - Full control permissions
+   - User and role management
+   - Configuration modification
+   - Audit log access
 
-2. **Developer (开发者)**：
-   - 执行 Stage 和测试
-   - 编辑设计文档
-   - 管理技术债
-   - 执行 Hooks
+2. **Developer**:
+   - Execute Stages and tests
+   - Edit design documents
+   - Manage technical debt
+   - Execute Hooks
 
-3. **Viewer (观察者)**：
-   - 只读访问
-   - 查看文档和状态
-   - 查看路线图和进度
+3. **Viewer**:
+   - Read-only access
+   - View documents and status
+   - View roadmap and progress
 
-**原因**：
-1. 三角色设计覆盖 RDD 主要使用场景
-2. 实现简单，配置文件即可管理
-3. 易于理解和维护
-4. 可扩展到更细粒度的 ACL
+**Reason**:
+1. Three-role design covers RDD main use cases
+2. Simple implementation, configuration file management
+3. Easy to understand and maintain
+4. Extensible to finer-grained ACL
 
-**对后续 Stage 的影响**：
-- Stage 7：需要在文档中说明权限配置
-- 生产部署：必须配置 RBAC 后才能部署
-- 未来版本：可能需要扩展到更细粒度的权限控制
+**Impact on Subsequent Stages**:
+- Stage 7: Need to explain permission configuration in documentation
+- Production deployment: Must configure RBAC before deployment
+- Future versions: May need to extend to finer-grained permission control
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 6
 
 **Alternatives Considered**:
-1. ACL (访问控制列表) - 太复杂，初期不需要
-2. ABAC (基于属性的访问控制) - 实现复杂，过度设计
-3. 无权限控制 - 不符合安全合规要求
+1. ACL (Access Control List) - Too complex, not needed initially
+2. ABAC (Attribute-Based Access Control) - Complex implementation, over-engineering
+3. No permission control - Doesn't meet security compliance requirements
 
 ---
 
-### 决策 14：审计日志采用文件存储 + JSON 格式方案
+### Decision 14: Audit Log Using File Storage + JSON Format Solution
 
-**背景**：RDD Framework 需要审计日志来记录所有重要操作，满足安全审计和合规要求。
+**Background**: RDD Framework needs audit logs to record all important operations, meeting security audit and compliance requirements.
 
-**决策内容**：
-1. 采用文件存储审计日志，支持双格式：
-   - 文本格式 (audit.log)：人类可读
-   - JSON 格式 (audit.json)：机器可解析
+**Decision Content**:
+1. Use file storage for audit logs, supporting dual format:
+   - Text format (audit.log): Human readable
+   - JSON format (audit.json): Machine parseable
 
-2. 审计日志格式包含：
-   - who: 操作者
-   - when: 时间戳
-   - what: 操作对象
-   - where: 操作来源
-   - result: 操作结果
+2. Audit log format includes:
+   - who: Operator
+   - when: Timestamp
+   - what: Operation object
+   - where: Operation source
+   - result: Operation result
 
-3. 日志轮转策略：
-   - 单文件最大 10MB
-   - 保留最近 10 个日志文件
-   - 自动压缩归档
+3. Log rotation strategy:
+   - Single file max 10MB
+   - Keep last 10 log files
+   - Automatic compression archiving
 
-**原因**：
-1. 文件存储简单可靠，无需额外依赖
-2. JSON 格式便于日志分析和集成
-3. 双格式兼顾人类阅读和机器处理
-4. 轮转策略防止磁盘空间耗尽
+**Reason**:
+1. File storage is simple and reliable, no extra dependencies
+2. JSON format facilitates log analysis and integration
+3. Dual format balances human reading and machine processing
+4. Rotation strategy prevents disk space exhaustion
 
-**对后续 Stage 的影响**：
-- Stage 7：需要提供日志查询和导出工具
-- 高频场景：可能需要数据库存储方案
-- 日志分析：可集成 ELK 等日志平台
+**Impact on Subsequent Stages**:
+- Stage 7: Need to provide log query and export tools
+- High-frequency scenarios: May need database storage solution
+- Log analysis: Can integrate with log platforms like ELK
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 6
 
 **Alternatives Considered**:
-1. 数据库存储 - 增加依赖，初期不需要
-2. 仅文本格式 - 不利于机器解析
-3. 仅 JSON 格式 - 不便于人工查看
-4. Syslog - 增加配置复杂度
+1. Database storage - Adds dependency, not needed initially
+2. Text format only - Not good for machine parsing
+3. JSON format only - Not convenient for human viewing
+4. Syslog - Increases configuration complexity
 
 ---
 
-### 决策 15：敏感数据处理：环境变量 + 可选 Vault 集成
+### Decision 15: Sensitive Data Handling: Environment Variables + Optional Vault Integration
 
-**背景**：Stage 1 已实现环境变量引用，但需要更强的敏感数据保护机制，包括加密存储和可选的 Vault 集成。
+**Background**: Stage 1 implemented environment variable references, but need stronger sensitive data protection mechanisms, including encrypted storage and optional Vault integration.
 
-**决策内容**：
-1. 环境变量作为主要凭证存储方式（Stage 1 已实现）
-2. 新增强敏感数据加密功能：
-   - AES-256-CBC 加密
-   - 自动密钥生成和管理
-   - 加密/解密命令行工具
+**Decision Content**:
+1. Environment variables as primary credential storage method (implemented in Stage 1)
+2. Add strong sensitive data encryption capability:
+   - AES-256-CBC encryption
+   - Automatic key generation and management
+   - Encrypt/decrypt command line tools
 
-3. 可选 HashiCorp Vault 集成：
-   - 支持 KV v2 secret engine
-   - 支持 Transit 加密服务
-   - 自动降级到环境变量
+3. Optional HashiCorp Vault integration:
+   - Support KV v2 secret engine
+   - Support Transit encryption service
+   - Automatic fallback to environment variables
 
-4. 数据脱敏策略：
-   - 密码完全遮蔽
-   - Token 显示首尾各 4 字符
-   - URL 遮蔽凭证部分
+4. Data masking strategy:
+   - Passwords completely masked
+   - Tokens show first and last 4 characters
+   - URLs mask credential portion
 
-**原因**：
-1. 环境变量是云原生标准做法
-2. Vault 是业界标准的密钥管理方案
-3. 可选集成降低使用门槛
-4. 分层安全策略满足不同安全需求
+**Reason**:
+1. Environment variables are cloud-native standard practice
+2. Vault is industry-standard secret management solution
+3. Optional integration lowers barrier to use
+4. Layered security strategy meets different security needs
 
-**对后续 Stage 的影响**：
-- Stage 7：需要文档说明 Vault 配置方法
-- 生产部署：建议启用 Vault 集成
-- 安全审计：需验证敏感数据保护措施
+**Impact on Subsequent Stages**:
+- Stage 7: Need documentation explaining Vault configuration method
+- Production deployment: Recommend enabling Vault integration
+- Security audit: Need to verify sensitive data protection measures
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 6
 
 **Alternatives Considered**:
-1. 仅环境变量 - 安全性不足，不支持轮换
-2. 强制 Vault - 增加部署复杂度
-3. 自建密钥管理 - 重复造轮子，安全风险
-4. 配置文件加密 - 不便于 CI/CD 集成
+1. Environment variables only - Insufficient security, no rotation support
+2. Mandatory Vault - Increases deployment complexity
+3. Custom key management - Reinventing the wheel, security risk
+4. Configuration file encryption - Not convenient for CI/CD integration
 
 ---
 
-### 决策 16：Shell 脚本安全加固：输入验证 + 注入防护
+### Decision 16: Shell Script Security Hardening: Input Validation + Injection Protection
 
-**背景**：RDD Framework 的核心逻辑由 Shell 脚本实现，需要防止常见的 Shell 脚本安全漏洞，特别是命令注入和路径遍历。
+**Background**: RDD Framework's core logic is implemented by Shell scripts, need to prevent common Shell script security vulnerabilities, especially command injection and path traversal.
 
-**决策内容**：
-1. 输入验证机制：
-   - 字母数字验证 (alphanumeric)
-   - 路径验证（防止路径遍历）
-   - 命令验证（防止命令注入）
-   - URL/Email 格式验证
+**Decision Content**:
+1. Input validation mechanism:
+   - Alphanumeric validation
+   - Path validation (prevent path traversal)
+   - Command validation (prevent command injection)
+   - URL/Email format validation
 
-2. 注入防护：
-   - 危险字符过滤 (;、|、&、$()、`` 等)
-   - YAML/JSON 转义
-   - 安全文件操作
+2. Injection protection:
+   - Dangerous character filtering (;, |, &, $(), `` etc.)
+   - YAML/JSON escaping
+   - Safe file operations
 
-3. 安全配置检查：
-   - 文件权限检查
-   - 凭证暴露检查
-   - RBAC 配置检查
-   - 审计日志检查
+3. Security configuration checking:
+   - File permission checking
+   - Credential exposure checking
+   - RBAC configuration checking
+   - Audit log checking
 
-**原因**：
-1. Shell 脚本是安全薄弱环节
-2. 输入验证是防止注入的第一道防线
-3. 自动化检查确保安全配置一致性
-4. 符合安全最佳实践
+**Reason**:
+1. Shell scripts are security weak points
+2. Input validation is first line of defense against injection
+3. Automated checking ensures security configuration consistency
+4. Follows security best practices
 
-**对后续 Stage 的影响**：
-- Stage 2：测试需覆盖安全验证场景
-- Stage 7：需提供安全配置指南
-- 所有脚本：需应用安全验证函数
+**Impact on Subsequent Stages**:
+- Stage 2: Tests need to cover security validation scenarios
+- Stage 7: Need to provide security configuration guide
+- All scripts: Need to apply security validation functions
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 6
 
 **Alternatives Considered**:
-1. 重写为 Python/Rust - 工作量大，影响兼容性
-2. 仅依赖外部安全扫描 - 不能预防运行时攻击
-3. 沙箱执行 - 增加复杂度，限制功能
+1. Rewrite in Python/Rust - Large workload, affects compatibility
+2. Rely only on external security scanning - Cannot prevent runtime attacks
+3. Sandbox execution - Increases complexity, limits functionality
 
 ---
 
-### 决策 17：性能基准测试采用自定义 bash 脚本方案
+### Decision 17: Performance Benchmarking Using Custom Bash Script Solution
 
-**背景**：Stage 5 需要建立性能基准测试体系，测量 Hook 触发延迟、通知发送延迟和内存占用，确保性能指标达标。
+**Background**: Stage 5 needs to establish a performance benchmarking system, measuring Hook trigger latency, notification sending latency, and memory usage, ensuring performance metrics meet standards.
 
-**决策内容**：采用自定义 bash 脚本 (benchmark.sh) 实现性能基准测试：
-- 使用 bash 内置的 date +%s%N 获取纳秒级时间戳
-- 通过 /proc/$PID/status 获取内存占用
-- 支持多次迭代计算统计数据 (min/max/avg/median/p95/p99)
-- 输出 JSON 格式报告便于 CI 集成
+**Decision Content**: Use custom bash scripts (benchmark.sh) to implement performance benchmarking:
+- Use bash built-in date +%s%N to get nanosecond timestamps
+- Get memory usage through /proc/$PID/status
+- Support multiple iterations to calculate statistics (min/max/avg/median/p95/p99)
+- Output JSON format report for CI integration
 
-**原因**：
-1. 无需额外依赖，bash 原生支持
-2. 与 RDD 现有脚本风格一致
-3. 轻量级，不增加部署复杂度
-4. 可直接集成到 Taskfile
-5. JSON 输出支持 CI/CD 管道
+**Reason**:
+1. No extra dependencies needed, bash native support
+2. Consistent with RDD existing script style
+3. Lightweight, doesn't increase deployment complexity
+4. Can be directly integrated into Taskfile
+5. JSON output supports CI/CD pipelines
 
-**对后续 Stage 的影响**：
-- Stage 7：可在 CI 中自动运行性能回归测试
-- 性能数据可用于生成性能报告
-- 可与监控系统集成实现持续性能追踪
+**Impact on Subsequent Stages**:
+- Stage 7: Can automatically run performance regression tests in CI
+- Performance data can be used to generate performance reports
+- Can integrate with monitoring systems for continuous performance tracking
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 5
 
 **Alternatives Considered**:
-1. 使用 hyperfine - 需要安装外部工具
-2. 使用 Python + timeit - 增加 Python 依赖
-3. 使用 shell 内置 time - 精度不足
+1. Use hyperfine - Need to install external tool
+2. Use Python + timeit - Adds Python dependency
+3. Use shell built-in time - Insufficient precision
 
 ---
 
-### 决策 18：版本管理采用语义化版本 + 兼容性矩阵
+### Decision 18: Version Management Using Semantic Versioning + Compatibility Matrix
 
-**背景**：RDD Framework 需要版本管理系统来跟踪发布版本、管理兼容性和支持升级迁移。
+**Background**: RDD Framework needs a version management system to track release versions, manage compatibility, and support upgrade migrations.
 
-**决策内容**：采用语义化版本 (SemVer) 配合兼容性矩阵：
-- 版本格式：MAJOR.MINOR.PATCH[-PRERELEASE]
-- VERSION 文件存储当前版本和兼容范围
-- 提供版本比较、兼容性检查、版本升级等工具函数
-- 兼容性矩阵定义版本间的兼容关系
+**Decision Content**: Adopt Semantic Versioning (SemVer) with compatibility matrix:
+- Version format: MAJOR.MINOR.PATCH[-PRERELEASE]
+- VERSION file stores current version and compatibility range
+- Provide version comparison, compatibility checking, version upgrade utility functions
+- Compatibility matrix defines compatibility relationships between versions
 
-**原因**：
-1. SemVer 是业界标准，开发者熟悉
-2. 兼容性矩阵明确版本升级路径
-3. VERSION 文件简单可靠，无外部依赖
-4. 版本比较逻辑可完全在 bash 中实现
-5. 支持预发布版本 (alpha/beta/rc)
+**Reason**:
+1. SemVer is industry standard, developers are familiar with it
+2. Compatibility matrix clarifies version upgrade paths
+3. VERSION file is simple and reliable, no external dependencies
+4. Version comparison logic can be fully implemented in bash
+5. Supports pre-release versions (alpha/beta/rc)
 
-**对后续 Stage 的影响**：
-- Stage 7：CI/CD 可自动更新版本号
-- 发布流程可自动化版本升级
-- 用户可根据兼容性矩阵选择升级版本
+**Impact on Subsequent Stages**:
+- Stage 7: CI/CD can automatically update version numbers
+- Release process can automate version upgrades
+- Users can choose upgrade version based on compatibility matrix
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 5
 
 **Alternatives Considered**:
-1. Git tags 作为版本 - 需要 git 环境
-2. 自动递增版本号 - 无法表达破坏性变更
-3. 日期版本 (CalVer) - 不适合库/框架
+1. Git tags as versions - Requires git environment
+2. Auto-increment version numbers - Cannot express breaking changes
+3. Date versioning (CalVer) - Not suitable for libraries/frameworks
 
 ---
 
-### 决策 19：迁移策略采用备份 + 原子迁移 + 回滚支持
+### Decision 19: Migration Strategy Using Backup + Atomic Migration + Rollback Support
 
-**背景**：用户升级 RDD 版本时需要安全可靠的迁移机制，确保数据不丢失且可回滚。
+**Background**: Users need a safe and reliable migration mechanism when upgrading RDD versions, ensuring no data loss and rollback capability.
 
-**决策内容**：采用三阶段迁移策略：
-1. **预检阶段**：检查前置条件、磁盘空间、权限
-2. **备份阶段**：创建完整备份，记录迁移元数据
-3. **执行阶段**：原子更新，失败自动回滚
+**Decision Content**: Adopt three-phase migration strategy:
+1. **Pre-check phase**: Check prerequisites, disk space, permissions
+2. **Backup phase**: Create complete backup, record migration metadata
+3. **Execution phase**: Atomic update, automatic rollback on failure
 
-支持特性：
-- 迁移前自动备份关键配置
-- 迁移脚本按版本组织 (.rdd/migrations/)
-- 迁移日志记录所有操作
-- 支持一键回滚到上一个版本
+Supported features:
+- Automatic backup of key configurations before migration
+- Migration scripts organized by version (.rdd/migrations/)
+- Migration log records all operations
+- Support one-click rollback to previous version
 
-**原因**：
-1. 备份确保数据安全，可恢复
-2. 原子迁移保证一致性
-3. 回滚机制降低升级风险
-4. 迁移日志便于审计和故障排查
-5. 分阶段设计便于调试和扩展
+**Reason**:
+1. Backup ensures data safety, recoverable
+2. Atomic migration guarantees consistency
+3. Rollback mechanism reduces upgrade risk
+4. Migration logs facilitate audit and troubleshooting
+5. Phased design facilitates debugging and extension
 
-**对后续 Stage 的影响**：
-- Stage 7：可在 CI 中自动测试迁移流程
-- 提供迁移文档和最佳实践指南
-- 可扩展支持数据库迁移（如需要）
+**Impact on Subsequent Stages**:
+- Stage 7: Can automatically test migration process in CI
+- Provide migration documentation and best practice guides
+- Can extend to support database migration (if needed)
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 5
 
 **Alternatives Considered**:
-1. 仅提示用户手动备份 - 用户体验差
-2. 无回滚支持的迁移 - 风险高
-3. 外部迁移工具 - 增加依赖
+1. Only prompt user for manual backup - Poor user experience
+2. Migration without rollback support - High risk
+3. External migration tools - Adds dependencies
 
 ---
 
-### 决策 20：兼容性检查采用 YAML schema 验证 + 破坏性变更检测
+### Decision 20: Compatibility Checking Using YAML Schema Validation + Breaking Change Detection
 
-**背景**：需要验证用户配置文件与当前版本 RDD 兼容，及时发现配置问题和潜在破坏性变更。
+**Background**: Need to verify user configuration files are compatible with current RDD version, timely discover configuration issues and potential breaking changes.
 
-**决策内容**：实现多维度兼容性检查：
-1. **Schema 验证**：检查必需字段、字段类型、有效值
-2. **版本兼容性**：检查配置版本与框架版本兼容性
-3. **破坏性变更检测**：识别版本间的破坏性变更
-4. **废弃警告**：提示即将移除的功能
-5. **自动修复**：对简单问题提供自动修复能力
+**Decision Content**: Implement multi-dimensional compatibility checking:
+1. **Schema Validation**: Check required fields, field types, valid values
+2. **Version Compatibility**: Check configuration version compatibility with framework version
+3. **Breaking Change Detection**: Identify breaking changes between versions
+4. **Deprecation Warnings**: Prompt for features about to be removed
+5. **Auto-fix**: Provide auto-fix capability for simple issues
 
-**原因**：
-1. Schema 验证提前发现配置错误
-2. 破坏性变更检测帮助用户规划升级
-3. 废弃警告给用户迁移时间
-4. 自动修复减少用户手动操作
-5. 综合检查提高系统稳定性
+**Reason**:
+1. Schema validation discovers configuration errors early
+2. Breaking change detection helps users plan upgrades
+3. Deprecation warnings give users migration time
+4. Auto-fix reduces user manual operations
+5. Comprehensive checking improves system stability
 
-**对后续 Stage 的影响**：
-- Stage 7：可集成到 CI 流程自动检查
-- 配置验证可防止运行时错误
-- 可扩展支持更多配置格式
+**Impact on Subsequent Stages**:
+- Stage 7: Can integrate into CI flow for automatic checking
+- Configuration validation can prevent runtime errors
+- Can extend to support more configuration formats
 
 **Date**: 2026-03-07
 
 **Related Stage**: Stage 5
 
 **Alternatives Considered**:
-1. 仅版本号检查 - 无法发现配置问题
-2. 外部 schema 验证工具 - 增加依赖
-3. 无兼容性检查 - 用户体验差，易出错
+1. Version number check only - Cannot discover configuration issues
+2. External schema validation tools - Adds dependencies
+3. No compatibility checking - Poor user experience, error-prone
 
 ---
 
-### 决策 17：Handoff 文档使用 Markdown 格式存储在 .rdd/cache/handoff.md
+### Decision 17: Handoff Document Using Markdown Format Stored in .rdd/cache/handoff.md
 
-**背景**：Stage 3 需要实现上下文恢复系统，需要确定 Handoff 文档的存储格式和位置。
+**Background**: Stage 3 needs to implement a context recovery system, need to determine the storage format and location of Handoff documents.
 
-**决策内容**：
-1. **存储格式**：采用 Markdown 格式，便于 Agent 和人类阅读
-2. **存储位置**：`.rdd/cache/handoff.md`，与 Checkpoint 文件同目录
-3. **文档结构**：
-   - Current Progress (当前进度)
-   - Completed Evidence (已完成证据)
-   - Blockers and Risks (阻塞和风险)
-   - Next Single Action (下一步行动)
-   - Degradation Strategy (降级策略)
-   - Recovery Instructions (恢复指令)
+**Decision Content**:
+1. **Storage Format**: Use Markdown format, easy for Agent and human reading
+2. **Storage Location**: `.rdd/cache/handoff.md`, same directory as Checkpoint files
+3. **Document Structure**:
+   - Current Progress
+   - Completed Evidence
+   - Blockers and Risks
+   - Next Single Action
+   - Degradation Strategy
+   - Recovery Instructions
 
-**原因**：
-1. Markdown 格式易于 Agent 解析和生成
-2. 纯文本格式无需额外依赖
-3. 与 CLAUDE.md 风格一致
-4. 便于版本控制和差异比较
-5. 存储在 cache 目录可被 gitignore
+**Reason**:
+1. Markdown format is easy for Agent to parse and generate
+2. Plain text format requires no extra dependencies
+3. Consistent with CLAUDE.md style
+4. Facilitates version control and diff comparison
+5. Storing in cache directory can be gitignored
 
-**对后续 Stage 的影响**：
-- Stage 4 CI/CD 可直接读取 Handoff 状态
-- 未来可扩展支持多项目 Handoff
-- 可集成到通知系统
+**Impact on Subsequent Stages**:
+- Stage 4 CI/CD can directly read Handoff status
+- Future can extend to support multi-project Handoff
+- Can integrate with notification system
 
 **Date**: 2026-03-08
 
 **Related Stage**: Stage 3
 
 **Alternatives Considered**:
-1. JSON 格式 - 不便于人类阅读
-2. YAML 格式 - 需要 YAML 解析器
-3. 存储在 docs 目录 - 会污染版本历史
+1. JSON format - Not convenient for human reading
+2. YAML format - Requires YAML parser
+3. Store in docs directory - Would pollute version history
 
 ---
 
-### 决策 18：Checkpoint 使用 JSON 格式存储在 .rdd/cache/checkpoints.json
+### Decision 18: Checkpoint Using JSON Format Stored in .rdd/cache/checkpoints.json
 
-**背景**：Stage 3 需要保存执行状态以便恢复，需要确定 Checkpoint 的存储格式和结构。
+**Background**: Stage 3 needs to save execution state for recovery, need to determine Checkpoint storage format and structure.
 
-**决策内容**：
-1. **存储格式**：JSON 格式，便于程序解析
-2. **存储位置**：`.rdd/cache/checkpoints.json`
-3. **数据结构**：
-   - version: 格式版本
-   - project: 项目信息
-   - stage: 当前 Stage 信息
-   - gates: Gate 完成状态
-   - decisions: 决策历史
-   - blockers: 阻塞项
-   - tech_debt: 技术债状态
-   - next_steps: 下一步
-   - timestamp: 时间戳
-   - recovery_count: 恢复次数
+**Decision Content**:
+1. **Storage Format**: JSON format, easy for program parsing
+2. **Storage Location**: `.rdd/cache/checkpoints.json`
+3. **Data Structure**:
+   - version: Format version
+   - project: Project information
+   - stage: Current Stage information
+   - gates: Gate completion status
+   - decisions: Decision history
+   - blockers: Blocking items
+   - tech_debt: Technical debt status
+   - next_steps: Next steps
+   - timestamp: Timestamp
+   - recovery_count: Recovery count
 
-**原因**：
-1. JSON 是 Shell 脚本可解析的标准格式
-2. 结构化数据便于程序处理
-3. 支持增量更新
-4. 可扩展添加新字段
-5. 与 Handoff 文档互补
+**Reason**:
+1. JSON is a standard format parsable by Shell scripts
+2. Structured data easy for program processing
+3. Supports incremental updates
+4. Extensible to add new fields
+5. Complements Handoff document
 
-**对后续 Stage 的影响**：
-- Stage 4 可基于 Checkpoint 实现断点续传
-- Stage 5 可基于 Checkpoint 生成进度报告
-- 未来可支持分布式 Checkpoint 同步
+**Impact on Subsequent Stages**:
+- Stage 4 can implement checkpoint resume based on Checkpoint
+- Stage 5 can generate progress reports based on Checkpoint
+- Future can support distributed Checkpoint sync
 
 **Date**: 2026-03-08
 
 **Related Stage**: Stage 3
 
 **Alternatives Considered**:
-1. SQLite 数据库 - 增加依赖
-2. 纯文本格式 - 不便于结构化查询
-3. 多文件存储 - 增加管理复杂度
+1. SQLite database - Adds dependency
+2. Plain text format - Not convenient for structured queries
+3. Multi-file storage - Increases management complexity
 
 ---
 
-### 决策 19：恢复协议在 CLAUDE.md 中定义会话启动协议
+### Decision 19: Recovery Protocol Defined in CLAUDE.md Session Startup Protocol
 
-**背景**：Stage 3 需要实现 Compact 后的自动恢复，需要确定恢复协议的定义位置和触发机制。
+**Background**: Stage 3 needs to implement automatic recovery after Compact, need to determine where to define the recovery protocol and trigger mechanism.
 
-**决策内容**：
-1. **协议位置**：在 CLAUDE.md 中定义 Compact Recovery Protocol 章节
-2. **检测机制**：通过检查 `.rdd/cache/handoff.md` 是否存在判断是否需要恢复
-3. **恢复步骤**：
-   - 读取 Handoff 文档
-   - 加载 Checkpoint 状态
-   - 验证环境一致性
-   - 从上次中断点继续
-   - 确认恢复完成
+**Decision Content**:
+1. **Protocol Location**: Define Compact Recovery Protocol section in CLAUDE.md
+2. **Detection Mechanism**: Check if `.rdd/cache/handoff.md` exists to determine if recovery is needed
+3. **Recovery Steps**:
+   - Read Handoff document
+   - Load Checkpoint state
+   - Verify environment consistency
+   - Resume from last interruption point
+   - Confirm recovery complete
 
-**原因**：
-1. CLAUDE.md 是 Agent 的入口文档
-2. 会话启动时必然读取 CLAUDE.md
-3. 检测机制简单可靠
-4. 不需要修改 Agent 核心逻辑
-5. 文档化便于理解和维护
+**Reason**:
+1. CLAUDE.md is the Agent's entry document
+2. CLAUDE.md is always read at session startup
+3. Detection mechanism is simple and reliable
+4. No need to modify Agent core logic
+5. Documentation facilitates understanding and maintenance
 
-**对后续 Stage 的影响**：
-- 所有 Agent 都能自动支持恢复
-- 可扩展支持更多恢复场景
-- 未来可集成到 Agent 训练
+**Impact on Subsequent Stages**:
+- All Agents can automatically support recovery
+- Can extend to support more recovery scenarios
+- Future can integrate into Agent training
 
 **Date**: 2026-03-08
 
 **Related Stage**: Stage 3
 
 **Alternatives Considered**:
-1. 独立恢复脚本 - Agent 需要主动调用
-2. 环境变量标记 - 可能被覆盖
-3. Git hook 触发 - 与版本控制耦合
+1. Independent recovery script - Agent needs to actively call
+2. Environment variable marker - May be overwritten
+3. Git hook trigger - Coupled with version control
 
 ---
 
-### 决策 20：Handoff 自动触发采用三种触发机制
+### Decision 20: Handoff Auto-Trigger Using Three Trigger Mechanisms
 
-**背景**：Stage 3 需要确定何时自动生成 Handoff 文档，以确保上下文不会丢失。
+**Background**: Stage 3 needs to determine when to automatically generate Handoff documents to ensure context is not lost.
 
-**决策内容**：实现三种自动触发机制：
-1. **Gate 完成触发**：任何 Gate 完成后自动生成 Handoff
-2. **决策触发**：重要决策（ADR）记录后更新 Handoff
-3. **定时触发**：30 分钟无 Checkpoint 更新时自动生成
+**Decision Content**: Implement three automatic trigger mechanisms:
+1. **Gate Completion Trigger**: Auto-generate Handoff after any Gate completes
+2. **Decision Trigger**: Update Handoff after recording important decisions (ADR)
+3. **Timer Trigger**: Auto-generate after 30 minutes without Checkpoint update
 
-**原因**：
-1. Gate 完成是重要里程碑，应该记录
-2. 决策影响后续工作，需要记录上下文
-3. 定时触发防止长时间运行任务丢失进度
-4. 三种触发机制互补，覆盖不同场景
-5. 可通过任务命令手动触发
+**Reason**:
+1. Gate completion is an important milestone, should be recorded
+2. Decisions affect subsequent work, need to record context
+3. Timer trigger prevents losing progress in long-running tasks
+4. Three trigger mechanisms complement each other, covering different scenarios
+5. Can be manually triggered via task command
 
-**对后续 Stage 的影响**：
-- Stage 4 可扩展更多触发条件
-- 未来可支持自定义触发规则
-- 可集成到 CI/CD 流水线
+**Impact on Subsequent Stages**:
+- Stage 4 can extend more trigger conditions
+- Future can support custom trigger rules
+- Can integrate into CI/CD pipeline
 
 **Date**: 2026-03-08
 
 **Related Stage**: Stage 3
 
 **Alternatives Considered**:
-1. 仅手动触发 - 容易遗忘
-2. 仅定时触发 - 可能错过重要节点
-3. 所有操作后触发 - 过于频繁，影响性能
+1. Manual trigger only - Easy to forget
+2. Timer trigger only - May miss important milestones
+3. Trigger after every operation - Too frequent, affects performance
 
 ---
 
-## ADR 废弃记录
+## ADR Deprecation Records
 
-当决策不再适用时，在此记录废弃原因：
+When decisions are no longer applicable, record the deprecation reason here:
 
-### [决策编号] 废弃记录
+### [Decision Number] Deprecation Record
 
-**废弃日期**：[日期]
+**Deprecation Date**: [Date]
 
-**废弃原因**：[说明为什么废弃这个决策]
+**Deprecation Reason**: [Explain why this decision is deprecated]
 
-**替代方案**：[新的决策或方案]
+**Alternative Solution**: [New decision or solution]
 
-**影响评估**：[废弃后对现有代码的影响]
-
----
-
-## 修订记录
-
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| v1.0 | [日期] | 初始版本 | [姓名] |
+**Impact Assessment**: [Impact on existing code after deprecation]
 
 ---
 
-> **重要**：所有架构决策必须在此记录。"对后续 Stage 的影响"字段不能留空，这是 ADR 的核心价值所在。
+## Revision History
+
+| Version | Date | Revision Content | Author |
+|---------|------|------------------|--------|
+| v1.0 | [Date] | Initial version | [Name] |
+
+---
 
 ### Decision: Hypothesis Invalidated (Stage unknown)
 
@@ -1215,8 +1213,10 @@ DON'T:
 - Dependent stages may need to be reevaluated
 - Roadmap may need adjustment
 
-**Date**: 2026-03-07
+**Date**: 2026-03-10
 **Related Stage**: Stage unknown
+
+
 ### Decision: Hypothesis Invalidated (Stage unknown)
 
 **Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
@@ -1232,8 +1232,10 @@ DON'T:
 - Dependent stages may need to be reevaluated
 - Roadmap may need adjustment
 
-**Date**: 2026-03-07
+**Date**: 2026-03-10
 **Related Stage**: Stage unknown
+
+
 ### Decision: Hypothesis Invalidated (Stage unknown)
 
 **Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
@@ -1249,8 +1251,10 @@ DON'T:
 - Dependent stages may need to be reevaluated
 - Roadmap may need adjustment
 
-**Date**: 2026-03-07
+**Date**: 2026-03-10
 **Related Stage**: Stage unknown
+
+
 ### Decision: Hypothesis Invalidated (Stage unknown)
 
 **Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
@@ -1266,805 +1270,6 @@ DON'T:
 - Dependent stages may need to be reevaluated
 - Roadmap may need adjustment
 
-**Date**: 2026-03-07
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-08
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-09
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-09
-**Related Stage**: Stage unknown
-### Decision: Hypothesis Invalidated (Stage unknown)
-
-**Background**: During Stage unknown, testing revealed that a core hypothesis was invalid.
-
-**Hypothesis**: Unknown
-
-**Invalidation Reason**: Unknown
-
-**Evidence**: No evidence provided
-
-**Impact on Subsequent Stages**:
-- This stage may need to be redesigned
-- Dependent stages may need to be reevaluated
-- Roadmap may need adjustment
-
-**Date**: 2026-03-09
+**Date**: 2026-03-10
 **Related Stage**: Stage unknown
 

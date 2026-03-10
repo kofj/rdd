@@ -1,97 +1,97 @@
-# RDD Framework v1.0 用户可用性 Roadmap
+# RDD Framework v1.0 User Readiness Roadmap
 
-> 目标：让用户能够一键安装并在 Claude Code 中使用 RDD Framework
+> Goal: Enable users to install with one click and use RDD Framework in Claude Code
 
 ---
 
-## 当前状态评估
+## Current Status Assessment
 
-### ✅ 已完成
+### ✅ Completed
 
-| 组件 | 状态 | 说明 |
-|------|------|------|
-| 框架核心代码 | ✅ | 16 脚本 + 8 Hooks |
-| Skills 定义 | ✅ | 13 个 skills 已定义 |
-| Commands 定义 | ✅ | 6 个 commands 已定义 |
-| 文档体系 | ✅ | 用户指南 + 运维手册 |
-| 测试覆盖 | ✅ | 867 测试 100% 通过 |
-| CI/CD 模板 | ✅ | GitHub Actions + GitLab CI |
-| 示例项目 | ✅ | simple-project + multi-stage |
+| Component | Status | Description |
+|-----------|--------|-------------|
+| Framework Core Code | ✅ | 16 scripts + 8 Hooks |
+| Skills Definition | ✅ | 13 skills defined |
+| Commands Definition | ✅ | 6 commands defined |
+| Documentation System | ✅ | User guide + Operations manual |
+| Test Coverage | ✅ | 867 tests 100% passing |
+| CI/CD Templates | ✅ | GitHub Actions + GitLab CI |
+| Example Projects | ✅ | simple-project + multi-stage |
 
-### ❌ 用户可用性缺口
+### ❌ User Readiness Gaps
 
-| 缺口 | 影响 | 优先级 |
-|------|------|--------|
-| **无安装方法** | 用户无法获取框架 | P0 |
-| **Skills 不可用** | Claude Code 无法调用 skills | P0 |
-| **无初始化命令** | 用户无法快速开始新项目 | P1 |
-| **文档无安装指引** | README 缺少安装步骤 | P1 |
-| **无版本发布** | 无发布包/版本标签 | P1 |
-| **无 npm/homebrew** | 非标准安装渠道 | P2 |
+| Gap | Impact | Priority |
+|-----|--------|----------|
+| **No installation method** | Users cannot get the framework | P0 |
+| **Skills not available** | Claude Code cannot invoke skills | P0 |
+| **No init command** | Users cannot quickly start new projects | P1 |
+| **No installation guide in docs** | README lacks installation steps | P1 |
+| **No version release** | No release package/version tag | P1 |
+| **No npm/homebrew** | Non-standard installation channels | P2 |
 
 ---
 
 ## Roadmap
 
-### Stage 8: 用户安装体验 (v1.0.1)
+### Stage 8: User Installation Experience (v1.0.1)
 
-**目标**: 让用户能够安装和使用 RDD Framework
+**Goal**: Enable users to install and use RDD Framework
 
-**预计工期**: 2-3 天
+**Estimated Duration**: 2-3 days
 
-**验收标准**:
-- [ ] 一键安装脚本可用
-- [ ] `rdd init` 命令在任意项目可用
-- [ ] Skills 在 Claude Code 中生效
-- [ ] README 包含完整安装指引
-- [ ] GitHub Release 发布
+**Acceptance Criteria**:
+- [ ] One-click installation script available
+- [ ] `rdd init` command available in any project
+- [ ] Skills work in Claude Code
+- [ ] README includes complete installation guide
+- [ ] GitHub Release published
 
 ---
 
-#### 任务分解
+#### Task Breakdown
 
-##### 8.1 安装脚本 (P0)
+##### 8.1 Installation Script (P0)
 
-**目标**: 提供 `curl | sh` 一键安装
+**Goal**: Provide `curl | sh` one-click installation
 
-**交付物**:
+**Deliverables**:
 ```
-scripts/install.sh          # 一键安装脚本
-scripts/uninstall.sh        # 卸载脚本
-scripts/upgrade.sh          # 升级脚本
+scripts/install.sh          # One-click installation script
+scripts/uninstall.sh        # Uninstall script
+scripts/upgrade.sh          # Upgrade script
 ```
 
-**安装流程**:
+**Installation Flow**:
 ```bash
-# 用户执行
+# User executes
 curl -fsSL https://raw.githubusercontent.com/xxx/rdd-framework/main/scripts/install.sh | sh
 
-# 脚本执行:
-# 1. 检测系统环境
-# 2. 检查依赖 (bash, task, git)
-# 3. 创建 ~/.rdd-framework 目录
-# 4. 下载框架文件
-# 5. 配置 PATH
-# 6. 安装 skills 到 ~/.claude/skills/
-# 7. 验证安装
+# Script executes:
+# 1. Detect system environment
+# 2. Check dependencies (bash, task, git)
+# 3. Create ~/.rdd-framework directory
+# 4. Download framework files
+# 5. Configure PATH
+# 6. Install skills to ~/.claude/skills/
+# 7. Verify installation
 ```
 
-**验收**:
-- [ ] macOS 安装成功
-- [ ] Linux 安装成功
-- [ ] 安装后 `rdd --version` 可用
-- [ ] 安装后 `task --list` 显示 RDD 任务
+**Acceptance**:
+- [ ] macOS installation successful
+- [ ] Linux installation successful
+- [ ] After installation `rdd --version` available
+- [ ] After installation `task --list` shows RDD tasks
 
-##### 8.2 全局 Skills 安装 (P0)
+##### 8.2 Global Skills Installation (P0)
 
-**目标**: Skills 在所有项目中可用
+**Goal**: Skills available in all projects
 
-**Claude Code Skills 机制**:
-- Claude Code 读取 `~/.claude/skills/*.md` 作为全局 skills
-- 读取 `.claude/skills/*.md` 作为项目 skills
-- Commands 同理
+**Claude Code Skills Mechanism**:
+- Claude Code reads `~/.claude/skills/*.md` as global skills
+- Reads `.claude/skills/*.md` as project skills
+- Same for Commands
 
-**交付物**:
+**Deliverables**:
 ```
 ~/.claude/skills/
 ├── rdd-init.md
@@ -117,28 +117,28 @@ curl -fsSL https://raw.githubusercontent.com/xxx/rdd-framework/main/scripts/inst
 └── rdd-loop.md
 ```
 
-**验收**:
-- [ ] `/rdd-init` 在任意项目可用
-- [ ] `/rdd-stage-auto` 在 RDD 项目可用
-- [ ] Skills 说明在 Claude Code 中正确显示
+**Acceptance**:
+- [ ] `/rdd-init` available in any project
+- [ ] `/rdd-stage-auto` available in RDD projects
+- [ ] Skills descriptions displayed correctly in Claude Code
 
-##### 8.3 项目初始化命令 (P1)
+##### 8.3 Project Initialization Command (P1)
 
-**目标**: `rdd init` 创建新 RDD 项目
+**Goal**: `rdd init` creates new RDD project
 
-**命令设计**:
+**Command Design**:
 ```bash
-# 在当前目录初始化
+# Initialize in current directory
 rdd init
 
-# 创建新项目
+# Create named project
 rdd init my-project
 
-# 从模板创建
+# Create from template
 rdd init --template multi-stage
 ```
 
-**初始化内容**:
+**Initialization Content**:
 ```
 my-project/
 ├── .rdd/
@@ -158,23 +158,23 @@ my-project/
 │   ├── bdd/
 │   └── e2e/
 ├── .claude/
-│   └── skills/ (可选项目特定 skills)
+│   └── skills/ (optional project-specific skills)
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── Taskfile.yml -> ~/.rdd-framework/Taskfile.yml (symlink)
 └── CHANGELOG.md
 ```
 
-**验收**:
-- [ ] `rdd init` 创建完整目录结构
-- [ ] `task doctor` 通过
-- [ ] Claude Code 可读取 CLAUDE.md
+**Acceptance**:
+- [ ] `rdd init` creates complete directory structure
+- [ ] `task doctor` passes
+- [ ] Claude Code can read CLAUDE.md
 
-##### 8.4 README 安装指引 (P1)
+##### 8.4 README Installation Guide (P1)
 
-**目标**: 用户能按文档完成安装
+**Goal**: Users can install following documentation
 
-**新增内容**:
+**New Content**:
 ```markdown
 ## Installation
 
@@ -227,49 +227,49 @@ After installation, RDD skills are automatically available in Claude Code:
 - `/rdd-loop` - Control autonomous execution
 ```
 
-**验收**:
-- [ ] README 包含安装步骤
-- [ ] README 包含快速开始
-- [ ] README 包含 Claude Code 使用说明
+**Acceptance**:
+- [ ] README includes installation steps
+- [ ] README includes quick start
+- [ ] README includes Claude Code usage instructions
 
 ##### 8.5 GitHub Release (P1)
 
-**目标**: 正式发布 v1.0.0
+**Goal**: Officially release v1.0.0
 
-**发布内容**:
+**Release Content**:
 - Git tag v1.0.0
-- GitHub Release 说明
-- 发布资产 (tar.gz, zip)
-- CHANGELOG 更新
+- GitHub Release notes
+- Release assets (tar.gz, zip)
+- CHANGELOG update
 
-**验收**:
-- [ ] v1.0.0 tag 创建
-- [ ] GitHub Release 发布
-- [ ] 下载链接可用
-- [ ] 安装脚本指向稳定版本
+**Acceptance**:
+- [ ] v1.0.0 tag created
+- [ ] GitHub Release published
+- [ ] Download links working
+- [ ] Install script points to stable version
 
 ---
 
-### Stage 9: 包管理器支持 (v1.1.0)
+### Stage 9: Package Manager Support (v1.1.0)
 
-**目标**: 提供标准包管理器安装方式
+**Goal**: Provide standard package manager installation methods
 
-**预计工期**: 3-5 天
+**Estimated Duration**: 3-5 days
 
-**验收标准**:
-- [ ] npm 包发布 (@kofj/rdd)
-- [ ] Homebrew formula 提交
+**Acceptance Criteria**:
+- [ ] npm package published (@kofj/rdd)
+- [ ] Homebrew formula submitted
 - [ ] AUR package (Arch Linux)
 
 ---
 
-#### 任务分解
+#### Task Breakdown
 
-##### 9.1 npm 包 (P1)
+##### 9.1 npm Package (P1)
 
-**目标**: `npm install -g @kofj/rdd`
+**Goal**: `npm install -g @kofj/rdd`
 
-**package.json 设计**:
+**package.json Design**:
 ```json
 {
   "name": "@kofj/rdd",
@@ -294,16 +294,16 @@ After installation, RDD skills are automatically available in Claude Code:
 }
 ```
 
-**验收**:
-- [ ] `npm install -g @kofj/rdd` 成功
-- [ ] `rdd --version` 显示版本
-- [ ] Skills 正确安装到 ~/.claude/
+**Acceptance**:
+- [ ] `npm install -g @kofj/rdd` successful
+- [ ] `rdd --version` shows version
+- [ ] Skills correctly installed to ~/.claude/
 
 ##### 9.2 Homebrew Formula (P2)
 
-**目标**: `brew install rdd-framework`
+**Goal**: `brew install rdd-framework`
 
-**Formula 设计**:
+**Formula Design**:
 ```ruby
 class RddFramework < Formula
   desc "Roadmap Driven Development Framework for AI Agents"
@@ -319,61 +319,61 @@ class RddFramework < Formula
     bin.install_symlink libexec/"bin/rdd"
 
     # Install Claude Code skills
-    (ENV["HOME"]/".claude/skills").mkpath
+    (ENV["HOME"]+"/.claude/skills").mkpath
     (libexec/".claude/skills").children.each do |skill|
-      ln_s skill, ENV["HOME"]/".claude/skills"/skill.basename
+      ln_s skill, ENV["HOME"]+"/.claude/skills"/skill.basename
     end
   end
 end
 ```
 
-**验收**:
-- [ ] `brew install xxx/rdd/rdd-framework` 成功
-- [ ] Homebrew tap 创建
+**Acceptance**:
+- [ ] `brew install xxx/rdd/rdd-framework` successful
+- [ ] Homebrew tap created
 
-##### 9.3 项目迁移命令 (P2)
+##### 9.3 Project Migration Command (P2)
 
-**目标**: `rdd migrate` 将现有项目转为 RDD 项目
+**Goal**: `rdd migrate` converts existing project to RDD project
 
-**命令设计**:
+**Command Design**:
 ```bash
-# 检测现有项目类型并迁移
+# Detect existing project type and migrate
 rdd migrate
 
-# 指定项目类型
+# Specify project type
 rdd migrate --type node
 rdd migrate --type python
 rdd migrate --type go
 ```
 
-**验收**:
-- [ ] 检测项目类型
-- [ ] 创建 RDD 目录结构
-- [ ] 保留现有代码
-- [ ] 生成初始 Roadmap
+**Acceptance**:
+- [ ] Detect project type
+- [ ] Create RDD directory structure
+- [ ] Preserve existing code
+- [ ] Generate initial Roadmap
 
 ---
 
-### Stage 10: 开发者体验优化 (v1.2.0)
+### Stage 10: Developer Experience Optimization (v1.2.0)
 
-**目标**: 提升开发者使用体验
+**Goal**: Improve developer experience
 
-**预计工期**: 2-3 天
+**Estimated Duration**: 2-3 days
 
-**验收标准**:
-- [ ] 交互式初始化向导
-- [ ] VS Code 扩展基础功能
-- [ ] 在线文档站点
+**Acceptance Criteria**:
+- [ ] Interactive initialization wizard
+- [ ] VS Code extension basic features
+- [ ] Online documentation site
 
 ---
 
-#### 任务分解
+#### Task Breakdown
 
-##### 10.1 交互式初始化向导 (P2)
+##### 10.1 Interactive Initialization Wizard (P2)
 
-**目标**: 引导用户完成项目配置
+**Goal**: Guide users through project configuration
 
-**设计**:
+**Design**:
 ```bash
 $ rdd init --interactive
 
@@ -399,170 +399,170 @@ Next steps:
 3. Run /rdd-roadmap to plan your stages
 ```
 
-##### 10.2 VS Code 扩展 (P3)
+##### 10.2 VS Code Extension (P3)
 
-**目标**: 提供 RDD 相关的 VS Code 集成
+**Goal**: Provide RDD-related VS Code integration
 
-**功能**:
-- Stage 文档 snippets
-- Gate 检查快捷命令
-- Roadmap 可视化
-- ADR 记录快捷键
+**Features**:
+- Stage document snippets
+- Gate check shortcut commands
+- Roadmap visualization
+- ADR record shortcuts
 
-##### 10.3 在线文档站点 (P2)
+##### 10.3 Online Documentation Site (P2)
 
-**目标**: 提供可搜索的在线文档
+**Goal**: Provide searchable online documentation
 
-**技术选择**:
-- VitePress 或 Docusaurus
-- GitHub Pages 部署
+**Technology Choice**:
+- VitePress or Docusaurus
+- GitHub Pages deployment
 
-**内容**:
-- 快速开始
-- 概念指南
-- API 参考
-- 最佳实践
+**Content**:
+- Quick start
+- Concept guide
+- API reference
+- Best practices
 - FAQ
 
 ---
 
-## 时间线
+## Timeline
 
 ```
 Week 1 (2026-03-10 ~ 2026-03-16):
-├── Stage 8.1: 安装脚本
-├── Stage 8.2: 全局 Skills 安装
-└── Stage 8.3: 项目初始化命令
+├── Stage 8.1: Installation script
+├── Stage 8.2: Global Skills installation
+└── Stage 8.3: Project initialization command
 
 Week 2 (2026-03-17 ~ 2026-03-23):
-├── Stage 8.4: README 更新
+├── Stage 8.4: README update
 ├── Stage 8.5: GitHub Release
-└── v1.0.1 发布
+└── v1.0.1 release
 
 Week 3-4 (2026-03-24 ~ 2026-04-06):
-├── Stage 9.1: npm 包
+├── Stage 9.1: npm package
 ├── Stage 9.2: Homebrew
-└── v1.1.0 发布
+└── v1.1.0 release
 
 Week 5-6 (2026-04-07 ~ 2026-04-20):
-├── Stage 10.1: 交互式向导
-├── Stage 10.3: 文档站点
-└── v1.2.0 发布
+├── Stage 10.1: Interactive wizard
+├── Stage 10.3: Documentation site
+└── v1.2.0 release
 ```
 
 ---
 
-## 发布计划
+## Release Plan
 
 ### v1.0.1 (2026-03-17)
 
-**主题**: 用户安装体验
+**Theme**: User Installation Experience
 
-**内容**:
-- 一键安装脚本
-- 全局 Skills 安装
-- 项目初始化命令
-- README 安装指引
+**Content**:
+- One-click installation script
+- Global Skills installation
+- Project initialization command
+- README installation guide
 - GitHub Release
 
 ### v1.1.0 (2026-04-07)
 
-**主题**: 包管理器支持
+**Theme**: Package Manager Support
 
-**内容**:
-- npm 全局包
+**Content**:
+- npm global package
 - Homebrew formula
-- 项目迁移命令
+- Project migration command
 
 ### v1.2.0 (2026-04-21)
 
-**主题**: 开发者体验
+**Theme**: Developer Experience
 
-**内容**:
-- 交互式初始化向导
-- 在线文档站点
-
----
-
-## 资源需求
-
-### 人力
-
-- 开发: 1 人 (主要工作)
-- 文档: 0.5 人 (文档优化)
-- 测试: 0.5 人 (多环境测试)
-
-### 基础设施
-
-- GitHub Repository (已有)
-- npm Registry (免费)
-- Homebrew Tap (免费)
-- GitHub Pages (免费)
+**Content**:
+- Interactive initialization wizard
+- Online documentation site
 
 ---
 
-## 风险评估
+## Resource Requirements
 
-| 风险 | 概率 | 影响 | 缓解措施 |
-|------|------|------|----------|
-| Skills 路径问题 | 中 | 高 | 测试多种环境，提供手动配置方法 |
-| 跨平台兼容性 | 中 | 中 | 支持 macOS/Linux，Windows WSL |
-| npm 发布权限 | 低 | 中 | 提前申请 npm org 权限 |
-| Homebrew 审核 | 低 | 低 | 准备详细文档，响应审核意见 |
+### Personnel
 
----
+- Development: 1 person (main work)
+- Documentation: 0.5 person (documentation optimization)
+- Testing: 0.5 person (multi-environment testing)
 
-## 成功指标
+### Infrastructure
 
-### v1.0.1 发布后
-
-- 用户能在 5 分钟内完成安装
-- `rdd init` 成功率 > 95%
-- `/rdd-init` skill 调用成功率 > 95%
-
-### v1.1.0 发布后
-
-- npm 周下载量 > 100
-- Homebrew 安装成功率 > 90%
-- GitHub Stars 增长 > 20%
-
-### v1.2.0 发布后
-
-- 文档站点日访问 > 50
-- 用户反馈响应时间 < 24h
-- 社区贡献 > 5 PRs
+- GitHub Repository (existing)
+- npm Registry (free)
+- Homebrew Tap (free)
+- GitHub Pages (free)
 
 ---
 
-## 待确认事项
+## Risk Assessment
 
-请审核以下关键决策:
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Skills path issues | Medium | High | Test multiple environments, provide manual configuration method |
+| Cross-platform compatibility | Medium | Medium | Support macOS/Linux, Windows WSL |
+| npm publish permissions | Low | Medium | Request npm org permissions in advance |
+| Homebrew review | Low | Low | Prepare detailed documentation, respond to review comments |
 
-1. **安装方式优先级**:
-   - [ ] curl | sh 优先 (推荐)
-   - [ ] npm 优先
-   - [ ] Homebrew 优先
+---
 
-2. **Skills 分发策略**:
-   - [ ] 安装时复制到 ~/.claude/skills/
-   - [ ] 创建符号链接
-   - [ ] 运行时动态加载
+## Success Metrics
 
-3. **发布渠道**:
-   - [ ] 仅 GitHub Release
+### After v1.0.1 Release
+
+- Users can complete installation within 5 minutes
+- `rdd init` success rate > 95%
+- `/rdd-init` skill invocation success rate > 95%
+
+### After v1.1.0 Release
+
+- npm weekly downloads > 100
+- Homebrew installation success rate > 90%
+- GitHub Stars growth > 20%
+
+### After v1.2.0 Release
+
+- Documentation site daily visits > 50
+- User feedback response time < 24h
+- Community contributions > 5 PRs
+
+---
+
+## Items Awaiting Confirmation
+
+Please review the following key decisions:
+
+1. **Installation Method Priority**:
+   - [ ] curl | sh first (recommended)
+   - [ ] npm first
+   - [ ] Homebrew first
+
+2. **Skills Distribution Strategy**:
+   - [ ] Copy to ~/.claude/skills/ during installation
+   - [ ] Create symbolic links
+   - [ ] Load dynamically at runtime
+
+3. **Release Channels**:
+   - [ ] GitHub Release only
    - [ ] GitHub + npm
    - [ ] GitHub + npm + Homebrew
 
-4. **版本号策略**:
-   - [ ] 从 v1.0.1 开始
-   - [ ] 从 v1.1.0 开始
-   - [ ] 直接发布 v1.0.0
+4. **Version Number Strategy**:
+   - [ ] Start from v1.0.1
+   - [ ] Start from v1.1.0
+   - [ ] Release v1.0.0 directly
 
-5. **项目命名**:
+5. **Project Naming**:
    - [ ] rdd-framework
-   - [ ] rdd (简短)
+   - [ ] rdd (short)
    - [ ] @kofj/rdd
 
 ---
 
-> **下一步**: 请确认以上决策，我将开始实施 Stage 8。
+> **Next Step**: Please confirm the above decisions, and I will begin implementing Stage 8.

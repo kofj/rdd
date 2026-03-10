@@ -28,6 +28,10 @@ hooks:
   config_file: ".rdd/hooks.yml"
   templates_file: ".rdd/templates.yml"
 
+# Document language configuration
+# Supported: en (English), zh (Chinese)
+language: en
+
 # Notification settings
 notifications:
   quiet_hours:

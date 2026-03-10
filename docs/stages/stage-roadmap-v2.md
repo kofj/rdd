@@ -1,332 +1,332 @@
-# RDD Framework - 生产可用 Roadmap (v2)
+# RDD Framework - Production-Ready Roadmap (v2)
 
-> 基于生产可用要求的完整规划
+> Complete planning based on production-ready requirements
 
 ---
 
-## 当前状态
+## Current Status
 
-### 当前 Stage
+### Current Stage
 
 - **Stage**: Stage 2
-- **状态**: ⏳ 待开始
-- **开始时间**: 待定
+- **Status**: ⏳ Pending
+- **Start Time**: TBD
 
-### 整体进度
+### Overall Progress
 
 ```
-总进度: [2/8] Stage 完成
-进度条: ████░░░░░░░░░░░░ 25%
+Total Progress: [2/8] Stages Complete
+Progress Bar: ████░░░░░░░░░░░░ 25%
 ```
 
 ---
 
-## Stage 路线图
+## Stage Roadmap
 
-| Stage | 状态 | 目标 | 核心假设 | 预计工作量 | 生产可用必要 |
-|-------|------|------|----------|------------|-------------|
-| Stage 0 | ✅ 完成 | 框架基础搭建 | 目录结构、文档模板可用 | 1天 | 是 |
-| Stage 1 | ✅ 完成 | 关键缺陷修复 | Hook 可工作、路径可配置 | 1天 | 是 |
-| Stage 2 | ⏳ 待开始 | 测试体系建设 | 测试可自动化执行 | 5-7天 | 是 |
-| Stage 3 | ⏳ 待开始 | 上下文恢复增强 | Compact 后可恢复 | 3-4天 | 是 |
-| Stage 4 | ⏳ 待开始 | 错误处理与可观测性 | 错误可恢复、状态可观测 | 4-5天 | **是** |
-| Stage 5 | ⏳ 待开始 | 性能与兼容性 | 性能达标、升级平滑 | 3-4天 | **是** |
-| Stage 6 | ⏳ 待开始 | 安全与权限 | 访问受控、操作可审计 | 2-3天 | 是 |
-| Stage 7 | ⏳ 待开始 | 文档与运维完善 | 用户自助、运维有保障 | 3-4天 | 是 |
-
----
-
-## Stage 详细说明
+| Stage | Status | Goal | Core Hypothesis | Est. Effort | Production Required |
+|-------|--------|------|-----------------|-------------|---------------------|
+| Stage 0 | ✅ Complete | Framework Foundation | Directory structure, doc templates usable | 1 day | Yes |
+| Stage 1 | ✅ Complete | Critical Bug Fixes | Hooks work, paths configurable | 1 day | Yes |
+| Stage 2 | ⏳ Pending | Test Infrastructure | Tests can be automated | 5-7 days | Yes |
+| Stage 3 | ⏳ Pending | Context Recovery Enhancement | Can recover after Compact | 3-4 days | Yes |
+| Stage 4 | ⏳ Pending | Error Handling & Observability | Errors recoverable, state observable | 4-5 days | **Yes** |
+| Stage 5 | ⏳ Pending | Performance & Compatibility | Performance meets standards, smooth upgrades | 3-4 days | **Yes** |
+| Stage 6 | ⏳ Pending | Security & Permissions | Access controlled, operations auditable | 2-3 days | Yes |
+| Stage 7 | ⏳ Pending | Documentation & Operations | User self-service, operations guaranteed | 3-4 days | Yes |
 
 ---
 
-### Stage 0: 框架基础搭建 ✅
-
-**目标**: 创建 RDD 框架的基础结构、文档、Skills、Commands、Hooks
-
-**状态**: ✅ 完成 (2026-03-06)
+## Stage Details
 
 ---
 
-### Stage 1: 关键缺陷修复 ✅
+### Stage 0: Framework Foundation ✅
 
-**目标**: 修复阻塞框架正常工作的关键缺陷
+**Goal**: Create RDD framework's basic structure, documents, Skills, Commands, Hooks
 
-**状态**: ✅ 完成 (2026-03-07)
-
----
-
-### Stage 2: 测试体系建设 ⏳
-
-**目标**: 建立完整的测试体系，确保框架可靠性
-
-**验收标准**:
-- [ ] 单元测试框架集成 (bats-core)
-- [ ] notify.sh 单元测试覆盖率 >= 95%（预期 100%）
-- [ ] Hook 脚本单元测试覆盖率 >= 95%（预期 100%）
-- [ ] BDD 场景定义完成 (Given/When/Then)
-- [ ] Gate 检查自动化测试完成
-- [ ] E2E 测试项目模板创建
-- [ ] `task test` 执行所有测试
-- [ ] 测试覆盖率报告生成
-- [ ] Docker 环境测试通过
-- [ ] Kind 环境测试通过
-
-**依赖**: Stage 1 完成
-
-**技术债解决**: TD-05, TD-06, TD-07, TD-11
-
-**状态**: ⏳ 待开始
+**Status**: ✅ Complete (2026-03-06)
 
 ---
 
-### Stage 3: 上下文恢复增强 ⏳
+### Stage 1: Critical Bug Fixes ✅
 
-**目标**: 实现 Compact 后的自动上下文恢复能力
+**Goal**: Fix critical bugs blocking normal framework operation
 
-**验收标准**:
-- [ ] 自动 Handoff 生成机制实现
-- [ ] 状态持久化实现
-- [ ] Compact 恢复协议实现
-- [ ] 恢复流程 E2E 测试通过
-- [ ] fresh-agent-check 自动化测试通过
-
-**依赖**: Stage 2 完成
-
-**技术债解决**: TD-08, TD-10
-
-**状态**: ⏳ 待开始
+**Status**: ✅ Complete (2026-03-07)
 
 ---
 
-### Stage 4: 错误处理与可观测性 ⏳ (新增)
+### Stage 2: Test Infrastructure ⏳
 
-**目标**: 建立完善的错误处理、重试、降级和可观测性体系
+**Goal**: Establish complete test system to ensure framework reliability
 
-**核心假设**:
-- 错误可以被正确分类和处理
-- 重试机制可以处理临时故障
-- 监控数据可以被采集和展示
-- 故障可以被快速定位
+**Acceptance Criteria**:
+- [ ] Unit test framework integrated (bats-core)
+- [ ] notify.sh unit test coverage >= 95% (expected 100%)
+- [ ] Hook script unit test coverage >= 95% (expected 100%)
+- [ ] BDD scenario definition complete (Given/When/Then)
+- [ ] Gate check automation tests complete
+- [ ] E2E test project template created
+- [ ] `task test` executes all tests
+- [ ] Test coverage report generated
+- [ ] Docker environment tests passed
+- [ ] Kind environment tests passed
 
-**验收标准**:
-- [ ] 错误分类体系建立（可恢复/不可恢复/需人工干预）
-- [ ] 重试机制实现（指数退避、最大重试次数）
-- [ ] 降级策略实现（功能降级、服务降级）
-- [ ] 结构化日志实现（JSON 格式、日志级别）
-- [ ] 监控指标暴露（Prometheus 格式）
-- [ ] 健康检查增强（依赖检查、就绪检查）
-- [ ] 故障排查指南编写
-- [ ] 错误处理测试覆盖率 >= 80%
+**Dependencies**: Stage 1 complete
 
-**依赖**: Stage 2 完成
+**Tech Debt Resolved**: TD-05, TD-06, TD-07, TD-11
 
-**技术债解决**: 新增技术债
-
-**预计工作量**: 4-5天
-
-**状态**: ⏳ 待开始
+**Status**: ⏳ Pending
 
 ---
 
-### Stage 5: 性能与兼容性 ⏳ (新增)
+### Stage 3: Context Recovery Enhancement ⏳
 
-**目标**: 确保框架性能达标，支持平滑升级迁移
+**Goal**: Implement automatic context recovery after Compact
 
-**核心假设**:
-- 框架可以在合理资源下运行
-- 用户可以平滑升级版本
-- 历史数据可以被迁移
+**Acceptance Criteria**:
+- [ ] Automatic Handoff generation mechanism implemented
+- [ ] State persistence implemented
+- [ ] Compact recovery protocol implemented
+- [ ] Recovery flow E2E tests passed
+- [ ] fresh-agent-check automation tests passed
 
-**验收标准**:
-- [ ] 性能基准测试建立
-- [ ] Hook 触发延迟 < 100ms
-- [ ] 通知发送延迟 < 500ms
-- [ ] 内存占用 < 50MB（空闲状态）
-- [ ] 并发支持：同时处理 10+ Hook 触发
-- [ ] 版本管理方案确定（语义化版本）
-- [ ] 升级迁移脚本实现
-- [ ] 配置兼容性检查实现
-- [ ] 变更日志自动生成
+**Dependencies**: Stage 2 complete
 
-**依赖**: Stage 4 完成
+**Tech Debt Resolved**: TD-08, TD-10
 
-**技术债解决**: 新增技术债
-
-**预计工作量**: 3-4天
-
-**状态**: ⏳ 待开始
+**Status**: ⏳ Pending
 
 ---
 
-### Stage 6: 安全与权限 ⏳ (新增)
+### Stage 4: Error Handling & Observability ⏳ (New)
 
-**目标**: 实现访问控制和审计能力
+**Goal**: Establish comprehensive error handling, retry, degradation, and observability system
 
-**核心假设**:
-- 不同用户有不同的操作权限
-- 敏感操作需要审计
-- 凭证需要安全存储
+**Core Hypotheses**:
+- Errors can be correctly classified and handled
+- Retry mechanism can handle transient failures
+- Monitoring data can be collected and displayed
+- Failures can be quickly located
 
-**验收标准**:
-- [ ] 权限模型设计（RBAC 或简化版）
-- [ ] 操作权限检查实现
-- [ ] 审计日志功能实现（谁、何时、做了什么）
-- [ ] 敏感数据脱敏实现
-- [ ] 凭证加密存储方案（可选集成 Vault）
-- [ ] 安全配置检查（security hardening）
-- [ ] 安全测试通过（无已知漏洞）
+**Acceptance Criteria**:
+- [ ] Error classification system established (recoverable/non-recoverable/requires human intervention)
+- [ ] Retry mechanism implemented (exponential backoff, max retries)
+- [ ] Degradation strategy implemented (feature degradation, service degradation)
+- [ ] Structured logging implemented (JSON format, log levels)
+- [ ] Monitoring metrics exposed (Prometheus format)
+- [ ] Health check enhanced (dependency check, readiness check)
+- [ ] Troubleshooting guide written
+- [ ] Error handling test coverage >= 80%
 
-**依赖**: Stage 5 完成
+**Dependencies**: Stage 2 complete
 
-**技术债解决**: TD-09 增强
+**Tech Debt Resolved**: New tech debt
 
-**预计工作量**: 2-3天
+**Estimated Effort**: 4-5 days
 
-**状态**: ⏳ 待开始
-
----
-
-### Stage 7: 文档与运维完善 ⏳ (原 Stage 4 扩展)
-
-**目标**: 完善文档、示例和运维支持
-
-**核心假设**:
-- 用户可以通过文档自助使用
-- 运维人员可以快速排查问题
-- 新用户可以快速上手
-
-**验收标准**:
-- [ ] 用户文档完成（快速开始、API 参考、最佳实践）
-- [ ] 运维手册完成（部署、监控、故障排查）
-- [ ] 示例项目创建（至少 2 个真实场景）
-- [ ] CI/CD 集成模板（GitHub Actions、GitLab CI）
-- [ ] `task rdd:backup` 和 `task rdd:restore` 实现
-- [ ] 定时报告调度方案完成
-- [ ] 多项目支持方案确定并实现
-- [ ] 贡献指南完成
-- [ ] CHANGELOG.md 自动更新
-
-**依赖**: Stage 6 完成
-
-**技术债解决**: 无新增技术债
-
-**预计工作量**: 3-4天
-
-**状态**: ⏳ 待开始
+**Status**: ⏳ Pending
 
 ---
 
-## 生产可用检查清单
+### Stage 5: Performance & Compatibility ⏳ (New)
 
-### 功能完整性
-- [x] 目录结构和配置文件
-- [x] Hook 机制可工作
-- [x] 通知可发送
-- [ ] 测试覆盖 >= 80%
-- [ ] 错误处理完善
-- [ ] 性能达标
-- [ ] 权限控制
+**Goal**: Ensure framework performance meets standards, support smooth upgrade migration
 
-### 可靠性
-- [ ] 重试机制
-- [ ] 降级策略
-- [ ] 故障恢复
-- [ ] 状态持久化
-- [ ] 备份恢复
+**Core Hypotheses**:
+- Framework can run with reasonable resources
+- Users can smoothly upgrade versions
+- Historical data can be migrated
 
-### 可观测性
-- [x] 基础日志
-- [ ] 结构化日志
-- [ ] 监控指标
-- [ ] 健康检查
-- [ ] 审计日志
+**Acceptance Criteria**:
+- [ ] Performance benchmarks established
+- [ ] Hook trigger latency < 100ms
+- [ ] Notification send latency < 500ms
+- [ ] Memory footprint < 50MB (idle state)
+- [ ] Concurrency support: handle 10+ Hook triggers simultaneously
+- [ ] Version management plan determined (semantic versioning)
+- [ ] Upgrade migration script implemented
+- [ ] Configuration compatibility check implemented
+- [ ] Changelog auto-generated
 
-### 可用性
-- [ ] 完整文档
-- [ ] 示例项目
-- [ ] 故障排查指南
-- [ ] 错误提示友好
+**Dependencies**: Stage 4 complete
 
-### 安全性
-- [x] 凭证环境变量
-- [ ] 权限控制
-- [ ] 审计追踪
-- [ ] 敏感数据脱敏
+**Tech Debt Resolved**: New tech debt
 
-### 兼容性
-- [ ] 版本管理
-- [ ] 升级迁移
-- [ ] 向后兼容
+**Estimated Effort**: 3-4 days
+
+**Status**: ⏳ Pending
 
 ---
 
-## 技术债台账
+### Stage 6: Security & Permissions ⏳ (New)
 
-| ID | 描述 | 优先级 | 计划解决 Stage |
-|----|------|--------|---------------|
-| TD-01 | Hook 脚本未正确 source notify.sh | Critical | Stage 1 ✅ |
-| TD-02 | 无 Hook 触发机制 | Critical | Stage 1 ✅ |
-| TD-03 | 脚本可能无执行权限 | High | Stage 1 ✅ |
-| TD-04 | 路径硬编码 | Medium | Stage 1 ✅ |
-| TD-05 | 单元测试覆盖率 0% | Critical | Stage 2 |
-| TD-06 | 无 E2E 测试 | Critical | Stage 2 |
-| TD-07 | 无 BDD 测试 | High | Stage 2 |
-| TD-08 | 无自动上下文恢复 | High | Stage 3 |
-| TD-09 | 凭证明文存储 | Critical | Stage 1 ✅ / Stage 6 增强 |
-| TD-10 | 无状态持久化 | High | Stage 3 |
-| TD-11 | Taskfile YAML 解析问题 | Medium | Stage 2 |
-| TD-12 | 无错误重试机制 | Critical | Stage 4 |
-| TD-13 | 无降级策略 | High | Stage 4 |
-| TD-14 | 无监控指标 | High | Stage 4 |
-| TD-15 | 无性能基准 | High | Stage 5 |
-| TD-16 | 无版本管理方案 | High | Stage 5 |
-| TD-17 | 无权限控制 | Medium | Stage 6 |
-| TD-18 | 无审计日志 | Medium | Stage 6 |
+**Goal**: Implement access control and audit capabilities
 
----
+**Core Hypotheses**:
+- Different users have different operation permissions
+- Sensitive operations need auditing
+- Credentials need secure storage
 
-## 风险与依赖
+**Acceptance Criteria**:
+- [ ] Permission model designed (RBAC or simplified)
+- [ ] Operation permission check implemented
+- [ ] Audit log functionality implemented (who, when, did what)
+- [ ] Sensitive data masking implemented
+- [ ] Credential encryption storage plan (optional Vault integration)
+- [ ] Security configuration check (security hardening)
+- [ ] Security tests passed (no known vulnerabilities)
 
-### 风险
+**Dependencies**: Stage 5 complete
 
-| 风险 | 影响 | 缓解措施 | 状态 |
-|------|------|----------|------|
-| 测试框架集成困难 | 延迟 Stage 2 | 评估多种框架 | 🟡 待评估 |
-| 性能不达标 | 阻塞生产 | 提前做性能测试 | 🟡 待评估 |
-| Compact 检测不可靠 | 影响 Stage 3 | 设计手动恢复备选 | 🟡 待设计 |
-| 监控集成复杂 | 延迟 Stage 4 | 先实现基础指标 | 🟢 已缓解 |
+**Tech Debt Resolved**: TD-09 enhanced
 
-### 依赖
+**Estimated Effort**: 2-3 days
 
-| 依赖项 | 类型 | 来源 Stage | 目标 Stage | 状态 |
-|--------|------|------------|------------|------|
-| Hook 可执行 | 内部 | Stage 1 | Stage 2 | ✅ 已完成 |
-| 测试框架就绪 | 内部 | Stage 2 | Stage 3-5 | ⏳ 待开始 |
-| 状态持久化 | 内部 | Stage 3 | Stage 4 | ⏳ 待开始 |
-| 错误处理 | 内部 | Stage 4 | Stage 5 | ⏳ 待开始 |
+**Status**: ⏳ Pending
 
 ---
 
-## 下一步行动
+### Stage 7: Documentation & Operations ⏳ (Extended from original Stage 4)
 
-**当前优先级**: Stage 2 - 测试体系建设
+**Goal**: Complete documentation, examples, and operations support
 
-**立即行动**:
-1. 修复 Taskfile YAML 解析问题 (TD-11)
-2. 安装 bats-core 测试框架
-3. 创建测试目录结构
-4. 实现 notify.sh 单元测试
+**Core Hypotheses**:
+- Users can self-serve using documentation
+- Operators can quickly troubleshoot issues
+- New users can get started quickly
 
-**阻塞项**: 无
+**Acceptance Criteria**:
+- [ ] User documentation complete (quick start, API reference, best practices)
+- [ ] Operations manual complete (deployment, monitoring, troubleshooting)
+- [ ] Example projects created (at least 2 real scenarios)
+- [ ] CI/CD integration templates (GitHub Actions, GitLab CI)
+- [ ] `task rdd:backup` and `task rdd:restore` implemented
+- [ ] Scheduled report scheduling plan complete
+- [ ] Multi-project support plan determined and implemented
+- [ ] Contributing guide complete
+- [ ] CHANGELOG.md auto-updated
 
-**决策待定**: 无
+**Dependencies**: Stage 6 complete
+
+**Tech Debt Resolved**: No new tech debt
+
+**Estimated Effort**: 3-4 days
+
+**Status**: ⏳ Pending
 
 ---
 
-## 路线变更记录
+## Production-Ready Checklist
 
-| 日期 | 变更类型 | 变更内容 | 变更原因 |
-|------|----------|----------|----------|
-| 2026-03-07 | 创建 | 初始 Roadmap 创建 | RDD 框架验收后规划后续工作 |
-| 2026-03-07 | 重大更新 | 新增 Stage 4-6，扩展到 8 个 Stage | 生产可用要求分析，发现原规划不足以生产部署 |
+### Feature Completeness
+- [x] Directory structure and configuration files
+- [x] Hook mechanism works
+- [x] Notifications can be sent
+- [ ] Test coverage >= 80%
+- [ ] Error handling complete
+- [ ] Performance meets standards
+- [ ] Permission control
+
+### Reliability
+- [ ] Retry mechanism
+- [ ] Degradation strategy
+- [ ] Failure recovery
+- [ ] State persistence
+- [ ] Backup/restore
+
+### Observability
+- [x] Basic logging
+- [ ] Structured logging
+- [ ] Monitoring metrics
+- [ ] Health checks
+- [ ] Audit logging
+
+### Usability
+- [ ] Complete documentation
+- [ ] Example projects
+- [ ] Troubleshooting guide
+- [ ] Friendly error messages
+
+### Security
+- [x] Credential environment variables
+- [ ] Permission control
+- [ ] Audit trail
+- [ ] Sensitive data masking
+
+### Compatibility
+- [ ] Version management
+- [ ] Upgrade migration
+- [ ] Backward compatibility
+
+---
+
+## Tech Debt Ledger
+
+| ID | Description | Priority | Planned Resolution Stage |
+|----|-------------|----------|--------------------------|
+| TD-01 | Hook scripts not correctly sourcing notify.sh | Critical | Stage 1 ✅ |
+| TD-02 | No Hook trigger mechanism | Critical | Stage 1 ✅ |
+| TD-03 | Scripts may lack execute permission | High | Stage 1 ✅ |
+| TD-04 | Hardcoded paths | Medium | Stage 1 ✅ |
+| TD-05 | Unit test coverage 0% | Critical | Stage 2 |
+| TD-06 | No E2E tests | Critical | Stage 2 |
+| TD-07 | No BDD tests | High | Stage 2 |
+| TD-08 | No automatic context recovery | High | Stage 3 |
+| TD-09 | Credentials stored in plaintext | Critical | Stage 1 ✅ / Stage 6 enhanced |
+| TD-10 | No state persistence | High | Stage 3 |
+| TD-11 | Taskfile YAML parsing issue | Medium | Stage 2 |
+| TD-12 | No error retry mechanism | Critical | Stage 4 |
+| TD-13 | No degradation strategy | High | Stage 4 |
+| TD-14 | No monitoring metrics | High | Stage 4 |
+| TD-15 | No performance benchmarks | High | Stage 5 |
+| TD-16 | No version management plan | High | Stage 5 |
+| TD-17 | No permission control | Medium | Stage 6 |
+| TD-18 | No audit logging | Medium | Stage 6 |
+
+---
+
+## Risks and Dependencies
+
+### Risks
+
+| Risk | Impact | Mitigation | Status |
+|------|--------|------------|--------|
+| Test framework integration difficulty | Delays Stage 2 | Evaluate multiple frameworks | 🟡 Pending evaluation |
+| Performance not meeting standards | Blocks production | Do performance testing early | 🟡 Pending evaluation |
+| Compact detection unreliable | Affects Stage 3 | Design manual recovery backup | 🟡 Pending design |
+| Monitoring integration complex | Delays Stage 4 | Implement basic metrics first | 🟢 Mitigated |
+
+### Dependencies
+
+| Dependency | Type | Source Stage | Target Stage | Status |
+|------------|------|--------------|--------------|--------|
+| Hooks executable | Internal | Stage 1 | Stage 2 | ✅ Complete |
+| Test framework ready | Internal | Stage 2 | Stage 3-5 | ⏳ Pending |
+| State persistence | Internal | Stage 3 | Stage 4 | ⏳ Pending |
+| Error handling | Internal | Stage 4 | Stage 5 | ⏳ Pending |
+
+---
+
+## Next Actions
+
+**Current Priority**: Stage 2 - Test Infrastructure Development
+
+**Immediate Actions**:
+1. Fix Taskfile YAML parsing issue (TD-11)
+2. Install bats-core test framework
+3. Create test directory structure
+4. Implement notify.sh unit tests
+
+**Blockers**: None
+
+**Pending Decisions**: None
+
+---
+
+## Roadmap Change Log
+
+| Date | Change Type | Change Content | Change Reason |
+|------|-------------|----------------|---------------|
+| 2026-03-07 | Created | Initial roadmap created | RDD framework acceptance planning for subsequent work |
+| 2026-03-07 | Major update | Added Stage 4-6, expanded to 8 Stages | Production-ready requirements analysis found original plan insufficient for production deployment |

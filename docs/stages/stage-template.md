@@ -1,253 +1,253 @@
-# Stage N：[标题]
+# Stage N: [Title]
 
-> Stage 设计文档模板 - 每个 Stage 都可验收、可回滚、可 handoff
-
----
-
-## 状态
-
-- [ ] 规划中
-- [ ] 进行中
-- [ ] 完成
-
-> 选择当前状态，完成时勾选对应项
+> Stage design document template - each Stage is verifiable, rollbackable, and handoffable
 
 ---
 
-## 目标
+## Status
 
-> 本阶段只解决什么（控制 scope，明确边界）
+- [ ] Planning
+- [ ] In Progress
+- [ ] Complete
 
-**一句话描述**: [简明扼要的目标描述]
-
-**详细说明**:
-
-[详细描述本 Stage 要解决的问题和达成的目标。注意：
-1. 每个 Stage 只验证一小组清晰假设
-2. 控制范围，接受阶段性妥协
-3. 目标必须可验收、可衡量]
-
-**示例**:
-
-> 本阶段目标是实现用户认证功能，包括登录、注册、登出三个核心操作。不涉及权限管理、第三方登录等高级功能。
+> Select current status, check when complete
 
 ---
 
-## 非目标
+## Goals
 
-> 本阶段明确不做什么（防止 scope 悄悄扩大）
+> What this stage solves only (control scope, define boundaries)
 
-- [非目标 1]: [描述及原因]
-- [非目标 2]: [描述及原因]
-- [非目标 3]: [描述及原因]
+**One-liner**: [Concise goal description]
 
-**示例**:
+**Detailed Description**:
 
-- **权限管理系统**: 放到 Stage 3 专门处理，本阶段只需要区分"已登录/未登录"
-- **第三方登录**: 需要额外的 API 对接工作，放到后续 Stage
-- **密码找回功能**: 依赖邮件服务配置，本 Stage 不涉及
+[Describe the problems to solve and goals to achieve in this Stage. Note:
+1. Each Stage only validates a small set of clear hypotheses
+2. Control scope, accept stage compromises
+3. Goals must be verifiable and measurable]
 
----
+**Example**:
 
-## 核心假设
-
-> 每个 Stage 只验证一小组清晰假设
-
-### 假设 A: [假设名称]
-
-- **假设内容**: [描述假设]
-- **验证方式**: [如何验证这个假设]
-- **风险**: [如果假设不成立的影响]
-
-### 假设 B: [假设名称]
-
-- **假设内容**: [描述假设]
-- **验证方式**: [如何验证这个假设]
-- **风险**: [如果假设不成立的影响]
-
-**示例**:
-
-### 假设 A: 用户接受邮箱注册方式
-
-- **假设内容**: 用户愿意使用邮箱作为唯一注册方式
-- **验证方式**: 通过 E2E 测试验证注册流程
-- **风险**: 如果用户不接受，需要增加手机号注册
+> This stage's goal is to implement user authentication functionality, including login, registration, and logout operations. Does not involve permission management, third-party login, and other advanced features.
 
 ---
 
-## 验收标准
+## Non-Goals
 
-> 必须可测试、可验证
+> What this stage explicitly does not do (prevent scope creep)
 
-- [ ] [验收标准 A]: [具体描述]
-- [ ] [验收标准 B]: [具体描述]
-- [ ] [验收标准 C]: [具体描述]
-- [ ] 单元测试覆盖率 >= 20%
-- [ ] E2E 测试通过（至少 2 条高信号路径）
-- [ ] 无未文档化的手工步骤
-- [ ] 实现与设计一致（差异已记录）
+- [Non-goal 1]: [Description and reason]
+- [Non-goal 2]: [Description and reason]
+- [Non-goal 3]: [Description and reason]
 
-**示例**:
+**Example**:
 
-- [ ] 用户可通过邮箱完成注册流程
-- [ ] 用户可通过邮箱和密码登录
-- [ ] 用户可正常登出
-- [ ] 登录状态在页面刷新后保持
-- [ ] 密码以加密形式存储
-- [ ] 所有接口有对应的单元测试
+- **Permission Management System**: Handled in Stage 3, this stage only needs to distinguish "logged in/not logged in"
+- **Third-party Login**: Requires additional API integration work, deferred to later Stage
+- **Password Recovery**: Depends on email service configuration, not in this Stage
 
 ---
 
-## 回滚方案
+## Core Hypotheses
 
-> 失败时退回到哪个版本
+> Each Stage only validates a small set of clear hypotheses
 
-**回滚策略**: [描述回滚方案]
+### Hypothesis A: [Hypothesis Name]
 
-**回滚步骤**:
+- **Content**: [Describe hypothesis]
+- **Verification**: [How to verify this hypothesis]
+- **Risk**: [Impact if hypothesis doesn't hold]
 
-1. [步骤 1]
-2. [步骤 2]
-3. [步骤 3]
+### Hypothesis B: [Hypothesis Name]
 
-**示例**:
+- **Content**: [Describe hypothesis]
+- **Verification**: [How to verify this hypothesis]
+- **Risk**: [Impact if hypothesis doesn't hold]
 
-回滚到 Stage N-1 完成时的代码版本（commit: `abc123`）:
+**Example**:
 
-1. `git revert HEAD~N` 回滚代码
-2. 执行数据库迁移回滚脚本
-3. 重启服务并验证
+### Hypothesis A: Users accept email registration
 
----
-
-## 已知限制
-
-> 记录本 Stage 已知的限制，这些限制应在技术债台账中跟踪
-
-- **限制 A**: [描述] - 计划在 [Stage X] 解决
-- **限制 B**: [描述] - 计划在 [Stage X] 解决
-- **限制 C**: [描述] - 接受为长期限制
-
-**示例**:
-
-- **密码强度要求简单**: 只要求 6 位以上 - 计划在 Stage 4 加强
-- **无登录失败次数限制**: 存在暴力破解风险 - 计划在 Stage 3 解决
-- **Session 过期时间固定**: 24 小时固定 - 接受为长期限制
+- **Content**: Users are willing to use email as the only registration method
+- **Verification**: Verify registration flow through E2E testing
+- **Risk**: If users don't accept, need to add phone number registration
 
 ---
 
-## 对后续 Stage 的影响
+## Acceptance Criteria
 
-> 本 Stage 的决策和实现如何影响后续 Stage（必填，不可留空）
+> Must be testable and verifiable
 
-- **影响 A**: [描述影响及建议]
-- **影响 B**: [描述影响及建议]
+- [ ] [Acceptance Criteria A]: [Specific description]
+- [ ] [Acceptance Criteria B]: [Specific description]
+- [ ] [Acceptance Criteria C]: [Specific description]
+- [ ] Unit test coverage >= 20%
+- [ ] E2E tests passed (at least 2 high-signal paths)
+- [ ] No undocumented manual steps
+- [ ] Implementation matches design (differences documented)
 
-**示例**:
+**Example**:
 
-- **认证接口设计**: 后续 Stage 需要在此基础上添加权限校验，建议保持接口简洁
-- **密码加密方式**: 使用 bcrypt，后续如需更换需要提供迁移方案
-- **Session 管理**: 基于内存，后续如需分布式部署需替换为 Redis
-
----
-
-## 实现与设计差异
-
-> [实现后填写] 记录实现过程中与设计文档的差异
-
-**填写时机**: Stage 完成后，Gate 5 检查时
-
-### 差异记录
-
-| 设计内容 | 实际实现 | 差异原因 | 是否需要调整文档 |
-|----------|----------|----------|------------------|
-| [设计 A] | [实现 A] | [原因] | [是/否] |
-| [设计 B] | [实现 B] | [原因] | [是/否] |
-
-**示例**:
-
-| 设计内容 | 实际实现 | 差异原因 | 是否需要调整文档 |
-|----------|----------|----------|------------------|
-| 使用 JWT 认证 | 使用 Session 认证 | JWT 需要额外配置，初期简单实现 | 是 |
-| 密码使用 SHA256 | 使用 bcrypt | SHA256 不够安全 | 否（设计文档需更新） |
+- [ ] User can complete registration flow via email
+- [ ] User can login via email and password
+- [ ] User can logout normally
+- [ ] Login state persists after page refresh
+- [ ] Password stored in encrypted form
+- [ ] All interfaces have corresponding unit tests
 
 ---
 
-## Review 记录
+## Rollback Plan
 
-> 详细 Review 记录请查看: [stage-N-review-log.md](./stage-N-review-log.md)
+> Which version to fall back to if failed
 
-### Review 摘要
+**Rollback Strategy**: [Describe rollback plan]
 
-- **设计 Review 日期**: YYYY-MM-DD
-- **代码 Review 日期**: YYYY-MM-DD
-- **参与模型**: [模型列表]
-- **总 findings 数**: N
-- **已采纳**: N
-- **不采纳**: N
-- **状态**: ✅ 通过 / 🔄 待处理
+**Rollback Steps**:
 
----
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
 
-## 复盘
+**Example**:
 
-> [可选] Stage 完成后的复盘总结
+Rollback to code version at Stage N-1 completion (commit: `abc123`):
 
-### 做得好的
-
-- [点 1]
-- [点 2]
-
-### 可以改进的
-
-- [点 1]
-- [点 2]
-
-### 学到的经验
-
-- [经验 1]
-- [经验 2]
+1. `git revert HEAD~N` to rollback code
+2. Execute database migration rollback script
+3. Restart service and verify
 
 ---
 
-## 附录
+## Known Limitations
 
-### 相关文档
+> Document known limitations in this Stage, these should be tracked in tech debt ledger
+
+- **Limitation A**: [Description] - Plan to resolve in [Stage X]
+- **Limitation B**: [Description] - Plan to resolve in [Stage X]
+- **Limitation C**: [Description] - Accept as long-term limitation
+
+**Example**:
+
+- **Simple password strength requirement**: Only requires 6+ characters - Plan to strengthen in Stage 4
+- **No login failure limit**: Brute force risk exists - Plan to resolve in Stage 3
+- **Fixed session expiration**: 24 hours fixed - Accept as long-term limitation
+
+---
+
+## Impact on Subsequent Stages
+
+> How this Stage's decisions and implementation affect subsequent Stages (required, cannot be empty)
+
+- **Impact A**: [Describe impact and recommendations]
+- **Impact B**: [Describe impact and recommendations]
+
+**Example**:
+
+- **Authentication interface design**: Subsequent Stages need to add permission checks on top of this, recommend keeping interface simple
+- **Password encryption method**: Using bcrypt, if need to change later need to provide migration plan
+- **Session management**: Memory-based, need to replace with Redis for distributed deployment later
+
+---
+
+## Implementation vs Design Differences
+
+> [Fill in after implementation] Document differences between implementation and design document
+
+**Fill in timing**: After Stage completion, during Gate 5 check
+
+### Difference Record
+
+| Design Content | Actual Implementation | Difference Reason | Need Doc Update |
+|----------------|----------------------|-------------------|-----------------|
+| [Design A] | [Implementation A] | [Reason] | [Yes/No] |
+| [Design B] | [Implementation B] | [Reason] | [Yes/No] |
+
+**Example**:
+
+| Design Content | Actual Implementation | Difference Reason | Need Doc Update |
+|----------------|----------------------|-------------------|-----------------|
+| Use JWT auth | Use Session auth | JWT requires extra config, simpler initial implementation | Yes |
+| Password uses SHA256 | Use bcrypt | SHA256 not secure enough | No (design doc needs update) |
+
+---
+
+## Review Record
+
+> See detailed review log: [stage-N-review-log.md](./stage-N-review-log.md)
+
+### Review Summary
+
+- **Design Review Date**: YYYY-MM-DD
+- **Code Review Date**: YYYY-MM-DD
+- **Participating Models**: [Model list]
+- **Total Findings**: N
+- **Adopted**: N
+- **Not Adopted**: N
+- **Status**: ✅ Passed / 🔄 Pending
+
+---
+
+## Retrospective
+
+> [Optional] Retrospective summary after Stage completion
+
+### What Went Well
+
+- [Point 1]
+- [Point 2]
+
+### What Could Be Improved
+
+- [Point 1]
+- [Point 2]
+
+### Lessons Learned
+
+- [Lesson 1]
+- [Lesson 2]
+
+---
+
+## Appendix
+
+### Related Documents
 
 - [Stage Roadmap](./stage-roadmap.md)
-- [ADR 日志](../08-autonomous-decisions.md)
-- [技术债台账](../12-technical-debt.md)
-- [下一步计划](../11-next-steps.md)
+- [ADR Log](../08-autonomous-decisions.md)
+- [Tech Debt Ledger](../12-technical-debt.md)
+- [Next Steps](../11-next-steps.md)
 
-### 注意事项
+### Notes
 
-1. **文档同步更新**: 发现设计偏差立即更新，不等 Stage 结束
-2. **实质内容**: 必须有具体内容，不能只写"待定"
-3. **版本刷新**: 所有"当前状态"字段同步刷新
-4. **禁止行为**: 参考 RDD 核心原则中的 9 条禁止行为
+1. **Document Sync Updates**: Update immediately when design deviation found, don't wait for Stage end
+2. **Substantive Content**: Must have specific content, cannot just write "TBD"
+3. **Version Refresh**: All "current status" fields sync refresh
+4. **Prohibited Actions**: Refer to 9 prohibited actions in RDD core principles
 
-### Gate 检查清单
+### Gate Checklist
 
-**Gate 1: 设计文档检查**
-- [ ] 目标清晰明确
-- [ ] 非目标已显式声明
-- [ ] 验收标准可测试
-- [ ] 回滚方案存在
+**Gate 1: Design Document Check**
+- [ ] Goals are clear and specific
+- [ ] Non-goals are explicitly stated
+- [ ] Acceptance criteria are testable
+- [ ] Rollback plan exists
 
-**Gate 2: 方案 Review**
-- [ ] 多模型 Review 已触发
-- [ ] AI 初筛已完成
-- [ ] 高置信度 findings 已修复
+**Gate 2: Solution Review**
+- [ ] Multi-model review triggered
+- [ ] AI pre-filtering completed
+- [ ] High-confidence findings resolved
 
-**Gate 3: 实现与测试**
-- [ ] E2E 测试通过
-- [ ] 单元测试覆盖率 >= 20%
-- [ ] 干净环境验证通过
+**Gate 3: Implementation & Testing**
+- [ ] E2E tests passed
+- [ ] Unit test coverage >= 20%
+- [ ] Clean environment verification passed
 
-**Gate 4: 代码 Review**
-- [ ] 所有阻塞性 findings 已修复
-- [ ] 所有验收标准已达成
+**Gate 4: Code Review**
+- [ ] All blocking findings resolved
+- [ ] All acceptance criteria met
 
-**Gate 5: 完成检查**
-- [ ] 6 份文档已更新
-- [ ] fresh-agent-check 通过
+**Gate 5: Completion Check**
+- [ ] 6 documents updated
+- [ ] fresh-agent-check passed

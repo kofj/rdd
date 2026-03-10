@@ -1,107 +1,107 @@
 # RDD Framework - Stage Roadmap
 
-> RDD 框架开发的实际路线图
+> The actual development roadmap for the RDD Framework
 
 ---
 
-## 当前状态
+## Current Status
 
-### 当前 Stage
+### Current Stage
 
-- **Stage**: Phase 3 完成 ✅
-- **状态**: 准备发布 v1.0.1
+- **Stage**: Phase 3 Completed ✅
+- **Status**: Ready to release v1.0.1
 
-### 整体进度
+### Overall Progress
 
 ```
-Phase 1 核心开发: ████████████████████ 100% (11/11 Stage)
-Phase 2 E2E测试:  ████████████████████ 100% (5/5 Stage)
-Phase 3 发布运维: ████████████████████ 100% (3/3 Stage)
+Phase 1 Core Development: ████████████████████ 100% (11/11 Stage)
+Phase 2 E2E Testing:      ████████████████████ 100% (5/5 Stage)
+Phase 3 Release & Ops:    ████████████████████ 100% (3/3 Stage)
 ```
 
 ---
 
-## Stage 路线图
+## Stage Roadmap
 
-### Phase 1: 核心开发 ✅ (完成)
+### Phase 1: Core Development ✅ (Completed)
 
-| Stage | 状态 | 目标 | 完成日期 |
-|-------|------|------|----------|
-| Stage 0 | ✅ 完成 | 框架基础搭建 | 2026-03-06 |
-| Stage 1 | ✅ 完成 | 关键缺陷修复 | 2026-03-07 |
-| Stage 2 | ✅ 完成 | 测试体系建设 | 2026-03-07 |
-| Stage 3 | ✅ 完成 | 上下文恢复增强 | 2026-03-08 |
-| Stage 4 | ✅ 完成 | 错误处理与可观测性 | 2026-03-08 |
-| Stage 5 | ✅ 完成 | 性能与兼容性 | 2026-03-08 |
-| Stage 6 | ✅ 完成 | 安全与权限 | 2026-03-08 |
-| Stage 7 | ✅ 完成 | 文档与运维完善 | 2026-03-08 |
-| Stage 8 | ✅ 完成 | 用户安装体验 | 2026-03-09 |
-| Stage 9 | ✅ 完成 | 包管理器支持 | 2026-03-09 |
-| Stage 10 | ✅ 完成 | 开发者体验优化 | 2026-03-09 |
+| Stage | Status | Goal | Completion Date |
+|-------|--------|------|-----------------|
+| Stage 0 | ✅ Completed | Framework foundation setup | 2026-03-06 |
+| Stage 1 | ✅ Completed | Critical bug fixes | 2026-03-07 |
+| Stage 2 | ✅ Completed | Testing system establishment | 2026-03-07 |
+| Stage 3 | ✅ Completed | Context recovery enhancement | 2026-03-08 |
+| Stage 4 | ✅ Completed | Error handling & observability | 2026-03-08 |
+| Stage 5 | ✅ Completed | Performance & compatibility | 2026-03-08 |
+| Stage 6 | ✅ Completed | Security & permissions | 2026-03-08 |
+| Stage 7 | ✅ Completed | Documentation & ops refinement | 2026-03-08 |
+| Stage 8 | ✅ Completed | User installation experience | 2026-03-09 |
+| Stage 9 | ✅ Completed | Package manager support | 2026-03-09 |
+| Stage 10 | ✅ Completed | Developer experience optimization | 2026-03-09 |
 
-### Phase 2: E2E 测试与发布 ✅ (完成)
+### Phase 2: E2E Testing & Release ✅ (Completed)
 
-| Stage | 状态 | 目标 | 完成日期 |
-|-------|------|------|----------|
-| Stage 11 | ✅ 完成 | E2E 测试框架准备 | 2026-03-09 |
-| Stage 12 | ✅ 完成 | 安装流程 E2E 测试 | 2026-03-09 |
-| Stage 13 | ✅ 完成 | Claude Code 集成测试 | 2026-03-09 |
-| Stage 14 | ✅ 完成 | 完整工作流 E2E 测试 | 2026-03-09 |
-| Stage 15 | ✅ 完成 | 代码提交与发布准备 | 2026-03-09 |
+| Stage | Status | Goal | Completion Date |
+|-------|--------|------|-----------------|
+| Stage 11 | ✅ Completed | E2E test framework setup | 2026-03-09 |
+| Stage 12 | ✅ Completed | Installation flow E2E tests | 2026-03-09 |
+| Stage 13 | ✅ Completed | Claude Code integration tests | 2026-03-09 |
+| Stage 14 | ✅ Completed | Complete workflow E2E tests | 2026-03-09 |
+| Stage 15 | ✅ Completed | Code commit & release preparation | 2026-03-09 |
 
-### Phase 3: 发布与运维 ✅ (完成)
+### Phase 3: Release & Operations ✅ (Completed)
 
-| Stage | 状态 | 目标 | 完成日期 |
-|-------|------|------|----------|
-| Stage 16 | ✅ 完成 | 安装脚本修复 (Banner + go-task) | 2026-03-10 |
-| Stage 17 | ✅ 完成 | GitHub Actions CI/CD | 2026-03-10 |
-| Stage 18 | ✅ 完成 | Docker 测试环境 | 2026-03-10 |
+| Stage | Status | Goal | Completion Date |
+|-------|--------|------|-----------------|
+| Stage 16 | ✅ Completed | Installation script fixes (Banner + go-task) | 2026-03-10 |
+| Stage 17 | ✅ Completed | GitHub Actions CI/CD | 2026-03-10 |
+| Stage 18 | ✅ Completed | Docker test environment | 2026-03-10 |
 
-### 状态图标说明
+### Status Icons
 
-- ✅ 完成 - Stage 已完成所有验收标准
-- 🔄 进行中 - Stage 正在开发中
-- ⏳ 待开始 - Stage 尚未开始
-
----
-
-## 测试统计
-
-| 类型 | 数量 | 通过率 |
-|------|------|--------|
-| 单元测试 | 867 | 100% |
-| E2E 测试 | 42 | 100% |
-| **总计** | **909** | **100%** |
+- ✅ Completed - Stage has met all acceptance criteria
+- 🔄 In Progress - Stage is being developed
+- ⏳ Pending - Stage has not started
 
 ---
 
-## 发布清单
+## Test Statistics
 
-### 发布前检查 ✅
-
-- [x] 所有测试通过 (909/909)
-- [x] CHANGELOG.md 更新
-- [x] 版本号正确 (1.0.0)
-- [x] README.md 更新
-- [x] 无敏感信息泄露
-- [x] E2E 测试覆盖安装流程
-- [x] E2E 测试覆盖 Claude 集成
-
-### 发布待办
-
-- [ ] 配置 Git Remote (GitHub 仓库)
-- [ ] 推送代码到 GitHub
-- [ ] 创建 v1.0.0 Tag
-- [ ] 创建 GitHub Release
-- [ ] 发布到 npm (可选)
-- [ ] 部署文档站点 (可选)
+| Type | Count | Pass Rate |
+|------|-------|-----------|
+| Unit Tests | 867 | 100% |
+| E2E Tests | 42 | 100% |
+| **Total** | **909** | **100%** |
 
 ---
 
-## 修订记录
+## Release Checklist
 
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| v5.0 | 2026-03-09 | Stage 11-15 完成，E2E 测试全部通过 | Claude |
-| v4.0 | 2026-03-09 | 添加 Stage 11-15 E2E 测试计划 | Claude |
-| v3.0 | 2026-03-09 | v1.0.0 发布，Stage 0-10 完成 | Claude |
+### Pre-release Checks ✅
+
+- [x] All tests passed (909/909)
+- [x] CHANGELOG.md updated
+- [x] Version number correct (1.0.0)
+- [x] README.md updated
+- [x] No sensitive information leaked
+- [x] E2E tests cover installation flow
+- [x] E2E tests cover Claude integration
+
+### Release TODO
+
+- [ ] Configure Git Remote (GitHub repository)
+- [ ] Push code to GitHub
+- [ ] Create v1.0.0 Tag
+- [ ] Create GitHub Release
+- [ ] Publish to npm (optional)
+- [ ] Deploy documentation site (optional)
+
+---
+
+## Revision History
+
+| Version | Date | Revision Content | Author |
+|---------|------|------------------|--------|
+| v5.0 | 2026-03-09 | Stage 11-15 completed, all E2E tests passed | Claude |
+| v4.0 | 2026-03-09 | Added Stage 11-15 E2E test plan | Claude |
+| v3.0 | 2026-03-09 | v1.0.0 released, Stage 0-10 completed | Claude |

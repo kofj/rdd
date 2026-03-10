@@ -1,4 +1,4 @@
-# Stage 2: 测试体系建设
+# Stage 2: Test Infrastructure Development
 
 ## Status
 - [x] Planning
@@ -6,50 +6,50 @@
 - [x] Complete
 
 ## Goals
-建立完整的测试体系，确保框架可靠性。包括单元测试、BDD 测试、E2E 测试三层测试架构。
+Establish a complete test system to ensure framework reliability. Including unit tests, BDD tests, and E2E tests - a three-layer testing architecture.
 
 ## Non-Goals
-- 不涉及上下文恢复功能（Stage 3）
-- 不涉及 CI/CD 生产环境集成（Stage 4）
-- 不涉及 Mock Claude API 完整实现（仅基础 mock）
+- Context recovery functionality (Stage 3)
+- CI/CD production environment integration (Stage 4)
+- Complete Mock Claude API implementation (only basic mock)
 
 ## Core Hypotheses
-- H1: bats-core 可以满足 Shell 脚本单元测试需求
-- H2: BDD 场景可以验证用户行为预期
-- H3: E2E 测试可以模拟真实 Agent 工作流
-- H4: 测试覆盖率可达 80%
+- H1: bats-core can meet Shell script unit testing requirements
+- H2: BDD scenarios can verify user behavior expectations
+- H3: E2E tests can simulate real Agent workflows
+- H4: Test coverage can reach 80%
 
 ## Acceptance Criteria
-- [x] 单元测试框架集成 (bats-core)
-- [x] notify.sh 单元测试覆盖率 >= 80% (34 tests)
-- [ ] Hook 脚本单元测试覆盖率 >= 80%
-- [x] BDD 场景定义完成 (Given/When/Then) - 10 tests
-- [ ] Gate 检查自动化测试完成
-- [x] E2E 测试项目模板创建 - 12 tests
-- [ ] Mock Claude API 基础实现
-- [x] `task test` 执行所有测试 - 81 tests passing
-- [x] 测试覆盖率报告生成
-- [ ] CI 流水线配置完成
+- [x] Unit test framework integrated (bats-core)
+- [x] notify.sh unit test coverage >= 80% (34 tests)
+- [ ] Hook script unit test coverage >= 80%
+- [x] BDD scenario definition complete (Given/When/Then) - 10 tests
+- [ ] Gate check automation tests complete
+- [x] E2E test project template created - 12 tests
+- [ ] Mock Claude API basic implementation
+- [x] `task test` executes all tests - 81 tests passing
+- [x] Test coverage report generation
+- [ ] CI pipeline configuration complete
 
 ## Rollback Plan
-测试框架独立于核心功能，可单独删除 tests/ 目录回滚。
+Test framework is independent of core functionality, can rollback by deleting tests/ directory.
 
 ## Known Limitations
-- Mock Claude API 仅基础实现，不模拟完整 Agent 行为
-- 覆盖率工具 kcov 可能不在所有环境可用
-- E2E 测试使用 DRY_RUN 模式避免实际网络调用
+- Mock Claude API only has basic implementation, doesn't simulate complete Agent behavior
+- Coverage tool kcov may not be available in all environments
+- E2E tests use DRY_RUN mode to avoid actual network calls
 
 ## Impact on Subsequent Stages
-- Stage 3 可依赖测试保障实现上下文恢复
-- Stage 4 可依赖 CI 流水线实现自动化部署
+- Stage 3 can rely on test coverage for context recovery implementation
+- Stage 4 can rely on CI pipeline for automated deployment
 
 ---
 
 ## Implementation Notes
 
 ### Technical Decisions Made
-- 决策 5: 选择 bats-core 作为 Shell 测试框架 (ADR-005)
-- 决策 6: 测试分层策略：单元/BDD/E2E 三层测试 (ADR-006)
+- Decision 5: Choose bats-core as Shell testing framework (ADR-005)
+- Decision 6: Test layering strategy: unit/BDD/E2E three-layer testing (ADR-006)
 
 ### Architecture
 ```

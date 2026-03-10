@@ -1,4 +1,4 @@
-# Stage 9: 包管理器支持
+# Stage 9: Package Manager Support
 
 ## Status
 - [x] Planning
@@ -8,78 +8,78 @@
 **Completion Date**: 2026-03-09
 
 ## Goals
-提供标准包管理器安装方式，让用户可以通过 npm 或 Homebrew 安装 RDD Framework。
+Provide standard package manager installation methods, allowing users to install RDD Framework via npm or Homebrew.
 
 ## Non-Goals
-- Windows 包管理器 (chocolatey, scoop)
-- VS Code 扩展 (Stage 10)
-- 在线文档站点 (Stage 10)
+- Windows package managers (chocolatey, scoop)
+- VS Code extension (Stage 10)
+- Online documentation site (Stage 10)
 
 ## Core Hypotheses
-- H1: npm 安装可覆盖 Node.js 开发者用户群
-- H2: Homebrew 安装可覆盖 macOS 开发者用户群
-- H3: 用户可以通过标准命令验证安装
+- H1: npm installation can cover Node.js developer user base
+- H2: Homebrew installation can cover macOS developer user base
+- H3: Users can verify installation via standard commands
 
 ## Acceptance Criteria
 
-### npm 包 (9.1) ✅
-- [x] package.json 配置正确
-- [x] postinstall 脚本正确执行
-- [x] `npm install -g @kofj/rdd` 成功
-- [x] `rdd --version` 显示版本
-- [x] `rdd init` 创建项目成功
-- [x] Skills 正确安装到 ~/.claude/
+### npm Package (9.1) ✅
+- [x] package.json configured correctly
+- [x] postinstall script executes correctly
+- [x] `npm install -g @kofj/rdd` succeeds
+- [x] `rdd --version` shows version
+- [x] `rdd init` creates project successfully
+- [x] Skills installed correctly to ~/.claude/
 
 ### Homebrew Formula (9.2) ✅
-- [x] Formula 文件创建
-- [x] `brew tap` 可添加 tap
-- [x] `brew install` 成功
-- [x] 安装后命令可用
+- [x] Formula file created
+- [x] `brew tap` can add tap
+- [x] `brew install` succeeds
+- [x] Commands available after installation
 
-### 项目迁移命令 (9.3) ✅
-- [x] `rdd migrate` 检测项目类型
-- [x] 创建 RDD 目录结构
-- [x] 保留现有代码
-- [x] 生成初始 Roadmap
+### Project Migration Command (9.3) ✅
+- [x] `rdd migrate` detects project type
+- [x] Creates RDD directory structure
+- [x] Preserves existing code
+- [x] Generates initial Roadmap
 
 ## Rollback Plan
-- npm 包可撤回版本
-- Homebrew tap 可删除
-- 项目独立，不影响已有项目
+- npm package can retract version
+- Homebrew tap can be deleted
+- Projects are independent, doesn't affect existing projects
 
 ## Known Limitations
-- npm 需要 Node.js 14+
-- Homebrew 仅支持 macOS/Linux
-- 迁移命令仅支持常见项目类型
+- npm requires Node.js 14+
+- Homebrew only supports macOS/Linux
+- Migration command only supports common project types
 
 ## Impact on Subsequent Stages
-- Stage 10 可扩展交互式向导
-- 提供多渠道安装选择
+- Stage 10 can extend interactive wizard
+- Provides multiple installation channel choices
 
 ---
 
 ## Implementation Notes
 
-### npm 包结构
+### npm Package Structure
 
 ```
 rdd-framework/
 ├── package.json
 ├── bin/
-│   └── rdd              # CLI 入口
+│   └── rdd              # CLI entry
 ├── scripts/
-│   ├── install.sh       # curl 安装脚本
+│   ├── install.sh       # curl install script
 │   ├── uninstall.sh
 │   ├── upgrade.sh
 │   └── postinstall.js   # npm postinstall
 ├── .claude/
-│   ├── skills/          # 复制到 ~/.claude/skills/
-│   └── commands/        # 复制到 ~/.claude/commands/
+│   ├── skills/          # Copy to ~/.claude/skills/
+│   └── commands/        # Copy to ~/.claude/commands/
 ├── .rdd/
-│   ├── scripts/         # 核心脚本
-│   └── hooks/           # Hook 脚本
+│   ├── scripts/         # Core scripts
+│   └── hooks/           # Hook scripts
 ├── docs/
-│   └── templates/       # 文档模板
+│   └── templates/       # Document templates
 └── README.md
 ```
 
@@ -137,10 +137,10 @@ end
 
 ### Gate 3: Implementation & Testing Check
 - [x] Implementation complete
-- [x] npm pack 成功
-- [x] npm install 测试通过
-- [x] Homebrew formula 测试通过
-- [x] rdd migrate 测试通过
+- [x] npm pack successful
+- [x] npm install test passed
+- [x] Homebrew formula test passed
+- [x] rdd migrate test passed
 
 ### Gate 4: Code Review Check
 - [x] Triangulation complete

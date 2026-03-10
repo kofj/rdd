@@ -1,464 +1,464 @@
-# Review 实践指南 (Review Practices)
+# Review Practices Guide
 
-> 本文档定义 RDD 项目中 Review 的时机、方法论和最佳实践。
-
----
-
-## Review 时机 (Review Timing)
-
-### 两种 Review 类型
-
-| 类型 | 时机 | 目的 | 产出 |
-|------|------|------|------|
-| 方案 Review | 写代码前 | 验证设计合理性 | 优化后的设计文档 |
-| 代码 Review | E2E 通过后 | 验证实现质量 | Review 日志 |
-
-### 方案 Review（写代码前）
-
-**触发条件**：
-
-- Stage 设计文档完成
-- 准备开始实现前
-
-**Review 目的**：
-
-1. 验证设计是否满足需求
-2. 发现潜在的设计问题
-3. 确保非目标边界清晰
-4. 验证假设的合理性
-
-**Review 流程**：
-
-```
-1. 触发多模型 Review
-2. 第一轮开放，不给维度/提示
-3. AI 初筛 findings
-4. 规则过滤
-5. 独立核查每条 finding
-6. 更新设计文档
-7. 记录 Review 日志
-```
-
-### 代码 Review（E2E 通过后）
-
-**触发条件**：
-
-- E2E 测试通过
-- 准备完成 Stage 前
-
-**Review 目的**：
-
-1. 验证代码质量
-2. 发现潜在 bug
-3. 检查测试覆盖
-4. 确认文档完整性
-
-**Review 流程**：
-
-```
-1. 触发多模型 Review
-2. 三角校验：主开发模型 + 独立评审模型 + 规则检查
-3. AI 初筛 findings
-4. 规则过滤
-5. 独立核查每条 finding
-6. 修复阻塞性 findings
-7. 记录 Review 日志
-```
+> This document defines the timing, methodology, and best practices for Reviews in RDD projects.
 
 ---
 
-## Prompt 设计原则 (Prompt Design Principles)
+## Review Timing
 
-### 同事模式 vs 工人模式
+### Two Review Types
 
-| 模式 | 特点 | 适用场景 |
-|------|------|----------|
-| 同事模式 | 平等交流，开放讨论 | 方案 Review、设计讨论 |
-| 工人模式 | 明确指令，执行任务 | 具体实现、代码修改 |
+| Type | Timing | Purpose | Output |
+|------|--------|---------|--------|
+| Design Review | Before coding | Validate design rationality | Optimized design document |
+| Code Review | After E2E passes | Validate implementation quality | Review log |
 
-**同事模式 Prompt 示例**：
+### Design Review (Before Coding)
 
-```
-你好，我正在设计一个缓存系统，想请你帮忙 Review 一下。
+**Trigger Conditions**:
 
-背景：
-- 需要支持 10 万 QPS
-- 数据大小约 100MB
-- 需要支持过期策略
+- Stage design document completed
+- Before implementation begins
 
-当前设计：
-[设计内容]
+**Review Purpose**:
 
-请从以下角度帮我看看：
-1. 设计是否合理
-2. 有没有潜在问题
-3. 有什么改进建议
-```
+1. Validate if design meets requirements
+2. Discover potential design issues
+3. Ensure non-goal boundaries are clear
+4. Validate assumption rationality
 
-**工人模式 Prompt 示例**：
+**Review Flow**:
 
 ```
-请实现以下功能：
-
-1. 在 src/cache.rs 中添加 LRU 缓存实现
-2. 支持 get/put/delete 操作
-3. 添加单元测试，覆盖率 >= 80%
-
-完成后运行测试并确保通过。
+1. Trigger multi-model Review
+2. First round open, no dimensions/hints provided
+3. AI initial screening of findings
+4. Rule filtering
+5. Independently verify each finding
+6. Update design document
+7. Record Review log
 ```
 
-### 第一轮开放原则
+### Code Review (After E2E Passes)
 
-**原则**：第一轮 Review 不给维度/提示，让模型自由发挥。
+**Trigger Conditions**:
 
-**原因**：
+- E2E tests pass
+- Before completing Stage
 
-1. 避免引导模型思维
-2. 发现预期外的问题
-3. 获得更客观的评价
+**Review Purpose**:
 
-**实践方法**：
+1. Validate code quality
+2. Discover potential bugs
+3. Check test coverage
+4. Confirm documentation completeness
+
+**Review Flow**:
 
 ```
-第一轮 Prompt：
-"请 Review 这个设计文档，给出你的意见和建议。"
-
-不要在第一轮 Prompt 中提供：
-- 检查维度
-- 评分标准
-- 预期的问题类型
-
-第二轮及之后：
-可以根据第一轮结果，针对性地追问。
+1. Trigger multi-model Review
+2. Triangulation: main dev model + independent reviewer + rule check
+3. AI initial screening of findings
+4. Rule filtering
+5. Independently verify each finding
+6. Fix blocking findings
+7. Record Review log
 ```
 
-### Review Prompt 模板
+---
 
-#### 方案 Review Prompt
+## Prompt Design Principles
+
+### Colleague Mode vs Worker Mode
+
+| Mode | Characteristics | Applicable Scenarios |
+|------|-----------------|----------------------|
+| Colleague Mode | Equal exchange, open discussion | Design Review, design discussion |
+| Worker Mode | Clear instructions, execute tasks | Specific implementation, code modification |
+
+**Colleague Mode Prompt Example**:
+
+```
+Hello, I'm designing a cache system and would like your help with a review.
+
+Background:
+- Need to support 100K QPS
+- Data size approximately 100MB
+- Need to support expiration policies
+
+Current design:
+[Design content]
+
+Please help me review from these perspectives:
+1. Is the design reasonable
+2. Are there potential issues
+3. What improvement suggestions do you have
+```
+
+**Worker Mode Prompt Example**:
+
+```
+Please implement the following functionality:
+
+1. Add LRU cache implementation in src/cache.rs
+2. Support get/put/delete operations
+3. Add unit tests, coverage >= 80%
+
+Run tests after completion and ensure they pass.
+```
+
+### First Round Openness Principle
+
+**Principle**: Don't provide dimensions/hints in the first Review round, let the model freely explore.
+
+**Reasons**:
+
+1. Avoid guiding the model's thinking
+2. Discover unexpected issues
+3. Obtain more objective evaluation
+
+**Practice Methods**:
+
+```
+First Round Prompt:
+"Please review this design document and provide your comments and suggestions."
+
+Do NOT provide in the first round Prompt:
+- Check dimensions
+- Scoring criteria
+- Expected problem types
+
+Second round and after:
+Can ask targeted follow-up questions based on first round results.
+```
+
+### Review Prompt Templates
+
+#### Design Review Prompt
 
 ```markdown
-## 方案 Review 请求
+## Design Review Request
 
-**项目背景**：[项目简介]
+**Project Background**: [Project introduction]
 
-**Stage 信息**：
-- Stage 编号：[Stage N]
-- 目标：[Stage 目标]
-- 非目标：[Stage 非目标]
+**Stage Information**:
+- Stage Number: [Stage N]
+- Goal: [Stage goal]
+- Non-goals: [Stage non-goals]
 
-**设计文档**：
-[附上设计文档内容]
+**Design Document**:
+[Attach design document content]
 
-**请帮忙 Review**：
-1. 设计是否满足目标
-2. 非目标边界是否清晰
-3. 有没有潜在风险
-4. 有什么改进建议
+**Please help review**:
+1. Does design meet goals
+2. Are non-goal boundaries clear
+3. Are there potential risks
+4. What improvement suggestions
 ```
 
-#### 代码 Review Prompt
+#### Code Review Prompt
 
 ```markdown
-## 代码 Review 请求
+## Code Review Request
 
-**Stage 信息**：
-- Stage 编号：[Stage N]
-- 目标：[Stage 目标]
+**Stage Information**:
+- Stage Number: [Stage N]
+- Goal: [Stage goal]
 
-**代码变更**：
-[附上代码变更内容或 PR 链接]
+**Code Changes**:
+[Attach code changes or PR link]
 
-**请帮忙 Review**：
-1. 代码质量
-2. 潜在 bug
-3. 测试覆盖
-4. 文档完整性
+**Please help review**:
+1. Code quality
+2. Potential bugs
+3. Test coverage
+4. Documentation completeness
 ```
 
 ---
 
-## 误报识别 (False Positive Recognition)
+## False Positive Recognition
 
-### 误报率说明
+### False Positive Rate Explanation
 
-根据实践经验，**约 50% 的 Review findings 是误报**。
+Based on practical experience, **approximately 50% of Review findings are false positives**.
 
-这意味着：
+This means:
 
-1. 不要盲目接受所有 findings
-2. 每条 finding 都需要独立核查
-3. 不依赖"多模型共识"来判断正确性
+1. Don't blindly accept all findings
+2. Each finding needs independent verification
+3. Don't rely on "multi-model consensus" to judge correctness
 
-### 常见误报类型
+### Common False Positive Types
 
-| 误报类型 | 说明 | 示例 |
-|----------|------|------|
-| 记忆偏差 | 模型"记住"了某些模式，但不适用当前场景 | "应该使用单例模式"（实际不需要） |
-| 逻辑谬误 | 推理过程存在逻辑问题 | "因为没有错误处理，所以会崩溃"（实际有上游处理） |
-| 过度设计 | 建议的复杂度超出了需求 | "应该使用微服务架构"（实际单体足够） |
-| 信息不完整 | 基于不完整信息做出判断 | "缺少输入验证"（实际在其他层已处理） |
-| 版本过时 | 引用了过时的最佳实践 | "应该使用 var 声明"（现代 JS 推荐 let/const） |
-| 上下文缺失 | 没有考虑完整上下文 | "这个函数太长"（实际是生成的序列化代码） |
+| False Positive Type | Description | Example |
+|--------------------|-------------|---------|
+| Memory Bias | Model "remembers" certain patterns that don't apply to current scenario | "Should use singleton pattern" (actually not needed) |
+| Logical Fallacy | Reasoning process has logical issues | "Will crash because no error handling" (actually handled upstream) |
+| Over-engineering | Suggested complexity exceeds requirements | "Should use microservices architecture" (actually monolith is sufficient) |
+| Incomplete Information | Judgment based on incomplete information | "Missing input validation" (actually handled in other layer) |
+| Outdated Version | References outdated best practices | "Should use var declaration" (modern JS recommends let/const) |
+| Missing Context | Didn't consider complete context | "This function is too long" (actually generated serialization code) |
 
-### 误报识别方法
-
-```
-1. 检查是否有权威来源支持
-   - 官方文档
-   - 规范标准
-   - 最佳实践指南
-
-2. 在代码中验证
-   - 运行测试
-   - 检查调用链
-   - 查看上下文
-
-3. 追问模型
-   - 要求提供更多解释
-   - 询问具体场景
-   - 验证推理过程
-```
-
-### 误报处理流程
+### False Positive Identification Methods
 
 ```
-收到 Finding
+1. Check if authoritative sources support it
+   - Official documentation
+   - Standards and specifications
+   - Best practice guides
+
+2. Verify in code
+   - Run tests
+   - Check call chains
+   - View context
+
+3. Question the model
+   - Request more explanation
+   - Ask about specific scenarios
+   - Verify reasoning process
+```
+
+### False Positive Handling Flow
+
+```
+Receive Finding
     │
     ▼
-检查是否有权威来源支持？
+Check if authoritative sources support it?
     │
-    ├─ 是 → 验证权威来源是否适用当前场景
+    ├─ Yes → Verify if authoritative source applies to current scenario
     │         │
-    │         ├─ 适用 → 采纳 Finding
+    │         ├─ Applies → Accept Finding
     │         │
-    │         └─ 不适用 → 标记为误报，记录原因
+    │         └─ Doesn't apply → Mark as false positive, record reason
     │
-    └─ 否 → 在代码中验证
+    └─ No → Verify in code
               │
-              ├─ 可验证 → 运行测试/检查代码
+              ├─ Verifiable → Run tests/check code
               │              │
-              │              ├─ 问题存在 → 采纳 Finding
+              │              ├─ Problem exists → Accept Finding
               │              │
-              │              └─ 问题不存在 → 标记为误报
+              │              └─ Problem doesn't exist → Mark as false positive
               │
-              └─ 无法验证 → 追问模型
+              └─ Cannot verify → Question model
                               │
-                              ├─ 解释合理 → 采纳 Finding
+                              ├─ Explanation reasonable → Accept Finding
                               │
-                              └─ 解释不合理 → 标记为误报
+                              └─ Explanation unreasonable → Mark as false positive
 ```
 
 ---
 
-## 核查方法 (Verification Methods)
+## Verification Methods
 
-### 核查优先级
-
-```
-权威来源 > 代码验证 > 追问模型
-```
-
-### 1. 权威来源核查
-
-**适用场景**：
-
-- 涉及标准、规范的问题
-- 最佳实践相关的问题
-- API 使用、语法问题
-
-**权威来源类型**：
-
-| 类型 | 示例 |
-|------|------|
-| 官方文档 | Rust 官方文档、Tokio 文档 |
-| 规范标准 | RFC、语言规范 |
-| 最佳实践 | 官方最佳实践指南 |
-| 权威书籍 | 《Rust 程序设计语言》 |
-
-**核查步骤**：
+### Verification Priority
 
 ```
-1. 确定 Finding 涉及的主题
-2. 查找相关权威来源
-3. 确认权威来源的内容
-4. 判断是否适用于当前场景
+Authoritative Sources > Code Verification > Model Inquiry
 ```
 
-**示例**：
+### 1. Authoritative Source Verification
+
+**Applicable Scenarios**:
+
+- Issues involving standards, specifications
+- Issues related to best practices
+- API usage, syntax issues
+
+**Authoritative Source Types**:
+
+| Type | Example |
+|------|---------|
+| Official Documentation | Rust official docs, Tokio docs |
+| Standards/Specifications | RFC, language specifications |
+| Best Practices | Official best practice guides |
+| Authoritative Books | "The Rust Programming Language" |
+
+**Verification Steps**:
 
 ```
-Finding: "应该使用 Arc<Mutex<T>> 而不是 Mutex<T>"
-
-核查过程：
-1. 查阅 Rust 官方文档
-2. 文档说明：Arc 用于多线程共享所有权
-3. 检查当前代码：当前在单线程环境
-4. 结论：误报，单线程不需要 Arc
-
-记录：在 review-log.md 中记录不采纳理由
+1. Identify the topic the Finding relates to
+2. Find relevant authoritative sources
+3. Confirm authoritative source content
+4. Determine if it applies to current scenario
 ```
 
-### 2. 代码验证核查
-
-**适用场景**：
-
-- 可复现的问题
-- 逻辑问题
-- 性能问题
-
-**验证方法**：
-
-| 方法 | 说明 |
-|------|------|
-| 运行测试 | 验证功能是否正常 |
-| 添加断点 | 检查运行时状态 |
-| 日志追踪 | 追踪问题路径 |
-| 性能测试 | 验证性能假设 |
-| 代码审查 | 检查逻辑正确性 |
-
-**核查步骤**：
+**Example**:
 
 ```
-1. 理解 Finding 描述的问题
-2. 设计验证方案
-3. 执行验证
-4. 记录验证结果
+Finding: "Should use Arc<Mutex<T>> instead of Mutex<T>"
+
+Verification Process:
+1. Consult Rust official documentation
+2. Documentation states: Arc is for multi-threaded shared ownership
+3. Check current code: Currently in single-threaded environment
+4. Conclusion: False positive, single-threaded doesn't need Arc
+
+Record: Document rejection reason in review-log.md
 ```
 
-**示例**：
+### 2. Code Verification
+
+**Applicable Scenarios**:
+
+- Reproducible issues
+- Logic issues
+- Performance issues
+
+**Verification Methods**:
+
+| Method | Description |
+|--------|-------------|
+| Run Tests | Verify functionality works correctly |
+| Add Breakpoints | Check runtime state |
+| Log Tracing | Trace problem path |
+| Performance Testing | Verify performance assumptions |
+| Code Review | Check logic correctness |
+
+**Verification Steps**:
 
 ```
-Finding: "这里可能存在空指针异常"
-
-核查过程：
-1. 检查代码：函数返回 Option<T>
-2. 检查调用：使用了 ? 操作符
-3. 运行测试：测试通过，无空指针
-4. 结论：误报，已正确处理
-
-记录：在 review-log.md 中记录验证过程
+1. Understand the problem described in Finding
+2. Design verification plan
+3. Execute verification
+4. Record verification results
 ```
 
-### 3. 追问模型核查
-
-**适用场景**：
-
-- 前两种方法都无法验证
-- 需要更多解释
-
-**追问方法**：
+**Example**:
 
 ```
-1. 要求模型解释推理过程
-2. 询问具体场景和条件
-3. 验证解释是否合理
+Finding: "Potential null pointer exception here"
+
+Verification Process:
+1. Check code: Function returns Option<T>
+2. Check call: Used ? operator
+3. Run tests: Tests pass, no null pointer
+4. Conclusion: False positive, already handled correctly
+
+Record: Document verification process in review-log.md
 ```
 
-**追问 Prompt 模板**：
+### 3. Model Inquiry Verification
+
+**Applicable Scenarios**:
+
+- First two methods cannot verify
+- Need more explanation
+
+**Inquiry Methods**:
+
+```
+1. Ask model to explain reasoning process
+2. Ask about specific scenarios and conditions
+3. Verify if explanation is reasonable
+```
+
+**Inquiry Prompt Template**:
 
 ```markdown
-关于你提出的 Finding "[Finding 内容]"，我需要更多信息：
+Regarding your Finding "[Finding content]", I need more information:
 
-1. 这个建议基于什么依据？
-2. 在什么场景下这个问题会出现？
-3. 有没有具体的代码示例？
+1. What is this suggestion based on?
+2. In what scenarios would this problem occur?
+3. Are there specific code examples?
 
-当前上下文：
-[相关代码或设计]
+Current context:
+[Related code or design]
 ```
 
-**示例**：
+**Example**:
 
 ```
-Finding: "这个设计可能存在性能问题"
+Finding: "This design may have performance issues"
 
-追问过程：
-Q: 这个性能问题在什么场景下会出现？
-A: 当数据量超过 100 万时，遍历会变慢
+Inquiry Process:
+Q: In what scenarios would this performance issue occur?
+A: When data exceeds 1 million, iteration becomes slow
 
-核查：
-1. 检查当前数据量：预期最大 10 万
-2. 结论：在当前场景下不是问题
+Verification:
+1. Check current data volume: Expected max 100K
+2. Conclusion: Not an issue in current scenario
 
-记录：误报，但记录为技术债（如果数据量增长需要优化）
+Record: False positive, but record as technical debt (optimize if data volume grows)
 ```
 
 ---
 
-## Review 日志格式
+## Review Log Format
 
-### Review 日志模板
+### Review Log Template
 
 ```markdown
-# Stage N Review 日志
+# Stage N Review Log
 
-## 基本信息
-- Review 类型：[方案 Review / 代码 Review]
-- Review 时间：[日期]
-- Review 模型：[模型名称]
+## Basic Information
+- Review Type: [Design Review / Code Review]
+- Review Date: [Date]
+- Review Model: [Model name]
 
-## Findings 汇总
-- 总计：[数量]
-- 采纳：[数量]
-- 不采纳：[数量]
-- 待定：[数量]
+## Findings Summary
+- Total: [Count]
+- Adopted: [Count]
+- Rejected: [Count]
+- Pending: [Count]
 
-## Findings 详情
+## Findings Details
 
-### Finding 1: [标题]
-- **类型**：[设计/实现/测试/文档]
-- **严重程度**：[阻塞/重要/建议]
-- **描述**：[详细描述]
-- **核查方法**：[权威来源/代码验证/追问模型]
-- **核查结果**：[采纳/误报]
-- **理由**：[采纳或不采纳的理由]
+### Finding 1: [Title]
+- **Type**: [Design/Implementation/Testing/Documentation]
+- **Severity**: [Blocking/Important/Suggestion]
+- **Description**: [Detailed description]
+- **Verification Method**: [Authoritative Source/Code Verification/Model Inquiry]
+- **Verification Result**: [Adopted/False Positive]
+- **Reason**: [Reason for adoption or rejection]
 
-### Finding 2: [标题]
+### Finding 2: [Title]
 ...
 
-## 技术债记录
-从本次 Review 中提取的技术债：
+## Technical Debt Records
+Technical debt extracted from this review:
 
-### TD-XX: [标题]
-- **优先级**：[阻塞/降级功能/技术优化] / [架构级/模块级/局部]
-- **来源**：Review Finding [编号]
-- **建议落地 Stage**：[Stage N]
+### TD-XX: [Title]
+- **Priority**: [Blocking/Feature Degradation/Tech Optimization] / [Architecture/Module/Local]
+- **Source**: Review Finding [Number]
+- **Suggested Landing Stage**: [Stage N]
 ```
 
 ---
 
-## Review 最佳实践
+## Review Best Practices
 
 ### DO
 
 ```
-✓ 第一轮 Review 不给维度提示
-✓ 独立核查每条 Finding
-✓ 记录核查过程和结果
-✓ 对不确定的 Finding 追问澄清
-✓ 从 Review 中提取技术债
-✓ 使用同事模式进行讨论
+✓ Don't provide dimension hints in first Review round
+✓ Independently verify each Finding
+✓ Record verification process and results
+✓ Question and clarify uncertain Findings
+✓ Extract technical debt from Reviews
+✓ Use colleague mode for discussions
 ```
 
 ### DON'T
 
 ```
-✗ 盲目接受所有 Findings
-✗ 依赖"多模型共识"判断正确性
-✗ 忽略核查过程直接采纳
-✗ 第一轮 Prompt 就给出检查维度
-✗ 使用工人模式进行 Review
-✗ 不记录核查理由
+✗ Blindly accept all Findings
+✗ Rely on "multi-model consensus" to judge correctness
+✗ Skip verification process and directly adopt
+✗ Provide check dimensions in first round Prompt
+✗ Use worker mode for Reviews
+✗ Don't record verification reasons
 ```
 
 ---
 
-## 修订记录
+## Revision History
 
-| 版本 | 日期 | 修订内容 | 修订人 |
-|------|------|----------|--------|
-| v1.0 | [日期] | 初始版本 | [姓名] |
+| Version | Date | Revision Content | Author |
+|---------|------|------------------|--------|
+| v1.0 | [Date] | Initial version | [Name] |
 
 ---
 
-> **关键提醒**：约 50% 的 Review findings 是误报。每条 Finding 都需要独立核查，核查优先级：权威来源 > 代码验证 > 追问模型。
+> **Key Reminder**: Approximately 50% of Review findings are false positives. Each Finding needs independent verification, verification priority: Authoritative Sources > Code Verification > Model Inquiry.

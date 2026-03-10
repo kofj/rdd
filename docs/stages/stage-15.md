@@ -1,4 +1,4 @@
-# Stage 15: 代码提交与发布准备
+# Stage 15: Code Submission and Release Preparation
 
 ## Status
 - [x] Planning
@@ -8,75 +8,75 @@
 **Completion Date**: 2026-03-09
 
 ## Goals
-将代码提交到 GitHub，为 v1.0.0 发布做准备。
+Commit code to GitHub and prepare for v1.0.0 release.
 
 ## Non-Goals
-- npm 发布 (Stage 17)
-- 文档站点部署 (Stage 18)
+- npm publishing (Stage 17)
+- Documentation site deployment (Stage 18)
 
 ## Core Hypotheses
-- H1: 所有 E2E 测试已通过
-- H2: 代码质量达到发布标准
-- H3: 文档已更新到最新状态
+- H1: All E2E tests have passed
+- H2: Code quality meets release standards
+- H3: Documentation has been updated to latest
 
 ## Acceptance Criteria
 
-### 代码提交 (15.1) ✅
-- [x] 检查所有文件状态
-- [x] 暂存所有更改
-- [x] 创建提交信息
-- [x] 提交更改
+### Code Submission (15.1) ✅
+- [x] Check all file status
+- [x] Stage all changes
+- [x] Create commit message
+- [x] Commit changes
 
-### Git Remote 配置 (15.2) ⏳
-- [ ] 配置 GitHub remote
-- [ ] 验证 remote 可访问
-- [ ] 验证推送权限
+### Git Remote Configuration (15.2) ⏳
+- [ ] Configure GitHub remote
+- [ ] Verify remote is accessible
+- [ ] Verify push permissions
 
-### Tag 创建 (15.3) ⏳
-- [ ] 创建 v1.0.0 tag
-- [ ] 验证 tag 正确
-- [ ] 推送 tag
+### Tag Creation (15.3) ⏳
+- [ ] Create v1.0.0 tag
+- [ ] Verify tag is correct
+- [ ] Push tag
 
-### 发布前检查 (15.4) ✅
-- [x] 所有测试通过 (42/42 E2E + 867/867 unit)
-- [x] CHANGELOG.md 更新
-- [x] 版本号正确
-- [x] README.md 更新
-- [x] 无敏感信息泄露
+### Pre-release Check (15.4) ✅
+- [x] All tests passed (42/42 E2E + 867/867 unit)
+- [x] CHANGELOG.md updated
+- [x] Version number correct
+- [x] README.md updated
+- [x] No sensitive information leaked
 
 ## Rollback Plan
-- Git 提交可 revert
-- Tag 可删除重建
-- 发布前可取消
+- Git commits can be reverted
+- Tags can be deleted and recreated
+- Release can be cancelled before publishing
 
 ## Known Limitations
-- 需要 GitHub 仓库权限
-- 需要 main 分支写权限
+- Requires GitHub repository permissions
+- Requires main branch write permissions
 
 ## Impact on Subsequent Stages
-- Stage 16 依赖代码已推送
-- Stage 17 依赖 GitHub Release
+- Stage 16 depends on code being pushed
+- Stage 17 depends on GitHub Release
 
 ---
 
 ## Implementation Notes
 
-### 提交检查清单
+### Commit Checklist
 
 ```bash
-# 1. 检查状态
+# 1. Check status
 git status
 
-# 2. 检查测试
+# 2. Check tests
 task test
 
-# 3. 检查文档
+# 3. Check documentation
 task doctor
 
-# 4. 暂存更改
+# 4. Stage changes
 git add .
 
-# 5. 创建提交
+# 5. Create commit
 git commit -m "feat: Complete Stage 11-14, E2E testing ready
 
 - Add E2E testing framework (Stage 11)
@@ -88,7 +88,7 @@ git commit -m "feat: Complete Stage 11-14, E2E testing ready
 Tests: 867/867 passing
 "
 
-# 6. 创建 tag
+# 6. Create tag
 git tag -a v1.0.0 -m "RDD Framework v1.0.0
 
 Features:
@@ -104,11 +104,11 @@ Installation:
 - Homebrew
 "
 
-# 7. 推送
+# 7. Push
 git push origin main --tags
 ```
 
-### 发布前检查
+### Pre-release Check
 
 ```bash
 #!/bin/bash
@@ -148,18 +148,18 @@ echo "All checks passed!"
 - [x] Acceptance criteria testable
 
 ### Gate 2: Design Review Check
-- [ ] 代码审查完成
-- [ ] 无敏感信息
+- [ ] Code review complete
+- [ ] No sensitive information
 
 ### Gate 3: Implementation Check
-- [ ] 所有测试通过
-- [ ] 提交完成
-- [ ] Tag 创建
+- [ ] All tests passed
+- [ ] Commit complete
+- [ ] Tag created
 
 ### Gate 4: Code Review Check
-- [ ] 提交信息规范
-- [ ] 无遗漏文件
+- [ ] Commit message follows conventions
+- [ ] No missing files
 
 ### Gate 5: Completion Gate Check
-- [ ] 代码已推送
-- [ ] Stage 16 可开始
+- [ ] Code pushed
+- [ ] Stage 16 can start

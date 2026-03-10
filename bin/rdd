@@ -41,6 +41,7 @@ Usage:
 
 Commands:
     init [NAME]            Initialize a new RDD project
+                           Options: --lang, -l (en|zh), --interactive, -i
     migrate                Migrate existing project to RDD
     stage <cmd>            Stage management (verify, gate, status)
     knowledge <cmd>        Knowledge management (adr, debt, handoff, check)
@@ -56,6 +57,8 @@ Options:
 Examples:
     rdd init my-project    Create a new project
     rdd init               Initialize in current directory
+    rdd init --lang zh     Initialize with Chinese documentation
+    rdd init -l zh         Same as above (shorthand)
     rdd stage verify       Verify current stage
     rdd knowledge adr      Record a new decision
     rdd doctor             Check project health
