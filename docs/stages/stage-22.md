@@ -2,7 +2,7 @@
 
 ## Status
 
-[ ] Planning / [ ] In Progress / [ ] Complete
+[x] Planning / [x] In Progress / [ ] Complete
 
 ---
 
