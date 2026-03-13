@@ -41,6 +41,9 @@ teardown() {
         "rdd-fresh-check"
         "rdd-hooks"
         "rdd-templates"
+        "rdd-help"
+        "rdd-workflow"
+        "rdd-state"
     )
 
     for skill in "${skills[@]}"; do
@@ -55,7 +58,7 @@ teardown() {
 
     local count
     count=$(ls "${PROJECT_ROOT}/.claude/skills/"*.md 2>/dev/null | wc -l)
-    [ "$count" -eq 13 ]
+    [ "$count" -eq 16 ]
 }
 
 # ==============================================================================
@@ -73,6 +76,8 @@ teardown() {
         "rdd-stage-auto"
         "rdd-knowledge"
         "rdd-loop"
+        "rdd-help"
+        "rdd-workflow"
     )
 
     for cmd in "${commands[@]}"; do
@@ -87,7 +92,7 @@ teardown() {
 
     local count
     count=$(ls "${PROJECT_ROOT}/.claude/commands/"*.md 2>/dev/null | wc -l)
-    [ "$count" -eq 6 ]
+    [ "$count" -eq 8 ]
 }
 
 # ==============================================================================
