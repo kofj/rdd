@@ -1,3 +1,12 @@
+---
+description: "Manage knowledge artifacts - record ADRs, track technical debt, generate handoff documents"
+examples:
+  - "/rdd-knowledge adr --title \"Decision\" --stage 3"
+  - "/rdd-knowledge debt --title \"Issue\" --priority high"
+  - "/rdd-knowledge handoff --reason \"Session ending\""
+  - "/rdd-knowledge check                  # Verify docs complete"
+---
+
 # RDD Knowledge Command
 
 Manage knowledge artifacts - ADRs, technical debt, and handoff documents.

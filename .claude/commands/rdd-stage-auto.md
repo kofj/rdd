@@ -1,3 +1,11 @@
+---
+description: "Execute a complete RDD stage autonomously through all 5 quality gates with verification"
+examples:
+  - "/rdd-stage-auto              # Execute current stage"
+  - "/rdd-stage-auto 3            # Execute stage 3"
+  - "/rdd-stage-auto --resume     # Resume interrupted stage"
+---
+
 # RDD Stage Auto Command
 
 Execute a complete RDD Stage autonomously with gate verification.

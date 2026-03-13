@@ -1,3 +1,12 @@
+---
+description: "View and manage project roadmap stages - add, modify, reorder, and track progress"
+examples:
+  - "/rdd-roadmap status                 # Show current progress"
+  - "/rdd-roadmap list                   # List all stages"
+  - "/rdd-roadmap add --title \"Auth\"    # Add new stage"
+  - "/rdd-roadmap deps                   # View dependency graph"
+---
+
 # RDD Roadmap Command
 
 Manage the project roadmap - view, plan, and modify stages.

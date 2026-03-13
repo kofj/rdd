@@ -1,3 +1,12 @@
+---
+description: "Control autonomous stage execution loop - start, pause, resume, monitor multi-stage progression"
+examples:
+  - "/rdd-loop start                    # Start autonomous execution"
+  - "/rdd-loop start --max-stages 3     # Complete up to 3 stages"
+  - "/rdd-loop status                   # Check current state"
+  - "/rdd-loop pause                    # Pause at checkpoint"
+---
+
 # RDD Loop Command
 
 Control the autonomous stage execution loop.

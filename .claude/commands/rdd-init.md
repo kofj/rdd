@@ -1,3 +1,10 @@
+---
+description: "Initialize RDD framework in a new or existing project with TDD/BDD configuration"
+examples:
+  - "/rdd-init                    # Initialize with current directory name"
+  - "/rdd-init my-project         # Initialize with specific project name"
+---
+
 # RDD Init Command
 
 Initialize RDD (Roadmap Driven Development) framework in a new project.

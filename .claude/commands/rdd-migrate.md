@@ -1,3 +1,10 @@
+---
+description: "Migrate an existing project to RDD framework, preserving existing structure and documentation"
+examples:
+  - "/rdd-migrate                    # Migrate and convert existing docs"
+  - "/rdd-migrate --preserve-existing # Keep original docs unchanged"
+---
+
 # RDD Migrate Command
 
 Migrate an existing project to use RDD (Roadmap Driven Development) framework.
