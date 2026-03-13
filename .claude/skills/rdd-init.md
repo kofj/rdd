@@ -995,6 +995,197 @@ touch .claude/skills/.gitkeep
 touch .claude/commands/.gitkeep
 ```
 
+### Step 8: TDD/BDD Framework Setup (NEW)
+
+**CRITICAL**: This step enforces 95%+ test coverage requirement from Stage 0.
+
+#### 8.1 Detect Project Language and Type
+
+Run the test framework detection script:
+
+```bash
+./scripts/lib/test-framework-detect.sh detect
+```
+
+The script automatically detects:
+- **Language**: Node.js, Python, Go, Rust, Java
+- **Project Type**: frontend, backend-api, backend-service, fullstack
+- **Frameworks**: React, Vue, Express, Django, FastAPI, etc.
+
+#### 8.2 Generate Test Configuration
+
+```bash
+./scripts/lib/test-framework-detect.sh config .rdd/test-config.yml
+```
+
+Creates `.rdd/test-config.yml` with:
+- Recommended BDD framework
+- Unit test runner
+- Coverage tool
+- E2E testing tool (if applicable)
+- API testing tool (for backend projects)
+
+#### 8.3 Generate Example BDD Tests
+
+```bash
+# Create example feature file
+./scripts/lib/test-framework-detect.sh feature tests/features
+
+# Create example step definitions
+./scripts/lib/test-framework-detect.sh steps tests/steps
+```
+
+#### 8.4 Framework-Specific Setup
+
+**Node.js Projects:**
+
+```bash
+# Install dependencies
+npm install --save-dev \
+  @cucumber/cucumber \
+  jest \
+  nyc \
+  supertest \
+  playwright
+
+# Add scripts to package.json
+npm pkg set scripts.test="jest"
+npm pkg set scripts.test:coverage="jest --coverage --coverageThreshold='{\"global\":{\"branches\":95,\"functions\":95,\"lines\":95,\"statements\":95}}'"
+npm pkg set scripts.test:e2e="playwright test"
+npm pkg set scripts.test:bdd="cucumber-js tests/features"
+```
+
+**Python Projects:**
+
+```bash
+# Install dependencies
+pip install pytest pytest-bdd coverage pytest-cov requests
+
+# Create pytest.ini
+cat > pytest.ini << 'EOF'
+[pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = --cov=src --cov-fail-under=95
+EOF
+```
+
+**Go Projects:**
+
+```bash
+# Install godog
+go install github.com/cucumber/godog/cmd/godog@latest
+
+# Create godog.conf
+cat > godog.conf << 'EOF'
+format: pretty
+paths: tests/features
+EOF
+```
+
+**Rust Projects:**
+
+```bash
+# Add to Cargo.toml
+cat >> Cargo.toml << 'EOF'
+
+[dev-dependencies]
+cucumber = "0.20"
+
+[[test]]
+name = "cucumber"
+harness = false
+EOF
+```
+
+**Java Projects:**
+
+```xml
+<!-- Add to pom.xml -->
+<dependencies>
+    <dependency>
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-java</artifactId>
+        <version>LATEST</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+#### 8.5 Configure Pre-commit Hooks
+
+Create `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: test-coverage
+        name: Test Coverage Check (95% minimum)
+        entry: bash -c 'npm run test:coverage || pytest --cov-fail-under=95'
+        language: system
+        pass_filenames: false
+      - id: lint
+        name: Lint Check
+        entry: npm run lint || ruff check .
+        language: system
+        pass_filenames: false
+```
+
+Install pre-commit:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+pre-commit install
+
+# Or with npm
+npm install --save-dev husky lint-staged
+npx husky install
+```
+
+#### 8.6 Update RDD Configuration
+
+Update `.rdd/config.yml` to enforce coverage:
+
+```yaml
+# Gate settings (updated for TDD/BDD)
+gates:
+  design_required: true
+  review_required: true
+  e2e_required: true
+  docs_required: true
+  min_coverage: 95          # NEW: Minimum coverage
+  coverage_fail_gate: true  # NEW: Fail gate if below threshold
+  bdd_required: true        # NEW: Require BDD tests
+```
+
+#### 8.7 Verify Test Setup
+
+```bash
+# Run example tests
+npm test              # Node.js
+pytest                # Python
+go test ./...         # Go
+cargo test            # Rust
+mvn test              # Java
+
+# Check coverage
+npm run test:coverage # Node.js
+pytest --cov          # Python
+go test -cover        # Go
+cargo tarpaulin       # Rust
+mvn test jacoco:report # Java
+```
+
 ---
 
 ## Validation Checklist
@@ -1061,6 +1252,20 @@ After initialization, verify:
 [ ] docs/stages/stage-roadmap.md has Stage 0
 [ ] docs/11-next-steps.md has initialization tasks
 [ ] AGENTS.md has mandatory reading order
+```
+
+### TDD/BDD Validation (NEW)
+
+```bash
+# Verify TDD/BDD setup
+[ ] .rdd/test-config.yml exists with correct framework
+[ ] tests/features/ directory exists
+[ ] tests/steps/ directory exists
+[ ] Example feature file exists
+[ ] Example step definitions exist
+[ ] Test commands run successfully
+[ ] Coverage threshold (95%) configured
+[ ] Pre-commit hooks configured
 ```
 
 ### Optional Git Setup
