@@ -10,10 +10,10 @@
 
 | Project Name | RDD Framework |
 |--------------|---------------|
-| Current Phase | Phase 3 Completed ✅ |
-| Current Version | v1.0.1 (Ready for Release) |
+| Current Phase | Phase 4: User Readiness |
+| Current Version | v1.0.1 |
 | Start Date | 2026-03-06 |
-| Last Updated | 2026-03-10 |
+| Last Updated | 2026-03-13 |
 
 ### Current Progress
 
@@ -21,6 +21,7 @@
 Phase 1 Core Development: ████████████████████ 100% (11/11 Stage)
 Phase 2 E2E Testing:      ████████████████████ 100% (5/5 Stage)
 Phase 3 Release & Ops:    ████████████████████ 100% (3/3 Stage)
+Phase 4 User Readiness:   ░░░░░░░░░░░░░░░░░░░░   0% (0/4 Stage)
 ```
 
 ### Test Statistics
@@ -43,132 +44,67 @@ Phase 3 Release & Ops:    ██████████████████
 - Stage 15: Code commit & release preparation ✅
 
 **Phase 3: Release & Operations ✅ (Completed)**
-- Stage 16: Installation script fixes ✅ (ASCII Banner + go-task official script)
-- Stage 17: GitHub Actions CI/CD ✅ (Auto Release)
-- Stage 18: Docker test environment ✅ (Complete installation test containerization)
+- Stage 16: Installation script fixes ✅
+- Stage 17: GitHub Actions CI/CD ✅
+- Stage 18: Docker test environment ✅
+
+**Phase 4: User Readiness 🔄 (In Progress)**
+- Stage 19: Command hint system ⏳
+- Stage 20: Help & workflow system ⏳
+- Stage 21: TDD/BDD initialization enhancement ⏳
+- Stage 22: Multi-stage autonomous progression ⏳
 
 ---
 
-## Release Status
+## Next Single Action
 
-### Completed ✅
-
-- [x] Code development completed
-- [x] Unit tests passed (867/867)
-- [x] E2E tests passed (42/42)
-- [x] Documentation updated
-- [x] No sensitive information leaked
-- [x] Git commit completed
-- [x] ASCII Banner fixed (RDD)
-- [x] go-task using official install script
-- [x] GitHub Actions CI/CD configured
-- [x] Docker test environment
-
-### Pending User Confirmation ⏳
-
-- [ ] Push code to GitHub: `git push origin main`
-- [ ] Create release: `./scripts/release/create-release.sh v1.0.1`
-- [ ] Verify GitHub Actions workflow
-- [ ] Publish to npm (optional)
-- [ ] Deploy documentation site (optional)
+**Current Stage**: Stage 19 - Command Hint System
+**Current Gate**: Gate 0 - Stage Startup
+**Immediate Task**: Create Phase 4 design document and roadmap
 
 ---
 
-## Installation Methods (Available after Release)
+## Phase 4: User Readiness
 
-### curl | sh (Recommended)
+### Overview
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh
+Phase 4 focuses on improving user experience and developer productivity:
+
+1. **Command hints** - Input placeholder hints for all RDD commands
+2. **Help & workflow** - State-aware guidance, workflow wizard, help center
+3. **TDD/BDD setup** - Auto-configure testing frameworks with 95%+ coverage requirement
+4. **Multi-stage progression** - Autonomous execution with git worktree and subagent orchestration
+
+### Stage Dependencies
+
+```
+Stage 19 (Command Hints)
+    ↓
+Stage 20 (Help & Workflow) ← depends on Stage 19
+    ↓
+Stage 21 (TDD/BDD Setup) ← independent
+    ↓
+Stage 22 (Multi-stage) ← depends on Stage 19, 20
 ```
 
-### npm
-
-```bash
-npm install -g @kofj/rdd
-```
-
-### Manual Installation
-
-```bash
-git clone https://github.com/kofj/rdd.git
-cd rdd-framework
-./scripts/install/install.sh
-```
+**Concurrent Execution Possible**: Stage 19 + Stage 21 can run in parallel
 
 ---
 
-## Docker Testing (New)
+## Upcoming Stages
 
-```bash
-# Build and run all tests
-./docker/run-tests.sh test
-
-# Run installation tests only
-./docker/run-tests.sh install
-
-# Enter container shell
-./docker/run-tests.sh shell
-```
+| Stage | Title | Status | Priority | Dependencies |
+|-------|-------|--------|----------|--------------|
+| 19 | Command Hint System | Planning | P0 | None |
+| 20 | Help & Workflow System | Pending | P0 | Stage 19 |
+| 21 | TDD/BDD Initialization Enhancement | Pending | P0 | None |
+| 22 | Multi-stage Autonomous Progression | Pending | P0 | Stage 19, 20 |
 
 ---
 
-## E2E Test Coverage
+## Blockers
 
-### Installation Tests (Stage 12)
-| Test Case | Status |
-|-----------|--------|
-| INST-01: curl \| sh installation | ✅ |
-| INST-02: Manual installation | ✅ |
-| INST-03: npm installation | ✅ |
-| INST-04: rdd CLI functionality | ✅ |
-| INST-05: rdd init project creation | ✅ |
-
-### Integration Tests (Stage 13)
-| Test Case | Status |
-|-----------|--------|
-| INT-01: Skills file exists | ✅ |
-| INT-02: Commands file exists | ✅ |
-| INT-03: API endpoint reachable | ✅ |
-| INT-04: Skills format correct | ✅ |
-| INT-05: settings.json format | ✅ |
-| INT-06: No sensitive info leaked | ✅ |
-
-### Workflow Tests (Stage 14)
-| Test Case | Status |
-|-----------|--------|
-| WORKFLOW-01: Project initialization | ✅ |
-| WORKFLOW-02: task doctor | ✅ |
-| WORKFLOW-03: ADR recording | ✅ |
-| WORKFLOW-04: Technical debt recording | ✅ |
-| WORKFLOW-05: Handoff generation | ✅ |
-| WORKFLOW-06: Checkpoint persistence | ✅ |
-
----
-
-## Handoff Information
-
-### New Agent Onboarding Guide
-
-1. Read `docs/stages/stage-roadmap.md` to understand project status
-2. Read `CHANGELOG.md` to understand version history
-3. Run `task test` to verify tests pass
-4. Run `bats tests/e2e/` to verify E2E tests
-
-### Test Commands
-
-```bash
-# Run unit tests
-task test
-
-# Run E2E tests
-export PROJECT_ROOT=/path/to/rdd-framework
-export RDD_FRAMEWORK_HOME=/path/to/rdd-framework
-bats tests/e2e/
-
-# Run Docker tests
-./docker/run-tests.sh test
-```
+None currently.
 
 ---
 
@@ -176,137 +112,8 @@ bats tests/e2e/
 
 | Version | Date | Revision Content |
 |---------|------|------------------|
+| v7.0 | 2026-03-13 | Phase 4 initiated, added Stage 19-22 |
 | v6.0 | 2026-03-10 | Phase 3 completed, added Stage 16-18 |
 | v5.0 | 2026-03-09 | Stage 11-15 completed, all E2E tests passed |
 | v4.0 | 2026-03-09 | Added Stage 11-15 E2E test plan |
 | v3.0 | 2026-03-09 | v1.0.0 code completed |
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-10 09:01
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-10 09:01
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-10 09:01
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-10 11:41
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-10 11:41
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-10 11:41
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-10 12:07
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-10 12:07
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-10 12:07
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-10 12:47
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-10 12:47
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-10 12:47
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-10 12:50
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-10 12:50
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-10 12:50
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
