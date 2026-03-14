@@ -14,7 +14,8 @@ templates:
 
       ---
       *RDD Framework Notification*
-    block_message: "Stage completed successfully"
+    block_message: null
+    continue_message: "✅ Stage completed, auto-continuing..."
 
   roadmap_change:
     title: "Roadmap Changed: {{project_name}}"
@@ -75,7 +76,8 @@ templates:
 
       ---
       *RDD Framework Notification*
-    block_message: "Model disagreement detected"
+    block_message: null
+    continue_message: "ℹ️ Model disagreement detected, continuing with caution..."
 
   tech_debt_threshold:
     title: "Tech Debt Threshold: {{project_name}}"
@@ -92,7 +94,8 @@ templates:
 
       ---
       *RDD Framework Notification*
-    block_message: "Tech debt threshold exceeded"
+    block_message: null
+    continue_message: "⚠️ Tech debt threshold exceeded, continuing..."
 
   daily_report:
     title: "Daily Report: {{project_name}}"

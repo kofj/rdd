@@ -146,13 +146,14 @@ templates:
       Stage {{stage_name}} completed successfully.
       Duration: {{duration}}
       Coverage: {{coverage}}%
-    block_message: "Stage completion notification"
+    block_message: null
+    continue_message: "✅ Stage completed, auto-continuing..."
   roadmap_change:
     title: "Roadmap Changed: {{project_name}}"
     body: |
       Roadmap has been updated.
       Change type: {{change_type}}
-    block_message: "Roadmap change notification"
+    block_message: "⏳ Roadmap change requires human review, agent paused"
 EOF
     export TEMPLATES_FILE="$tmp_file"
 }
@@ -217,12 +218,13 @@ templates:
       Stage {{stage_name}} completed successfully.
       Duration: {{duration}}
       Coverage: {{coverage}}%
-    block_message: "Stage completion notification"
+    block_message: null
+    continue_message: "✅ Stage completed, auto-continuing..."
   roadmap_change:
     title: "Roadmap Changed: {{project_name}}"
     body: |
       Roadmap has been updated.
       Change type: {{change_type}}
-    block_message: "Roadmap change notification"
+    block_message: "⏳ Roadmap change requires human review, agent paused"
 EOF
 }

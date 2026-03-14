@@ -254,12 +254,36 @@ teardown() {
 # get_block_message tests
 #######################################
 
-@test "get_block_message returns message from template" {
+@test "get_block_message returns null for non-blocking trigger (stage_complete)" {
     export TEMPLATES_FILE="${PROJECT_ROOT}/.rdd/templates.yml"
+
+    # Skip if yq is not available (function returns empty without yq)
+    if ! command -v yq &> /dev/null; then
+        skip "Requires yq"
+    fi
 
     run get_block_message "stage_complete"
 
+    # P2/P3 triggers have block_message: null (non-blocking)
     assert_success
+    # null in YAML is returned as empty string by yq
+    assert_output ""
+}
+
+@test "get_block_message returns message for blocking trigger (roadmap_change)" {
+    export TEMPLATES_FILE="${PROJECT_ROOT}/.rdd/templates.yml"
+
+    # Skip if yq is not available (function returns empty without yq)
+    if ! command -v yq &> /dev/null; then
+        skip "Requires yq"
+    fi
+
+    run get_block_message "roadmap_change"
+
+    # P0 triggers have block_message set (blocking)
+    assert_success
+    # The block_message contains non-empty content (blocking triggers have messages)
+    refute_output ""
 }
 
 @test "get_block_message returns empty for missing template" {
@@ -268,6 +292,28 @@ teardown() {
     run get_block_message "nonexistent_trigger"
 
     assert_output ""
+}
+
+@test "get_block_message returns empty without yq" {
+    export TEMPLATES_FILE="${PROJECT_ROOT}/.rdd/templates.yml"
+
+    # This test verifies the fallback behavior when yq is not installed
+    # Temporarily hide yq if it exists
+    local yq_backup=""
+    if command -v yq &> /dev/null; then
+        yq_backup=$(command -v yq)
+        PATH=$(echo "$PATH" | sed "s|$(dirname "$yq_backup")||g" | sed 's|::|:|g')
+    fi
+
+    run get_block_message "roadmap_change"
+
+    # Without yq, function returns empty string
+    assert_output ""
+
+    # Restore PATH
+    if [[ -n "$yq_backup" ]]; then
+        export PATH="$(dirname "$yq_backup"):$PATH"
+    fi
 }
 
 #######################################
