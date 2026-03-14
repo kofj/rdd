@@ -179,16 +179,31 @@ DON'T:
 
 ## Notification Triggers
 
-When these situations occur, human intervention is required:
+When these situations occur, notifications are sent with different priority levels:
 
-| Trigger | Level | Description |
-|---------|-------|-------------|
-| Roadmap Change | P0 | Roadmap modification requires human approval |
-| Consecutive Failures | P0 | 3 consecutive failures, agent pauses |
-| Hypothesis Falsified | P0 | Core hypothesis proven wrong |
-| Model Disagreement | P1 | Significant disagreement between models |
-| Tech Debt Threshold | P1 | Tech debt exceeds threshold |
-| Stage Complete | P2 | Stage completion notification |
+| Trigger | Level | Blocks Agent? | Action |
+|---------|-------|---------------|--------|
+| Roadmap Change | P0 | ✅ Yes | Pause, wait for human approval |
+| Consecutive Failures | P0 | ✅ Yes | Pause, wait for human intervention |
+| Hypothesis Falsified | P0 | ✅ Yes | Pause, wait for human decision |
+| Model Disagreement | P1 | ❌ No | Notify human, continue execution |
+| Tech Debt Threshold | P1 | ❌ No | Notify human, continue execution |
+| Stage Complete | P2 | ❌ No | Send notification, **AUTO-CONTINUE** to next stage |
+| Daily Report | P3 | ❌ No | Report only, **AUTO-CONTINUE** |
+| Weekly Report | P3 | ❌ No | Report only, **AUTO-CONTINUE** |
+| Milestone Reached | P3 | ❌ No | Report only, **AUTO-CONTINUE** |
+
+### AUTO-CONTINUE Behavior
+
+For P2/P3 notifications (non-blocking):
+1. Send notification to configured channels
+2. Log progress to `docs/11-next-steps.md`
+3. **Immediately proceed** to next stage/task
+4. **Do NOT wait** for human acknowledgment or response
+
+For P0/P1 notifications:
+- **P0**: Pause all work, generate handoff document, wait for human response
+- **P1**: Continue with caution, log the notification, human may review later
 
 ---
 

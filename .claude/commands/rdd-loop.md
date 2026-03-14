@@ -20,15 +20,15 @@ Control autonomous stage execution loop with multi-stage and parallel execution 
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `start` | Begin autonomous execution |
-| `pause` | Pause at next checkpoint |
-| `resume` | Continue from pause |
-| `status` | Report current state |
-| `escalate` | Force escalation to human |
-| `skip` | Skip current step (with documentation) |
-| `plan` | Show execution plan without running |
+| Command | Description | Blocking? |
+|---------|-------------|-----------|
+| `start` | Begin autonomous execution | No |
+| `pause` | Pause at next checkpoint (explicit human command) | Yes |
+| `resume` | Continue from pause | No |
+| `status` | Report current state | No |
+| `escalate` | Force escalation to human | Yes (P0) / No (P1/P2) |
+| `skip` | Skip current step (with documentation) | No |
+| `plan` | Show execution plan without running | No |
 
 ## Start Command
 
@@ -126,7 +126,7 @@ Estimated Duration:
 
 ## Pause Command
 
-Pause execution at next checkpoint:
+Pause execution at next checkpoint (explicit human command only):
 
 ```
 /rdd-loop pause [--reason "Reason"]
@@ -136,10 +136,11 @@ Options:
 - `--reason`: Why pausing
 
 Pauses at:
-- End of current gate
-- Before starting next stage
-- After completing a task
+- End of current gate (when explicitly requested)
+- Before starting next stage (when explicitly requested)
 - Before merge operations (in parallel mode)
+
+**Note**: Stage completion and milestones do NOT automatically pause. Use this command explicitly to pause execution.
 
 ## Resume Command
 
@@ -198,7 +199,12 @@ Options:
 - `--reason`: Why escalating (required)
 - `--priority`: P0/P1/P2 (default: P1)
 
-In parallel mode, escalation affects all active stages.
+**Blocking behavior by priority**:
+- `P0`: Blocks execution, transitions to ESCALATED state, waits for human response
+- `P1`: Sends notification, continues execution (does not block)
+- `P2`: Sends notification, continues execution (does not block)
+
+In parallel mode, P0 escalation affects all active stages.
 
 ## Skip Command
 
@@ -225,21 +231,26 @@ Options:
 └──────┬──────┘
        │
        ▼
-┌─────────────┐     pause     ┌─────────────┐
-│   RUNNING   │──────────────▶│   PAUSED    │
-└──────┬──────┘               └──────┬──────┘
-       │                              │
-       │ error/retry                  │ resume
-       ▼                              ▼
-┌─────────────┐               ┌─────────────┐
-│ RECOVERING  │◄──────────────│   PAUSED    │
-└──────┬──────┘               └─────────────┘
-       │
+┌─────────────┐     P2/P3       ┌─────────────┐
+│   RUNNING   │────(checkpoint)─►│  CHECKPOINT │
+└──────┬──────┘     notification │ (auto-continue)
+       │                         └──────┬──────┘
+       │                                │ auto-continue
+       │ pause (P0)                     │
+       ▼                                ▼
+┌─────────────┐                  ┌─────────────┐
+│   PAUSED    │                  │   RUNNING   │
+└──────┬──────┘                  └─────────────┘
+       │ error/retry
+       ▼
+┌─────────────┐
+│ RECOVERING  │◄── Retry attempted
+└──────┬──────┘
        │ max retries
        ▼
-┌─────────────┐     human     ┌─────────────┐
-│  ESCALATED  │◄──────────────│   PAUSED    │
-└──────┬──────┘               └─────────────┘
+┌─────────────┐     human      ┌─────────────┐
+│  ESCALATED  │◄──response──── │   PAUSED    │
+└──────┬──────┘                └─────────────┘
        │
        │ human response
        ▼
@@ -253,6 +264,19 @@ Options:
 │  COMPLETE   │
 └─────────────┘
 ```
+
+### State Definitions
+
+| State | Description | Blocks? |
+|-------|-------------|---------|
+| IDLE | Loop not started | N/A |
+| INITIALIZING | Loading context and validating | N/A |
+| RUNNING | Actively executing gates | No |
+| CHECKPOINT | Non-blocking checkpoint (P2/P3) | No - auto-continue |
+| PAUSED | Blocking pause (P0, human pause cmd) | Yes |
+| RECOVERING | Attempting recovery from error | N/A |
+| ESCALATED | Waiting for human intervention | Yes |
+| COMPLETE | All stages finished | N/A |
 
 ## Dependency Analysis
 
@@ -296,10 +320,10 @@ When using `--worktree`, each parallel stage runs in isolation:
 ### Conflict Handling
 
 If merge conflicts occur:
-1. Pause parallel execution
-2. Send P1 notification
-3. Wait for human resolution
-4. Resume after conflict resolved
+1. Log conflict details
+2. Send P1 notification (non-blocking)
+3. Continue with other parallel stages if possible
+4. Human may resolve at convenience (does not block execution)
 
 ## Stale Detection
 
@@ -318,15 +342,25 @@ In parallel mode, stale detection applies per stage.
 
 The loop automatically triggers Hook notifications:
 
-| Event | Priority |
-|-------|----------|
-| Stage complete | P2 |
-| Stage failed | P1 |
-| Max retries exceeded | P1 |
-| Escalation | P0/P1 |
-| Merge conflict | P1 |
-| All stages complete | P2 |
-| Daily summary | P3 |
+| Event | Priority | Blocks? | Behavior |
+|-------|----------|---------|----------|
+| Stage complete | P2 | ❌ No | Send notification, AUTO-CONTINUE |
+| Stage failed | P1 | ❌ No | Send notification, continue with caution |
+| Max retries exceeded | P1 | ❌ No | Send notification, continue with caution |
+| Escalation (P0) | P0 | ✅ Yes | Pause, wait for human response |
+| Escalation (P1/P2) | P1/P2 | ❌ No | Send notification, continue |
+| Merge conflict | P1 | ❌ No | Send notification, continue with caution |
+| All stages complete | P2 | ❌ No | Send notification, AUTO-CONTINUE |
+| Daily summary | P3 | ❌ No | Send notification, AUTO-CONTINUE |
+| Milestone reached | P3 | ❌ No | Send notification, AUTO-CONTINUE |
+
+### AUTO-CONTINUE Behavior
+
+For P2/P3 events (stage complete, milestones, reports):
+1. Send notification to configured channels
+2. Log progress to `docs/11-next-steps.md`
+3. **Immediately continue** to next stage/task
+4. **Do NOT wait** for human acknowledgment
 
 ## See Also
 

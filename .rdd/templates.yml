@@ -49,7 +49,8 @@ templates:
 
   model_disagreement:
     title: "Model Disagreement Detected"
-    block_message: "ℹ️ 多模型分歧，建议人工审核（不阻塞）"
+    block_message: null
+    continue_message: "ℹ️ 多模型分歧，建议人工审核（继续执行）"
     body: |
       Significant disagreement detected between models.
 
@@ -63,7 +64,8 @@ templates:
 
   tech_debt_alert:
     title: "Tech Debt Threshold Exceeded"
-    block_message: "⏳ 技术债超阈值，Agent 已暂停等待处理"
+    block_message: null
+    continue_message: "⚠️ 技术债超阈值，建议处理（继续执行）"
     body: |
       Technical debt has exceeded the configured threshold.
 
@@ -77,7 +79,8 @@ templates:
 
   stage_complete:
     title: "Stage Completed"
-    block_message: "✅ Stage {{completed_stage}} 完成"
+    block_message: null
+    continue_message: "✅ Stage {{completed_stage}} 完成，自动继续下一阶段..."
     body: |
       A stage has been successfully completed.
 
@@ -93,6 +96,7 @@ templates:
   daily_report:
     title: "Daily Progress Report"
     block_message: null
+    continue_message: "📊 日报已发送，继续执行..."
     body: |
       Daily progress summary for {{project_name}}.
 
@@ -112,6 +116,7 @@ templates:
   weekly_report:
     title: "Weekly Progress Report"
     block_message: null
+    continue_message: "📈 周报已发送，继续执行..."
     body: |
       Weekly progress summary for {{project_name}}.
 

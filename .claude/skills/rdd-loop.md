@@ -251,27 +251,35 @@ Maximum retry attempts before escalation:
 
 Trigger Hook notifications at these checkpoints:
 
-#### Automatic P0 (Urgent) Notifications
+#### Automatic P0 (Urgent) Notifications - BLOCKS EXECUTION
 - Fatal exception occurred
 - Stage failed after all retry attempts
 - Security vulnerability detected
 - Data corruption risk identified
 - Roadmap change required
 
-#### Automatic P1 (Important) Notifications
+**Behavior**: Pause immediately, transition to ESCALATED state, wait for human response.
+
+#### Automatic P1 (Important) Notifications - CONTINUES WITH CAUTION
 - Blockable exception with no automated recovery
 - Scope change required
 - Technical debt priority exceeds threshold
 - Dependency on external decision needed
 
-#### Automatic P2 (Info) Notifications
+**Behavior**: Send notification, log warning, continue execution (do not wait for response).
+
+#### Automatic P2 (Info) Notifications - AUTO-CONTINUE
 - Stage completed successfully
 - Significant ADR made
 - Technical debt introduced
 
-#### Automatic P3 (Report) Notifications
+**Behavior**: Send notification, immediately proceed to next stage (do not wait for acknowledgment).
+
+#### Automatic P3 (Report) Notifications - AUTO-CONTINUE
 - Daily progress summary
 - Milestone reached
+
+**Behavior**: Send notification, continue execution (do not wait for acknowledgment).
 
 ### Notification Content
 
@@ -319,21 +327,28 @@ At each checkpoint, perform:
    - Documentation completeness
    - Any errors or warnings
 
-2. Determine notification level
-   - P0: Blocking, needs immediate attention
-   - P1: Important, needs attention within hours
-   - P2: Informational, review when convenient
-   - P3: Report, for records only
+2. Determine notification level and blocking behavior:
 
-3. If P0 or P1:
+   | Level | Blocks? | Action |
+   |-------|---------|--------|
+   | P0 | ✅ Yes | Pause immediately, wait for human response |
+   | P1 | ❌ No | Send notification, continue with caution |
+   | P2 | ❌ No | Send notification, AUTO-CONTINUE immediately |
+   | P3 | ❌ No | Send notification, AUTO-CONTINUE immediately |
+
+3. If P0 (Blocking):
    - Stop current work
-   - Generate detailed notification
+   - Generate detailed notification with `block_message`
    - Send via configured Hook channel
-   - Wait for response (P0) or continue with caution (P1)
+   - Transition to ESCALATED state
+   - Wait for human response before proceeding
 
-4. If P2 or P3:
-   - Send notification
-   - Continue autonomous operation
+4. If P1/P2/P3 (Non-blocking):
+   - Generate notification with `continue_message`
+   - Send via configured Hook channel
+   - Log progress to `docs/11-next-steps.md`
+   - **Continue immediately** to next gate/stage
+   - Do NOT wait for human acknowledgment
 ```
 
 ### Human Response Integration
@@ -381,55 +396,87 @@ When human provides input:
                 |
                 v
         +-------+--------+
-        |    RUNNING     |<----+
-        +-------+--------+     |
-                |              |
-                v              |
-        +-------+--------+     |
-        |    PAUSED      |     |
-        +-------+--------+     |
-                |              |
-                v              |
-        +-------+--------+     |
-        |   RECOVERING   |-----+
-        +-------+--------+
-                |
-                v
-        +-------+--------+
-        |   ESCALATED    |
-        +-------+--------+
-                |
-                v
-        +-------+--------+
-        |   COMPLETE     |
-        +----------------+
+        |    RUNNING     |<----+---------------------+
+        +-------+--------+     |                     |
+                |              |                     |
+         +------+------+       |                     |
+         |             |       |                     |
+         v             v       |                     |
+   +----------+  +----------+  |                     |
+   |CHECKPOINT|  |  PAUSED  |  |                     |
+   |(P2/P3)   |  |  (P0)    |  |                     |
+   +----------+  +----------+  |                     |
+         |             |       |                     |
+         |             v       |                     |
+         |      +-------+------+                     |
+         |      | RECOVERING  |                       |
+         |      +-------+------+                     |
+         |              |                            |
+         |              v                            |
+         |      +-------+--------+                   |
+         |      |   ESCALATED    |                   |
+         |      +-------+--------+                   |
+         |              |                            |
+         |              v                            |
+         +--------------+----------------------------+
+                        |
+                        v
+                +-------+--------+
+                |   COMPLETE     |
+                +----------------+
 ```
+
+### State Definitions
+
+| State | Description | Blocking? |
+|-------|-------------|-----------|
+| IDLE | Loop not started | N/A |
+| INITIALIZING | Loading context and validating | N/A |
+| RUNNING | Actively executing gates | No |
+| CHECKPOINT | Non-blocking checkpoint (P2/P3) | No - auto-continue |
+| PAUSED | Blocking pause (P0, human pause cmd) | Yes - wait for human |
+| RECOVERING | Attempting recovery from error | N/A |
+| ESCALATED | Waiting for human intervention | Yes |
+| COMPLETE | All stages finished | N/A |
 
 ### State Transitions
 
-| From | To | Trigger |
-|------|-----|---------|
-| IDLE | INITIALIZING | Start command received |
-| INITIALIZING | RUNNING | Context loaded successfully |
-| RUNNING | PAUSED | Checkpoint reached or error |
-| PAUSED | RECOVERING | Retry attempted |
-| RECOVERING | RUNNING | Recovery successful |
-| RECOVERING | ESCALATED | Max retries exceeded |
-| ESCALATED | RUNNING | Human response received |
-| RUNNING | COMPLETE | Stage passed Gate 5 |
+| From | To | Trigger | Blocking? |
+|------|-----|---------|-----------|
+| IDLE | INITIALIZING | Start command received | No |
+| INITIALIZING | RUNNING | Context loaded successfully | No |
+| RUNNING | CHECKPOINT | Stage complete, milestone reached (P2/P3) | No |
+| RUNNING | PAUSED | P0 trigger or human pause command | Yes |
+| RUNNING | COMPLETE | All stages passed Gate 5 | No |
+| CHECKPOINT | RUNNING | Notification sent, auto-continue | No |
+| PAUSED | RECOVERING | Retry attempted | N/A |
+| RECOVERING | RUNNING | Recovery successful | No |
+| RECOVERING | ESCALATED | Max retries exceeded | Yes |
+| ESCALATED | RUNNING | Human response received | No |
 
 ### Loop Commands
 
 Commands to control the autonomous loop:
 
-| Command | Description |
-|---------|-------------|
-| `start` | Begin autonomous execution |
-| `pause` | Pause at next checkpoint |
-| `resume` | Continue from pause |
-| `status` | Report current state |
-| `escalate` | Force escalation to human |
-| `skip` | Skip current step (with documentation) |
+| Command | Description | Blocking? |
+|---------|-------------|-----------|
+| `start` | Begin autonomous execution | No |
+| `pause` | Pause at next checkpoint (explicit human command) | Yes |
+| `resume` | Continue from pause | No |
+| `status` | Report current state | No |
+| `escalate` | Force escalation to human (P0/P1) | Yes (P0) / No (P1) |
+| `skip` | Skip current step (with documentation) | No |
+
+### AUTO-CONTINUE Behavior
+
+When non-blocking events occur (P1/P2/P3 notifications):
+
+1. **Send notification** via configured Hook channel
+2. **Log progress** to `docs/11-next-steps.md`
+3. **Immediately continue** to next stage/gate
+4. **Do NOT wait** for human acknowledgment or response
+
+This ensures the loop continues autonomously without pausing for informational notifications.
 
 ---
 
