@@ -18,7 +18,7 @@ setup() {
 #######################################
 
 @test "error_codes: ERROR_CODES array is initialized" {
-    [[ -v ERROR_CODES[@] ]]
+    # Check array is non-empty (more portable than -v check)
     [[ ${#ERROR_CODES[@]} -gt 0 ]]
 }
 

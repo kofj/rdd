@@ -165,13 +165,24 @@ get_yaml_value() {
     fi
 
     if command -v yq &> /dev/null; then
-        yq eval ".${path}" "$file" 2>/dev/null || echo "$default"
+        local value
+        value=$(yq eval ".${path}" "$file" 2>/dev/null)
+        # Return default if yq returns null or empty
+        if [[ -z "$value" || "$value" == "null" ]]; then
+            echo "$default"
+        else
+            echo "$value"
+        fi
     else
         # Fallback: simple grep for top-level keys
         local key="${path##*.}"
         local value
-        value=$(grep -E "^\s*${key}:" "$file" 2>/dev/null | head -1 | sed 's/[^:]*: *//' | tr -d '"' || echo "$default")
-        echo "${value:-$default}"
+        value=$(grep -E "^\s*${key}:" "$file" 2>/dev/null | head -1 | sed 's/[^:]*: *//' | tr -d '"')
+        if [[ -z "$value" ]]; then
+            echo "$default"
+        else
+            echo "$value"
+        fi
     fi
 }
 
@@ -212,29 +223,33 @@ get_user_role() {
     local role=""
 
     if command -v yq &> /dev/null && [[ -f "$PERMISSIONS_FILE" ]]; then
-        # Look for user in the users list
-        local users_json
-        users_json=$(yq eval '.rbac.users' "$PERMISSIONS_FILE" 2>/dev/null)
+        # Use yq to directly find the user's role
+        # First, try exact match
+        role=$(yq eval ".rbac.users[] | select(.username == \"$user\") | .role" "$PERMISSIONS_FILE" 2>/dev/null | head -1)
 
-        # Check each user entry
-        while IFS= read -r line; do
-            local entry_user
-            entry_user=$(echo "$line" | yq eval '.username' - 2>/dev/null)
+        # If not found, try with environment variable expansion
+        if [[ -z "$role" || "$role" == "null" ]]; then
+            # Get all usernames and expand environment variables
+            while IFS= read -r entry; do
+                local entry_user entry_role
+                entry_user=$(echo "$entry" | yq eval '.username' - 2>/dev/null)
+                entry_role=$(echo "$entry" | yq eval '.role' - 2>/dev/null)
 
-            # Expand environment variables in username
-            if [[ "$entry_user" =~ \$\{(.+)\} ]]; then
-                local var_name="${BASH_REMATCH[1]}"
-                entry_user="${!var_name:-$entry_user}"
-            elif [[ "$entry_user" =~ \$([a-zA-Z_][a-zA-Z0-9_]*) ]]; then
-                local var_name="${BASH_REMATCH[1]}"
-                entry_user="${!var_name:-$entry_user}"
-            fi
+                # Expand environment variables in username
+                if [[ "$entry_user" =~ \$\{(.+)\} ]]; then
+                    local var_name="${BASH_REMATCH[1]}"
+                    entry_user="${!var_name:-$entry_user}"
+                elif [[ "$entry_user" =~ \$([a-zA-Z_][a-zA-Z0-9_]*) ]]; then
+                    local var_name="${BASH_REMATCH[1]}"
+                    entry_user="${!var_name:-$entry_user}"
+                fi
 
-            if [[ "$entry_user" == "$user" ]]; then
-                role=$(echo "$line" | yq eval '.role' - 2>/dev/null)
-                break
-            fi
-        done <<< "$(echo "$users_json" | yq eval '.[]' - 2>/dev/null)"
+                if [[ "$entry_user" == "$user" ]]; then
+                    role="$entry_role"
+                    break
+                fi
+            done < <(yq eval '.rbac.users[]' -o=json "$PERMISSIONS_FILE" 2>/dev/null | jq -c '.' 2>/dev/null || yq eval '.rbac.users' -o=json "$PERMISSIONS_FILE" 2>/dev/null | jq -c '.[]' 2>/dev/null)
+        fi
     elif [[ -f "$PERMISSIONS_FILE" ]]; then
         # Fallback: simple grep-based parsing for users section
         local in_users_section=false

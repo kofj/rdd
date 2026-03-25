@@ -4,6 +4,7 @@
 FROM alpine:3.19
 
 # Install dependencies
+# NOTE: Do NOT install 'task' package - it's Taskwarrior, not go-task
 RUN apk add --no-cache \
     bash \
     curl \
@@ -16,12 +17,10 @@ RUN apk add --no-cache \
     python3 \
     py3-pip \
     go \
-    task \
-    || apk add --no-cache \
-    bash curl git jq nodejs npm python3 py3-pip
+    openssl
 
-# Install Task (go-task)
-RUN curl -sL https://taskfile.dev/install.sh | sh
+# Install Task (go-task) - Taskfile runner, NOT Taskwarrior
+RUN curl -sL https://taskfile.dev/install.sh | sh -s -- -b /usr/local/bin
 
 # Install bats-core manually if not available
 RUN if ! command -v bats &> /dev/null; then \

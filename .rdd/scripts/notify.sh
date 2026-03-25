@@ -74,11 +74,24 @@ load_yaml_value() {
     # Simple YAML value extraction (handles basic cases)
     # For complex YAML, consider using yq or python
     if command -v yq &> /dev/null; then
-        yq eval ".${path}" "$file" 2>/dev/null || echo "$default"
+        local value
+        value=$(yq eval ".${path}" "$file" 2>/dev/null)
+        # Return default if yq returns null or empty
+        if [[ -z "$value" || "$value" == "null" ]]; then
+            echo "$default"
+        else
+            echo "$value"
+        fi
     else
         # Fallback: use grep for simple key-value pairs
         local key="${path##*.}"
-        grep -E "^${key}:" "$file" 2>/dev/null | head -1 | sed 's/[^:]*: *//' | tr -d '"' || echo "$default"
+        local value
+        value=$(grep -E "^${key}:" "$file" 2>/dev/null | head -1 | sed 's/[^:]*: *//' | tr -d '"')
+        if [[ -z "$value" ]]; then
+            echo "$default"
+        else
+            echo "$value"
+        fi
     fi
 }
 
@@ -158,8 +171,14 @@ render_template() {
 get_block_message() {
     local trigger_type="$1"
 
-    if command -v yq &> /dev/null; then
-        yq eval ".templates.${trigger_type}.block_message" "$TEMPLATES_FILE" 2>/dev/null || echo ""
+    if command -v yq &> /dev/null && [[ -f "$TEMPLATES_FILE" ]]; then
+        local value
+        value=$(yq eval ".templates.${trigger_type}.block_message" "$TEMPLATES_FILE" 2>/dev/null)
+        if [[ -n "$value" && "$value" != "null" ]]; then
+            echo "$value"
+        else
+            echo ""
+        fi
     else
         echo ""
     fi
@@ -168,8 +187,14 @@ get_block_message() {
 get_title() {
     local trigger_type="$1"
 
-    if command -v yq &> /dev/null; then
-        yq eval ".templates.${trigger_type}.title" "$TEMPLATES_FILE" 2>/dev/null || echo "${trigger_type}"
+    if command -v yq &> /dev/null && [[ -f "$TEMPLATES_FILE" ]]; then
+        local value
+        value=$(yq eval ".templates.${trigger_type}.title" "$TEMPLATES_FILE" 2>/dev/null)
+        if [[ -n "$value" && "$value" != "null" ]]; then
+            echo "$value"
+        else
+            echo "${trigger_type}"
+        fi
     else
         echo "${trigger_type}"
     fi

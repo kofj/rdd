@@ -140,11 +140,24 @@ get_yaml_value() {
     fi
 
     if has_yq; then
-        yq eval ".${path}" "$file" 2>/dev/null || echo "$default"
+        local value
+        value=$(yq eval ".${path}" "$file" 2>/dev/null)
+        # Return default if yq returns null or empty
+        if [[ -z "$value" || "$value" == "null" ]]; then
+            echo "$default"
+        else
+            echo "$value"
+        fi
     else
         # Simple fallback for basic key-value pairs
         local key="${path##*.}"
-        grep -E "^${key}:" "$file" 2>/dev/null | head -1 | sed 's/[^:]*: *//' | tr -d '"' || echo "$default"
+        local value
+        value=$(grep -E "^${key}:" "$file" 2>/dev/null | head -1 | sed 's/[^:]*: *//' | tr -d '"')
+        if [[ -z "$value" ]]; then
+            echo "$default"
+        else
+            echo "$value"
+        fi
     fi
 }
 

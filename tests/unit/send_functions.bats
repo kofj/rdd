@@ -334,8 +334,28 @@ teardown() {
 @test "send_notification skips disabled triggers" {
     export DRY_RUN="true"
 
-    # daily_report is disabled in default config
-    run send_notification "daily_report" "project_name=Test"
+    # Create a custom config with a disabled trigger
+    local tmp_config="${BATS_TEST_TMPDIR}/test_hooks.yml"
+    cat > "$tmp_config" << 'EOF'
+version: "1.0"
+project:
+  name: test-project
+notifications:
+  quiet_hours:
+    enabled: false
+triggers:
+  disabled_trigger:
+    enabled: false
+    channels:
+      - webhook
+channels:
+  webhook:
+    enabled: true
+    url: "https://example.com/webhook"
+EOF
+    export CONFIG_FILE="$tmp_config"
+
+    run send_notification "disabled_trigger" "project_name=Test"
 
     assert_success
     assert_output --partial "disabled"

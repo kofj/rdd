@@ -299,11 +299,8 @@ sanitize_input() {
 
         html)
             # Escape HTML special characters
-            sanitized="${sanitized//&/&amp;}"
-            sanitized="${sanitized//</&lt;}"
-            sanitized="${sanitized//>/&gt;}"
-            sanitized="${sanitized//\"/&quot;}"
-            sanitized="${sanitized//\'/&#39;}"
+            # Use sed for reliable cross-platform behavior
+            sanitized=$(echo "$sanitized" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
             ;;
 
         *)
