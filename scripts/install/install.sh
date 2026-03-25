@@ -314,11 +314,14 @@ download_rdd() {
     tar -xzf "${archive_path}" -C "${TEMP_DIR}"
 
     # Find extracted directory
+    # GitHub naming: {repo}-{branch} for branches, {repo}-{version} for tags
     local extracted_dir
-    extracted_dir=$(find "${TEMP_DIR}" -maxdepth 1 -type d -name "rdd-framework*" | head -1)
+    extracted_dir=$(find "${TEMP_DIR}" -maxdepth 1 -type d \( -name "rdd-*" -o -name "RDD-*" \) | head -1)
 
     if [[ -z "${extracted_dir}" ]]; then
         log_error "Could not find extracted directory"
+        log_error "Archive contents:"
+        ls -la "${TEMP_DIR}"
         exit 1
     fi
 
