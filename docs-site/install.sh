@@ -3,7 +3,6 @@
 # RDD Framework Installer (Short URL)
 #
 # Usage:
-#   curl -fsSL https://kofj.github.io/rdd/install.sh | sh
 #   curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh
 #
 # For full options, see: https://github.com/kofj/rdd#installation
