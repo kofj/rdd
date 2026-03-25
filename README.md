@@ -11,7 +11,33 @@ A disciplined development framework for AI agents, inspired by Gary's Stage-Base
 ### Quick Install (macOS / Linux)
 
 ```bash
+# Short URL (recommended)
+curl -fsSL https://kofj.github.io/rdd/install.sh | sh
+
+# Or via jsDelivr CDN
+curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh
+
+# Or full URL
 curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh
+```
+
+### Install Options
+
+```bash
+# Install specific version
+curl -fsSL https://kofj.github.io/rdd/install.sh | sh -s -- --version v1.1.0
+
+# Install to custom directory
+curl -fsSL https://kofj.github.io/rdd/install.sh | sh -s -- --prefix /opt/rdd
+
+# Install without modifying PATH
+curl -fsSL https://kofj.github.io/rdd/install.sh | sh -s -- --no-path
+
+# Upgrade to latest version
+curl -fsSL https://kofj.github.io/rdd/install.sh | sh -s -- --upgrade
+
+# Uninstall
+curl -fsSL https://kofj.github.io/rdd/install.sh | sh -s -- --uninstall
 ```
 
 ### Verify Installation
