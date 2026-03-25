@@ -403,3 +403,81 @@ Consider scheduling a tech debt resolution sprint before proceeding with new fea
 - **Action**: Stage completed
 - **Status**: Success
 - **Coverage**: unknown%
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-25 11:02
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-25 11:02
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-25 11:02
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-25 11:58
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-25 11:58
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-25 11:58
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Blocker
+
+A core hypothesis was invalidated. Human review required.
+- **Hypothesis**: unknown
+- **Reason**: unknown
+
+### 2026-03-25 12:22
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
+
+## Tech Debt Alert
+
+**Debt Count**: 0 (threshold: 0)
+**Time**: 2026-03-25 12:22
+
+Consider scheduling a tech debt resolution sprint before proceeding with new features.
+
+
+### 2026-03-25 12:22
+- **Stage**: unknown
+- **Action**: Stage completed
+- **Status**: Success
+- **Coverage**: unknown%
