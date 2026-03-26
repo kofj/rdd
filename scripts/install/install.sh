@@ -41,19 +41,19 @@ TEMP_DIR=""
 
 # Logging functions
 log_info() {
-    echo -e "${GREEN}[INFO]${NC} $*"
+    printf '%b\n' "${GREEN}[INFO]${NC} $*"
 }
 
 log_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $*"
+    printf '%b\n' "${YELLOW}[WARN]${NC} $*"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $*"
+    printf '%b\n' "${RED}[ERROR]${NC} $*"
 }
 
 log_step() {
-    echo -e "\n${BOLD}${BLUE}==>${NC} ${BOLD}$*${NC}"
+    printf '\n%b\n' "${BOLD}${BLUE}==>${NC} ${BOLD}$*${NC}"
 }
 
 # Cleanup on exit
@@ -67,7 +67,7 @@ trap cleanup EXIT
 
 # Show banner
 show_banner() {
-    echo -e "
+    printf '%b\n' "
 ${BOLD}${BLUE}
 ╔══════════════════════════════════════════════════════════════╗
 ║                                                              ║
@@ -555,7 +555,7 @@ main() {
             show_help
             ;;
         *)
-            echo -e "${RED}Error: Unknown command '${command}'${NC}"
+            printf '%b\n' "${RED}Error: Unknown command '${command}'${NC}"
             echo "Run 'rdd --help' for usage information"
             exit 1
             ;;
@@ -650,7 +650,7 @@ rdd_init() {
         mkdir -p "${project_dir}"
     fi
 
-    echo -e "${GREEN}Initializing RDD project: ${project_name}${NC}"
+    printf '%b\n' "${GREEN}Initializing RDD project: ${project_name}${NC}"
     echo "Project directory: ${project_dir}"
     echo ""
 
@@ -670,7 +670,7 @@ rdd_init() {
     create_symlinks "${project_dir}"
 
     echo ""
-    echo -e "${GREEN}✓ RDD project initialized successfully!${NC}"
+    printf '%b\n' "${GREEN}✓ RDD project initialized successfully!${NC}"
     echo ""
     echo "Next steps:"
     echo "  1. cd ${project_name}"
@@ -970,32 +970,32 @@ EOF
 
 # Show post-install instructions
 show_post_install() {
-    echo ""
-    echo -e "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║                  Installation Complete!                       ║${NC}"
-    echo -e "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    echo -e "${BOLD}RDD Framework v${RDD_VERSION} installed successfully!${NC}"
-    echo ""
-    echo -e "${BOLD}Installed to:${NC} ${INSTALL_PREFIX}"
-    echo ""
-    echo -e "${BOLD}Next steps:${NC}"
-    echo ""
-    echo -e "  ${YELLOW}1.${NC} Restart your shell or run:"
-    echo -e "     ${BLUE}source ~/.bashrc${NC}  (or ~/.zshrc)"
-    echo ""
-    echo -e "  ${YELLOW}2.${NC} Verify installation:"
-    echo -e "     ${BLUE}rdd --version${NC}"
-    echo ""
-    echo -e "  ${YELLOW}3.${NC} Create a new project:"
-    echo -e "     ${BLUE}rdd init my-project${NC}"
-    echo ""
-    echo -e "  ${YELLOW}4.${NC} Use with Claude Code:"
-    echo -e "     Open Claude Code in your project directory"
-    echo -e "     Skills are automatically available"
-    echo ""
-    echo -e "${BOLD}Documentation:${NC} https://github.com/kofj/rdd"
-    echo ""
+    printf '\n'
+    printf '%b\n' "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
+    printf '%b\n' "${GREEN}║                  Installation Complete!                       ║${NC}"
+    printf '%b\n' "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
+    printf '\n'
+    printf '%b\n' "${BOLD}RDD Framework v${RDD_VERSION} installed successfully!${NC}"
+    printf '\n'
+    printf '%b\n' "${BOLD}Installed to:${NC} ${INSTALL_PREFIX}"
+    printf '\n'
+    printf '%b\n' "${BOLD}Next steps:${NC}"
+    printf '\n'
+    printf '%b\n' "  ${YELLOW}1.${NC} Restart your shell or run:"
+    printf '%b\n' "     ${BLUE}source ~/.bashrc${NC}  (or ~/.zshrc)"
+    printf '\n'
+    printf '%b\n' "  ${YELLOW}2.${NC} Verify installation:"
+    printf '%b\n' "     ${BLUE}rdd --version${NC}"
+    printf '\n'
+    printf '%b\n' "  ${YELLOW}3.${NC} Create a new project:"
+    printf '%b\n' "     ${BLUE}rdd init my-project${NC}"
+    printf '\n'
+    printf '%b\n' "  ${YELLOW}4.${NC} Use with Claude Code:"
+    printf '%b\n' "     Open Claude Code in your project directory"
+    printf '%b\n' "     Skills are automatically available"
+    printf '\n'
+    printf '%b\n' "${BOLD}Documentation:${NC} https://github.com/kofj/rdd"
+    printf '\n'
 }
 
 # Uninstall
@@ -1029,8 +1029,8 @@ uninstall() {
     # Remove from PATH (need to manually edit shell rc)
     log_warn "Please manually remove RDD entries from your shell RC file (~/.bashrc, ~/.zshrc, etc.)"
 
-    echo ""
-    echo -e "${GREEN}RDD Framework has been uninstalled.${NC}"
+    printf '\n'
+    printf '%b\n' "${GREEN}RDD Framework has been uninstalled.${NC}"
 }
 
 # Main
