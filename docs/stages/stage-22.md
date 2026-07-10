@@ -2,7 +2,7 @@
 
 ## Status
 
-[x] Planning / [x] In Progress / [ ] Complete
+[x] Planning / [x] In Progress / [x] Complete
 
 ---
 
@@ -734,5 +734,6 @@ Large (3 days)
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-07-10 | Stage completed: 6 scripts, hardened Gate 3, 11 tasks, 42/42 E2E, format clean |
 | 2.0 | 2026-07-10 | Major redesign: auto-detect default, remove `start`/`--goal`, fine-grained persistence (bash), hardened Gate 3 (shellcheck/shfmt), gotask convergence |
 | 1.0 | 2026-03-13 | Initial design |

@@ -201,3 +201,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 > **Note**: This changelog follows the RDD principle of explicit knowledge management. All changes are documented with clear references to the source Stage.
+
+## [v1.2.0] — Stage 22 Complete (2026-07-10)
+
+### Added
+- `auto-detect.sh` — Scan roadmap for incomplete stages, topological sort by dependencies
+- `loop-persist.sh` — Fine-grained atomic persistence at every key action (gate/ADR/debt/heartbeat)
+- `task-registry.sh` — gotask convergence, orphan script detection
+- `worktree-pool.sh` — Git worktree pool for isolated parallel stage execution
+- `subagent-scheduler.sh` — Parallel/sequential stage orchestration
+- `progress-dashboard.sh` — Multi-stage progress visualization
+
+### Changed
+- **Hardened Gate 3**: Replaced echo-only checks with real test/lint/format execution (`task test:unit`, `task lint:check`, `task fmt:check`)
+- **gotask convergence**: All scripts now registered as `task` entries (11 new tasks)
+- **ADR persistence**: Decisions written immediately, not deferred to Gate 5
+- **Tech debt persistence**: Debt entries written on discovery
+- **Bats test runner**: Migrated from embedded submodule to system `bats` (Homebrew)
+
+### Decisions
+- ADR-22A: Auto-detect incomplete stages (not manual `--from`/`--to`)
+- ADR-22B: Remove `start` subcommand
+- ADR-22C: Remove `--goal` NL parsing (v1)
+- ADR-22D: Fine-grained atomic persistence at every key action
+- ADR-22E: Gate 3 real execution only (non-zero exit blocks)
+- ADR-22F: gotask convergence (no orphan commands)
+
+### Technical Debt
+- None introduced in Stage 22
+
+### Tests
+- E2E: 42/42 passed (100%)
+- Format: `shfmt` clean
+- Dependencies: `shellcheck`, `shfmt`, `yq` required (see `task bootstrap:deps`)

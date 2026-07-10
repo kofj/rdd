@@ -596,6 +596,7 @@ When technical debt accumulation reaches threshold, trigger dedicated handling:
 
 | Version | Date | Revision Content | Author |
 |---------|------|------------------|--------|
+| v1.1 | 2026-07-10 | Stage 22: added TD-28 (shfmt formatting scope) | Claude |
 | v1.0 | [Date] | Initial version | [Name] |
 
 ---

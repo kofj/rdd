@@ -73,7 +73,7 @@ parse_stages() {
     # Extract dependency numbers
     local dep_list=""
     if echo "$deps" | grep -q "Stage"; then
-      dep_list=$(echo "$deps" | grep -oP '\d+' | tr '\n' ',' | sed 's/,$//')
+      dep_list=$(echo "$deps" | grep -oE '[0-9]+' | tr '\n' ',' | sed 's/,$//')
     fi
 
     echo "${stage}|${status}|${dep_list}"
@@ -193,7 +193,7 @@ generate_plan() {
     line=$(echo "$stages_data" | grep "^${stage_id}|")
     local stage_name=""
     # Try to get name from roadmap
-    stage_name=$(grep -A 1 "Stage ${stage_id}" "$ROADMAP_FILE" | grep "Goal" | head -1 | sed 's/.*\*\*Goal\*\*: //' | sed 's/|.*//' | sed 's/\*//g' | tr -d '\n')
+    stage_name=$(grep -A 3 "### Stage ${stage_id}:" "$ROADMAP_FILE" 2>/dev/null | grep "Goal" | head -1 | sed 's/.*\*\*Goal\*\*: //' | sed 's/\*//g' | tr -d '\n' | sed 's/^ *//;s/ *$//')
     echo "  ${seq}. Stage ${stage_id}: ${stage_name:-unknown}"
     seq=$((seq + 1))
   done

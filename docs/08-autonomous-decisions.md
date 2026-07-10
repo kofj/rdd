@@ -752,3 +752,81 @@ When decisions are no longer applicable, record the deprecation reason here:
 **Date**: 2026-07-10
 **Related Stage**: Stage unknown
 
+
+### Decision 22A: Default behavior is auto-detect, not manual range
+
+**Background**: Original Stage 22 design required `--from N --to M` for every invocation of `/rdd-loop`.
+
+**Decision**: Default to auto-detection. Scan `stage-roadmap.md`, find all stages with status ≠ Completed, resolve dependency ordering, execute from first incomplete to last. `--from` / `--to` become optional filters.
+
+**Rationale**: Manual range specification is redundant when the roadmap is the source of truth. The only time `--from`/`--to` is needed is when the user intentionally wants to skip stages or stop early.
+
+**Impact on Subsequent Stages**: Reduces command friction, eliminates "forgot to specify range" errors. Self-healing runs (recovery) can resume without knowing which stage they were on.
+
+**Date**: 2026-07-10
+**Related Stage**: Stage 22
+
+### Decision 22B: Remove `start` subcommand
+
+**Background**: `/rdd-loop start` was the invocation pattern in v1 design.
+
+**Decision**: `/rdd-loop` with no subcommand starts execution. `status`, `pause`, `resume` remain as control subcommands.
+
+**Rationale**: "Loop" inherently means "start executing". Adding `start` is noise. The subcommand space is reserved for control operations, not the default action.
+
+**Impact on Subsequent Stages**: Simplified command surface. New control subcommands can be added without ambiguity.
+
+**Date**: 2026-07-10
+**Related Stage**: Stage 22
+
+### Decision 22C: Remove `--goal` natural language parsing (v1)
+
+**Background**: Original design included NL goal → stage mapping.
+
+**Decision**: Remove from v1. Roadmap Goal field is the canonical, deterministic data source. NL parsing introduces ambiguity and has high implementation cost with low marginal benefit.
+
+**Rationale**: The roadmap already contains precise, human-authored goal descriptions. Adding an NL layer on top introduces a second, less reliable source of truth.
+
+**Impact on Subsequent Stages**: Simplifies command surface, removes a source of non-deterministic behavior. Revisit if users demand it.
+
+**Date**: 2026-07-10
+**Related Stage**: Stage 22
+
+### Decision 22D: Fine-grained atomic persistence
+
+**Background**: Previous design saved state only at gate boundaries. Context overflow or process termination between gates loses all in-gate progress.
+
+**Decision**: Save state atomically at every key action: gate enter/exit, decision made, tech debt found, test run complete, every 5 min heartbeat. `loop-state.yaml` is canonical; `checkpoints.json` for backward compat.
+
+**Rationale**: Context overflow is inevitable in long-running autonomous sessions. The only defense is atomic, frequent persistence of all critical state. On recovery, the agent reads the last saved action, not the last gate boundary.
+
+**Impact on Subsequent Stages**: All multi-stage execution inherits crash-resilience. Recovery protocol is self-contained. Maximum data loss window: 5 minutes (heartbeat interval).
+
+**Date**: 2026-07-10
+**Related Stage**: Stage 22
+
+### Decision 22E: Hardened Gate 3 — real execution only
+
+**Background**: Current Gate 3 implementation printed checklist items without executing anything. An agent could claim "all tests pass" without running them.
+
+**Decision**: Replace echo-only gates with real command execution that blocks on non-zero exit: `task test:unit`, `task test:e2e`, `task test:coverage`, `task lint:check`, `task fmt:check`.
+
+**Rationale**: Gates must be machine-verifiable. No gate may rely on agent self-reporting alone. If tests fail, the gate blocks progression regardless of what the agent "claims".
+
+**Impact on Subsequent Stages**: Sets a precedent that ALL gates must be non-bypassable. Future stages must add their checks to the hardened pipeline.
+
+**Date**: 2026-07-10
+**Related Stage**: Stage 22
+
+### Decision 22F: gotask convergence — no orphan commands
+
+**Background**: During autonomous execution, agents may create new scripts, checks, or workflows. Without enforcement, these become undocumented manual steps invisible to new agents.
+
+**Decision**: Every script created during loop execution must be registered as a `task` entry in `Taskfile.yml`. The `task registry:verify` gate checks for orphans. Scripts without task entries are treated as Gate 3 failures.
+
+**Rationale**: The Taskfile is the single entry point for all project operations. Allowing ad-hoc commands creates fragmentation and makes handoff unreliable.
+
+**Impact on Subsequent Stages**: All future stages inherit this constraint. Taskfile becomes the canonical command registry.
+
+**Date**: 2026-07-10
+**Related Stage**: Stage 22
