@@ -33,146 +33,146 @@ log_step() { echo -e "\n${BLUE}==>${NC} ${BOLD}$*${NC}"; }
 
 # Check environment variables
 check_env() {
-    local missing=()
+  local missing=()
 
-    if [[ -z "${ANTHROPIC_AUTH_TOKEN:-}" ]]; then
-        missing+=("ANTHROPIC_AUTH_TOKEN")
-    fi
+  if [[ -z "${ANTHROPIC_AUTH_TOKEN:-}" ]]; then
+    missing+=("ANTHROPIC_AUTH_TOKEN")
+  fi
 
-    if [[ -z "${ANTHROPIC_BASE_URL:-}" ]]; then
-        missing+=("ANTHROPIC_BASE_URL")
-    fi
+  if [[ -z "${ANTHROPIC_BASE_URL:-}" ]]; then
+    missing+=("ANTHROPIC_BASE_URL")
+  fi
 
-    if [[ -z "${ANTHROPIC_MODEL:-}" ]]; then
-        missing+=("ANTHROPIC_MODEL")
-    fi
+  if [[ -z "${ANTHROPIC_MODEL:-}" ]]; then
+    missing+=("ANTHROPIC_MODEL")
+  fi
 
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        log_warn "Missing environment variables (integration tests will be skipped):"
-        for var in "${missing[@]}"; do
-            echo "  - $var"
-        done
-        return 1
-    fi
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    log_warn "Missing environment variables (integration tests will be skipped):"
+    for var in "${missing[@]}"; do
+      echo "  - $var"
+    done
+    return 1
+  fi
 
-    return 0
+  return 0
 }
 
 # Build Docker image
 build_image() {
-    log_step "Building Docker image..."
+  log_step "Building Docker image..."
 
-    cd "${PROJECT_ROOT}"
+  cd "${PROJECT_ROOT}"
 
-    if ! docker build -t "${IMAGE_NAME}" -f tests/e2e/Dockerfile.claude .; then
-        log_error "Failed to build Docker image"
-        exit 1
-    fi
+  if ! docker build -t "${IMAGE_NAME}" -f tests/e2e/Dockerfile.claude .; then
+    log_error "Failed to build Docker image"
+    exit 1
+  fi
 
-    log_info "Docker image built: ${IMAGE_NAME}"
+  log_info "Docker image built: ${IMAGE_NAME}"
 }
 
 # Run tests in Docker
 run_docker_tests() {
-    log_step "Running E2E tests in Docker..."
+  log_step "Running E2E tests in Docker..."
 
-    local env_args=()
+  local env_args=()
 
-    # Pass environment variables if set
-    if [[ -n "${ANTHROPIC_AUTH_TOKEN:-}" ]]; then
-        env_args+=(-e "ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN}")
-    fi
+  # Pass environment variables if set
+  if [[ -n "${ANTHROPIC_AUTH_TOKEN:-}" ]]; then
+    env_args+=(-e "ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN}")
+  fi
 
-    if [[ -n "${ANTHROPIC_BASE_URL:-}" ]]; then
-        env_args+=(-e "ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL}")
-    fi
+  if [[ -n "${ANTHROPIC_BASE_URL:-}" ]]; then
+    env_args+=(-e "ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL}")
+  fi
 
-    if [[ -n "${ANTHROPIC_MODEL:-}" ]]; then
-        env_args+=(-e "ANTHROPIC_MODEL=${ANTHROPIC_MODEL}")
-    fi
+  if [[ -n "${ANTHROPIC_MODEL:-}" ]]; then
+    env_args+=(-e "ANTHROPIC_MODEL=${ANTHROPIC_MODEL}")
+  fi
 
-    # Run tests
-    docker run --rm \
-        "${env_args[@]}" \
-        -e "PROJECT_ROOT=/app" \
-        --name "${CONTAINER_NAME}" \
-        "${IMAGE_NAME}" \
-        bats /app/tests/e2e/
+  # Run tests
+  docker run --rm \
+    "${env_args[@]}" \
+    -e "PROJECT_ROOT=/app" \
+    --name "${CONTAINER_NAME}" \
+    "${IMAGE_NAME}" \
+    bats /app/tests/e2e/
 
-    local exit_code=$?
+  local exit_code=$?
 
-    if [[ $exit_code -eq 0 ]]; then
-        log_info "All E2E tests passed!"
-    else
-        log_error "Some tests failed"
-    fi
+  if [[ $exit_code -eq 0 ]]; then
+    log_info "All E2E tests passed!"
+  else
+    log_error "Some tests failed"
+  fi
 
-    return $exit_code
+  return $exit_code
 }
 
 # Run tests locally
 run_local_tests() {
-    log_step "Running E2E tests locally..."
+  log_step "Running E2E tests locally..."
 
-    cd "${PROJECT_ROOT}"
+  cd "${PROJECT_ROOT}"
 
-    # Export project root for tests
-    export PROJECT_ROOT="${PROJECT_ROOT}"
+  # Export project root for tests
+  export PROJECT_ROOT="${PROJECT_ROOT}"
 
-    # Run bats
-    bats tests/e2e/
+  # Run bats
+  bats tests/e2e/
 
-    local exit_code=$?
+  local exit_code=$?
 
-    if [[ $exit_code -eq 0 ]]; then
-        log_info "All E2E tests passed!"
-    else
-        log_error "Some tests failed"
-    fi
+  if [[ $exit_code -eq 0 ]]; then
+    log_info "All E2E tests passed!"
+  else
+    log_error "Some tests failed"
+  fi
 
-    return $exit_code
+  return $exit_code
 }
 
 # Cleanup
 cleanup() {
-    docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
+  docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
 }
 
 # Main
 main() {
-    local mode="local"
+  local mode="local"
 
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            --docker)
-                mode="docker"
-                shift
-                ;;
-            --local)
-                mode="local"
-                shift
-                ;;
-            *)
-                log_error "Unknown option: $1"
-                exit 1
-                ;;
-        esac
-    done
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --docker)
+        mode="docker"
+        shift
+        ;;
+      --local)
+        mode="local"
+        shift
+        ;;
+      *)
+        log_error "Unknown option: $1"
+        exit 1
+        ;;
+    esac
+  done
 
-    trap cleanup EXIT
+  trap cleanup EXIT
 
-    log_step "E2E Test Runner"
-    echo "Mode: ${mode}"
-    echo ""
+  log_step "E2E Test Runner"
+  echo "Mode: ${mode}"
+  echo ""
 
-    check_env || true
+  check_env || true
 
-    if [[ "$mode" == "docker" ]]; then
-        build_image
-        run_docker_tests
-    else
-        run_local_tests
-    fi
+  if [[ "$mode" == "docker" ]]; then
+    build_image
+    run_docker_tests
+  else
+    run_local_tests
+  fi
 }
 
 main "$@"

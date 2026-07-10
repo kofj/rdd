@@ -41,33 +41,33 @@ TEMP_DIR=""
 
 # Logging functions
 log_info() {
-    printf '%b\n' "${GREEN}[INFO]${NC} $*"
+  printf '%b\n' "${GREEN}[INFO]${NC} $*"
 }
 
 log_warn() {
-    printf '%b\n' "${YELLOW}[WARN]${NC} $*"
+  printf '%b\n' "${YELLOW}[WARN]${NC} $*"
 }
 
 log_error() {
-    printf '%b\n' "${RED}[ERROR]${NC} $*"
+  printf '%b\n' "${RED}[ERROR]${NC} $*"
 }
 
 log_step() {
-    printf '\n%b\n' "${BOLD}${BLUE}==>${NC} ${BOLD}$*${NC}"
+  printf '\n%b\n' "${BOLD}${BLUE}==>${NC} ${BOLD}$*${NC}"
 }
 
 # Cleanup on exit
 cleanup() {
-    if [[ -n "${TEMP_DIR:-}" && -d "${TEMP_DIR}" ]]; then
-        rm -rf "${TEMP_DIR}"
-    fi
+  if [[ -n "${TEMP_DIR:-}" && -d "${TEMP_DIR}" ]]; then
+    rm -rf "${TEMP_DIR}"
+  fi
 }
 
 trap cleanup EXIT
 
 # Show banner
 show_banner() {
-    printf '%b\n' "
+  printf '%b\n' "
 ${BOLD}${BLUE}
 ╔══════════════════════════════════════════════════════════════╗
 ║                                                              ║
@@ -89,7 +89,7 @@ ${BOLD}Installer:${NC} ${INSTALLER_VERSION}
 
 # Show help
 show_help() {
-    echo "RDD Framework Installer
+  echo "RDD Framework Installer
 
 Usage:
     curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh
@@ -118,334 +118,334 @@ Examples:
     # Uninstall
     curl -fsSL https://.../install.sh | sh -s -- --uninstall
 "
-    exit 0
+  exit 0
 }
 
 # Parse command line arguments
 parse_args() {
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            --version)
-                RDD_VERSION="$2"
-                shift 2
-                ;;
-            --prefix)
-                INSTALL_PREFIX="$2"
-                shift 2
-                ;;
-            --no-path)
-                MODIFY_PATH="false"
-                shift
-                ;;
-            --uninstall)
-                ACTION="uninstall"
-                shift
-                ;;
-            --upgrade)
-                ACTION="upgrade"
-                shift
-                ;;
-            --help|-h)
-                show_help
-                ;;
-            *)
-                log_error "Unknown option: $1"
-                echo "Run with --help for usage information"
-                exit 1
-                ;;
-        esac
-    done
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --version)
+        RDD_VERSION="$2"
+        shift 2
+        ;;
+      --prefix)
+        INSTALL_PREFIX="$2"
+        shift 2
+        ;;
+      --no-path)
+        MODIFY_PATH="false"
+        shift
+        ;;
+      --uninstall)
+        ACTION="uninstall"
+        shift
+        ;;
+      --upgrade)
+        ACTION="upgrade"
+        shift
+        ;;
+      --help | -h)
+        show_help
+        ;;
+      *)
+        log_error "Unknown option: $1"
+        echo "Run with --help for usage information"
+        exit 1
+        ;;
+    esac
+  done
 }
 
 # Check operating system
 check_os() {
-    log_step "Checking operating system..."
+  log_step "Checking operating system..."
 
-    OS="$(uname -s)"
-    ARCH="$(uname -m)"
+  OS="$(uname -s)"
+  ARCH="$(uname -m)"
 
-    case "${OS}" in
-        Darwin*)
-            OS="macos"
-            log_info "Detected: macOS (${ARCH})"
-            ;;
-        Linux*)
-            OS="linux"
-            log_info "Detected: Linux (${ARCH})"
-            ;;
-        *)
-            log_error "Unsupported operating system: ${OS}"
-            log_error "RDD Framework supports macOS and Linux only."
-            exit 1
-            ;;
-    esac
+  case "${OS}" in
+    Darwin*)
+      OS="macos"
+      log_info "Detected: macOS (${ARCH})"
+      ;;
+    Linux*)
+      OS="linux"
+      log_info "Detected: Linux (${ARCH})"
+      ;;
+    *)
+      log_error "Unsupported operating system: ${OS}"
+      log_error "RDD Framework supports macOS and Linux only."
+      exit 1
+      ;;
+  esac
 
-    # Check architecture
-    case "${ARCH}" in
-        x86_64|amd64|arm64|aarch64)
-            log_info "Architecture supported: ${ARCH}"
-            ;;
-        *)
-            log_error "Unsupported architecture: ${ARCH}"
-            exit 1
-            ;;
-    esac
+  # Check architecture
+  case "${ARCH}" in
+    x86_64 | amd64 | arm64 | aarch64)
+      log_info "Architecture supported: ${ARCH}"
+      ;;
+    *)
+      log_error "Unsupported architecture: ${ARCH}"
+      exit 1
+      ;;
+  esac
 }
 
 # Check dependencies
 check_dependencies() {
-    log_step "Checking dependencies..."
+  log_step "Checking dependencies..."
 
-    local missing=()
+  local missing=()
 
-    # Check bash version
-    local bash_version
-    bash_version=$(bash --version | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-    if [[ $(echo "${bash_version} >= 4.0" | bc -l 2>/dev/null || echo 0) -eq 0 ]]; then
-        log_warn "Bash version ${bash_version} detected. Bash 4.0+ recommended."
-    else
-        log_info "Bash ${bash_version} ✓"
-    fi
+  # Check bash version
+  local bash_version
+  bash_version=$(bash --version | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+  if [[ $(echo "${bash_version} >= 4.0" | bc -l 2>/dev/null || echo 0) -eq 0 ]]; then
+    log_warn "Bash version ${bash_version} detected. Bash 4.0+ recommended."
+  else
+    log_info "Bash ${bash_version} ✓"
+  fi
 
-    # Check git
-    if command -v git &> /dev/null; then
-        log_info "git $(git --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+') ✓"
-    else
-        missing+=("git")
-    fi
+  # Check git
+  if command -v git &>/dev/null; then
+    log_info "git $(git --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+') ✓"
+  else
+    missing+=("git")
+  fi
 
-    # Check curl or wget
-    if command -v curl &> /dev/null; then
-        log_info "curl $(curl --version | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+') ✓"
-    elif command -v wget &> /dev/null; then
-        log_info "wget $(wget --version | head -1 | grep -oE '[0-9]+\.[0-9]+') ✓"
-    else
-        missing+=("curl or wget")
-    fi
+  # Check curl or wget
+  if command -v curl &>/dev/null; then
+    log_info "curl $(curl --version | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+') ✓"
+  elif command -v wget &>/dev/null; then
+    log_info "wget $(wget --version | head -1 | grep -oE '[0-9]+\.[0-9]+') ✓"
+  else
+    missing+=("curl or wget")
+  fi
 
-    # Check task (optional, will be installed if missing)
-    if command -v task &> /dev/null; then
-        log_info "task $(task --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1) ✓"
-    else
-        log_warn "task (go-task) not found. It will be installed."
-    fi
+  # Check task (optional, will be installed if missing)
+  if command -v task &>/dev/null; then
+    log_info "task $(task --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1) ✓"
+  else
+    log_warn "task (go-task) not found. It will be installed."
+  fi
 
-    # Report missing
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        log_error "Missing required dependencies: ${missing[*]}"
-        echo ""
-        echo "Please install missing dependencies and try again:"
-        echo ""
-        for dep in "${missing[@]}"; do
-            case "${dep}" in
-                git)
-                    echo "  git:    https://git-scm.com/downloads"
-                    ;;
-                "curl or wget")
-                    echo "  curl:   https://curl.se/download.html"
-                    echo "  wget:   https://www.gnu.org/software/wget/"
-                    ;;
-            esac
-        done
-        exit 1
-    fi
+  # Report missing
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    log_error "Missing required dependencies: ${missing[*]}"
+    echo ""
+    echo "Please install missing dependencies and try again:"
+    echo ""
+    for dep in "${missing[@]}"; do
+      case "${dep}" in
+        git)
+          echo "  git:    https://git-scm.com/downloads"
+          ;;
+        "curl or wget")
+          echo "  curl:   https://curl.se/download.html"
+          echo "  wget:   https://www.gnu.org/software/wget/"
+          ;;
+      esac
+    done
+    exit 1
+  fi
 }
 
 # Download file
 download_file() {
-    local url="$1"
-    local output="$2"
+  local url="$1"
+  local output="$2"
 
-    if command -v curl &> /dev/null; then
-        curl -fsSL "${url}" -o "${output}"
-    elif command -v wget &> /dev/null; then
-        wget -q "${url}" -O "${output}"
-    fi
+  if command -v curl &>/dev/null; then
+    curl -fsSL "${url}" -o "${output}"
+  elif command -v wget &>/dev/null; then
+    wget -q "${url}" -O "${output}"
+  fi
 }
 
 # Get latest version from GitHub
 get_latest_version() {
-    local api_url="https://api.github.com/repos/${GITHUB_REPO}/releases/latest"
+  local api_url="https://api.github.com/repos/${GITHUB_REPO}/releases/latest"
 
-    if command -v curl &> /dev/null; then
-        curl -fsSL "${api_url}" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
-    elif command -v wget &> /dev/null; then
-        wget -qO- "${api_url}" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
-    fi
+  if command -v curl &>/dev/null; then
+    curl -fsSL "${api_url}" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+  elif command -v wget &>/dev/null; then
+    wget -qO- "${api_url}" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+  fi
 }
 
 # Download RDD Framework
 download_rdd() {
-    log_step "Downloading RDD Framework..."
+  log_step "Downloading RDD Framework..."
 
-    # Determine version
-    if [[ "${RDD_VERSION}" == "latest" ]]; then
-        RDD_VERSION=$(get_latest_version)
-        log_info "Latest version: ${RDD_VERSION}"
-    fi
+  # Determine version
+  if [[ "${RDD_VERSION}" == "latest" ]]; then
+    RDD_VERSION=$(get_latest_version)
+    log_info "Latest version: ${RDD_VERSION}"
+  fi
 
-    # Construct download URL
-    local archive_name="rdd-framework-${RDD_VERSION}.tar.gz"
-    DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/tags/${RDD_VERSION}.tar.gz"
+  # Construct download URL
+  local archive_name="rdd-framework-${RDD_VERSION}.tar.gz"
+  DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/tags/${RDD_VERSION}.tar.gz"
 
-    # For main branch
-    if [[ "${RDD_VERSION}" == "main" || "${RDD_VERSION}" == "master" ]]; then
-        DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/heads/main.tar.gz"
-        RDD_VERSION="main"
-    fi
+  # For main branch
+  if [[ "${RDD_VERSION}" == "main" || "${RDD_VERSION}" == "master" ]]; then
+    DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/heads/main.tar.gz"
+    RDD_VERSION="main"
+  fi
 
-    log_info "Download URL: ${DOWNLOAD_URL}"
+  log_info "Download URL: ${DOWNLOAD_URL}"
 
-    # Create temp directory
-    TEMP_DIR=$(mktemp -d)
-    local archive_path="${TEMP_DIR}/${archive_name}"
+  # Create temp directory
+  TEMP_DIR=$(mktemp -d)
+  local archive_path="${TEMP_DIR}/${archive_name}"
 
-    # Download
-    log_info "Downloading..."
-    download_file "${DOWNLOAD_URL}" "${archive_path}"
+  # Download
+  log_info "Downloading..."
+  download_file "${DOWNLOAD_URL}" "${archive_path}"
 
-    if [[ ! -f "${archive_path}" ]]; then
-        log_error "Download failed"
-        exit 1
-    fi
+  if [[ ! -f "${archive_path}" ]]; then
+    log_error "Download failed"
+    exit 1
+  fi
 
-    # Extract
-    log_info "Extracting..."
-    tar -xzf "${archive_path}" -C "${TEMP_DIR}"
+  # Extract
+  log_info "Extracting..."
+  tar -xzf "${archive_path}" -C "${TEMP_DIR}"
 
-    # Find extracted directory
-    # GitHub naming: {repo}-{branch} for branches, {repo}-{version} for tags
-    local extracted_dir
-    extracted_dir=$(find "${TEMP_DIR}" -maxdepth 1 -type d \( -name "rdd-*" -o -name "RDD-*" \) | head -1)
+  # Find extracted directory
+  # GitHub naming: {repo}-{branch} for branches, {repo}-{version} for tags
+  local extracted_dir
+  extracted_dir=$(find "${TEMP_DIR}" -maxdepth 1 -type d \( -name "rdd-*" -o -name "RDD-*" \) | head -1)
 
-    if [[ -z "${extracted_dir}" ]]; then
-        log_error "Could not find extracted directory"
-        log_error "Archive contents:"
-        ls -la "${TEMP_DIR}"
-        exit 1
-    fi
+  if [[ -z "${extracted_dir}" ]]; then
+    log_error "Could not find extracted directory"
+    log_error "Archive contents:"
+    ls -la "${TEMP_DIR}"
+    exit 1
+  fi
 
-    RDD_DOWNLOAD_DIR="${extracted_dir}"
-    log_info "Downloaded to: ${RDD_DOWNLOAD_DIR}"
+  RDD_DOWNLOAD_DIR="${extracted_dir}"
+  log_info "Downloaded to: ${RDD_DOWNLOAD_DIR}"
 }
 
 # Install go-task if not present
 install_task() {
-    if command -v task &> /dev/null; then
-        log_info "task $(task --version 2>&1 | head -1 || echo 'already installed') ✓"
-        return 0
-    fi
+  if command -v task &>/dev/null; then
+    log_info "task $(task --version 2>&1 | head -1 || echo 'already installed') ✓"
+    return 0
+  fi
 
-    log_step "Installing go-task..."
+  log_step "Installing go-task..."
 
-    local task_install_dir="${INSTALL_PREFIX}/bin"
-    mkdir -p "${task_install_dir}"
+  local task_install_dir="${INSTALL_PREFIX}/bin"
+  mkdir -p "${task_install_dir}"
 
-    # Use official install script
-    if curl -sL https://taskfile.dev/install.sh | sh -s -- -d -b "${task_install_dir}"; then
-        chmod +x "${task_install_dir}/task" 2>/dev/null || true
-        log_info "go-task installed to ${task_install_dir}/task"
-    else
-        log_warn "Official install script failed, trying fallback..."
+  # Use official install script
+  if curl -sL https://taskfile.dev/install.sh | sh -s -- -d -b "${task_install_dir}"; then
+    chmod +x "${task_install_dir}/task" 2>/dev/null || true
+    log_info "go-task installed to ${task_install_dir}/task"
+  else
+    log_warn "Official install script failed, trying fallback..."
 
-        # Fallback: direct download from GitHub Releases
-        local task_version="v3.42.1"
-        local task_url
-        local task_arch="${ARCH}"
+    # Fallback: direct download from GitHub Releases
+    local task_version="v3.42.1"
+    local task_url
+    local task_arch="${ARCH}"
 
-        case "${task_arch}" in
-            x86_64|amd64) task_arch="amd64" ;;
-            aarch64|arm64) task_arch="arm64" ;;
-        esac
+    case "${task_arch}" in
+      x86_64 | amd64) task_arch="amd64" ;;
+      aarch64 | arm64) task_arch="arm64" ;;
+    esac
 
-        case "${OS}" in
-            macos)
-                task_url="https://github.com/go-task/task/releases/download/${task_version}/task_darwin_${task_arch}.tar.gz"
-                ;;
-            linux)
-                task_url="https://github.com/go-task/task/releases/download/${task_version}/task_linux_${task_arch}.tar.gz"
-                ;;
-            *)
-                log_error "Unsupported OS for fallback: ${OS}"
-                return 1
-                ;;
-        esac
-
-        local task_temp="${TEMP_DIR}/task"
-        mkdir -p "${task_temp}"
-
-        download_file "${task_url}" "${task_temp}/task.tar.gz"
-        tar -xzf "${task_temp}/task.tar.gz" -C "${task_temp}"
-        mv "${task_temp}/task" "${task_install_dir}/"
-        chmod +x "${task_install_dir}/task"
-        log_info "go-task installed via fallback to ${task_install_dir}/task"
-    fi
-
-    # Verify installation
-    if ! command -v task &> /dev/null && [[ ! -x "${task_install_dir}/task" ]]; then
-        log_error "Failed to install go-task"
+    case "${OS}" in
+      macos)
+        task_url="https://github.com/go-task/task/releases/download/${task_version}/task_darwin_${task_arch}.tar.gz"
+        ;;
+      linux)
+        task_url="https://github.com/go-task/task/releases/download/${task_version}/task_linux_${task_arch}.tar.gz"
+        ;;
+      *)
+        log_error "Unsupported OS for fallback: ${OS}"
         return 1
-    fi
+        ;;
+    esac
+
+    local task_temp="${TEMP_DIR}/task"
+    mkdir -p "${task_temp}"
+
+    download_file "${task_url}" "${task_temp}/task.tar.gz"
+    tar -xzf "${task_temp}/task.tar.gz" -C "${task_temp}"
+    mv "${task_temp}/task" "${task_install_dir}/"
+    chmod +x "${task_install_dir}/task"
+    log_info "go-task installed via fallback to ${task_install_dir}/task"
+  fi
+
+  # Verify installation
+  if ! command -v task &>/dev/null && [[ ! -x "${task_install_dir}/task" ]]; then
+    log_error "Failed to install go-task"
+    return 1
+  fi
 }
 
 # Install RDD Framework
 install_rdd() {
-    log_step "Installing RDD Framework..."
+  log_step "Installing RDD Framework..."
 
-    # Create directories
-    mkdir -p "${INSTALL_PREFIX}"/{bin,lib,scripts,hooks,templates}
-    mkdir -p "${HOME}/.claude"/{skills,commands}
+  # Create directories
+  mkdir -p "${INSTALL_PREFIX}"/{bin,lib,scripts,hooks,templates}
+  mkdir -p "${HOME}/.claude"/{skills,commands}
 
-    # Copy files
-    log_info "Copying framework files..."
+  # Copy files
+  log_info "Copying framework files..."
 
-    # Core scripts
-    if [[ -d "${RDD_DOWNLOAD_DIR}/.rdd/scripts" ]]; then
-        cp -r "${RDD_DOWNLOAD_DIR}/.rdd/scripts/"* "${INSTALL_PREFIX}/scripts/"
-    fi
+  # Core scripts
+  if [[ -d "${RDD_DOWNLOAD_DIR}/.rdd/scripts" ]]; then
+    cp -r "${RDD_DOWNLOAD_DIR}/.rdd/scripts/"* "${INSTALL_PREFIX}/scripts/"
+  fi
 
-    # Hooks
-    if [[ -d "${RDD_DOWNLOAD_DIR}/.rdd/hooks" ]]; then
-        cp -r "${RDD_DOWNLOAD_DIR}/.rdd/hooks/"* "${INSTALL_PREFIX}/hooks/"
-    fi
+  # Hooks
+  if [[ -d "${RDD_DOWNLOAD_DIR}/.rdd/hooks" ]]; then
+    cp -r "${RDD_DOWNLOAD_DIR}/.rdd/hooks/"* "${INSTALL_PREFIX}/hooks/"
+  fi
 
-    # Skills
-    if [[ -d "${RDD_DOWNLOAD_DIR}/.claude/skills" ]]; then
-        cp -r "${RDD_DOWNLOAD_DIR}/.claude/skills/"* "${HOME}/.claude/skills/"
-    fi
+  # Skills
+  if [[ -d "${RDD_DOWNLOAD_DIR}/.claude/skills" ]]; then
+    cp -r "${RDD_DOWNLOAD_DIR}/.claude/skills/"* "${HOME}/.claude/skills/"
+  fi
 
-    # Commands
-    if [[ -d "${RDD_DOWNLOAD_DIR}/.claude/commands" ]]; then
-        cp -r "${RDD_DOWNLOAD_DIR}/.claude/commands/"* "${HOME}/.claude/commands/"
-    fi
+  # Commands
+  if [[ -d "${RDD_DOWNLOAD_DIR}/.claude/commands" ]]; then
+    cp -r "${RDD_DOWNLOAD_DIR}/.claude/commands/"* "${HOME}/.claude/commands/"
+  fi
 
-    # Templates
-    if [[ -d "${RDD_DOWNLOAD_DIR}/docs" ]]; then
-        cp -r "${RDD_DOWNLOAD_DIR}/docs" "${INSTALL_PREFIX}/templates/"
-    fi
+  # Templates
+  if [[ -d "${RDD_DOWNLOAD_DIR}/docs" ]]; then
+    cp -r "${RDD_DOWNLOAD_DIR}/docs" "${INSTALL_PREFIX}/templates/"
+  fi
 
-    # Copy Taskfile
-    if [[ -f "${RDD_DOWNLOAD_DIR}/Taskfile.yml" ]]; then
-        cp "${RDD_DOWNLOAD_DIR}/Taskfile.yml" "${INSTALL_PREFIX}/templates/"
-    fi
+  # Copy Taskfile
+  if [[ -f "${RDD_DOWNLOAD_DIR}/Taskfile.yml" ]]; then
+    cp "${RDD_DOWNLOAD_DIR}/Taskfile.yml" "${INSTALL_PREFIX}/templates/"
+  fi
 
-    # Create rdd command wrapper
-    create_rdd_command
+  # Create rdd command wrapper
+  create_rdd_command
 
-    # Create VERSION file
-    echo "${RDD_VERSION}" > "${INSTALL_PREFIX}/VERSION"
+  # Create VERSION file
+  echo "${RDD_VERSION}" >"${INSTALL_PREFIX}/VERSION"
 
-    # Set permissions
-    chmod +x "${INSTALL_PREFIX}/bin/rdd"
-    chmod +x "${INSTALL_PREFIX}/scripts/"*.sh 2>/dev/null || true
-    chmod +x "${INSTALL_PREFIX}/hooks/"*.sh 2>/dev/null || true
+  # Set permissions
+  chmod +x "${INSTALL_PREFIX}/bin/rdd"
+  chmod +x "${INSTALL_PREFIX}/scripts/"*.sh 2>/dev/null || true
+  chmod +x "${INSTALL_PREFIX}/hooks/"*.sh 2>/dev/null || true
 
-    log_info "Framework installed to ${INSTALL_PREFIX}"
+  log_info "Framework installed to ${INSTALL_PREFIX}"
 }
 
 # Create rdd command wrapper
 create_rdd_command() {
-    cat > "${INSTALL_PREFIX}/bin/rdd" << 'RDDCMD'
+  cat >"${INSTALL_PREFIX}/bin/rdd" <<'RDDCMD'
 #!/usr/bin/env bash
 #
 # RDD Framework CLI
@@ -565,71 +565,71 @@ main() {
 main "$@"
 RDDCMD
 
-    chmod +x "${INSTALL_PREFIX}/bin/rdd"
+  chmod +x "${INSTALL_PREFIX}/bin/rdd"
 }
 
 # Configure PATH
 configure_path() {
-    if [[ "${MODIFY_PATH}" != "true" ]]; then
-        return 0
-    fi
+  if [[ "${MODIFY_PATH}" != "true" ]]; then
+    return 0
+  fi
 
-    log_step "Configuring PATH..."
+  log_step "Configuring PATH..."
 
-    local shell_rc=""
-    local current_shell=""
+  local shell_rc=""
+  local current_shell=""
 
-    # Detect shell
-    current_shell=$(basename "${SHELL:-bash}")
+  # Detect shell
+  current_shell=$(basename "${SHELL:-bash}")
 
-    case "${current_shell}" in
-        bash)
-            shell_rc="${HOME}/.bashrc"
-            ;;
-        zsh)
-            shell_rc="${HOME}/.zshrc"
-            ;;
-        fish)
-            shell_rc="${HOME}/.config/fish/config.fish"
-            ;;
-        *)
-            shell_rc="${HOME}/.profile"
-            ;;
-    esac
+  case "${current_shell}" in
+    bash)
+      shell_rc="${HOME}/.bashrc"
+      ;;
+    zsh)
+      shell_rc="${HOME}/.zshrc"
+      ;;
+    fish)
+      shell_rc="${HOME}/.config/fish/config.fish"
+      ;;
+    *)
+      shell_rc="${HOME}/.profile"
+      ;;
+  esac
 
-    # Check if already in PATH
-    if [[ ":${PATH}:" == *":${INSTALL_PREFIX}/bin:"* ]]; then
-        log_info "PATH already configured"
-        return 0
-    fi
+  # Check if already in PATH
+  if [[ ":${PATH}:" == *":${INSTALL_PREFIX}/bin:"* ]]; then
+    log_info "PATH already configured"
+    return 0
+  fi
 
-    # Add to shell rc
-    local path_entry=""
-    if [[ "${current_shell}" == "fish" ]]; then
-        path_entry="set -gx PATH \"${INSTALL_PREFIX}/bin\" \$PATH"
-    else
-        path_entry="export PATH=\"${INSTALL_PREFIX}/bin:\$PATH\""
-    fi
+  # Add to shell rc
+  local path_entry=""
+  if [[ "${current_shell}" == "fish" ]]; then
+    path_entry="set -gx PATH \"${INSTALL_PREFIX}/bin\" \$PATH"
+  else
+    path_entry="export PATH=\"${INSTALL_PREFIX}/bin:\$PATH\""
+  fi
 
-    # Check if already added
-    if ! grep -q "RDD_FRAMEWORK_HOME" "${shell_rc}" 2>/dev/null; then
-        echo "" >> "${shell_rc}"
-        echo "# RDD Framework" >> "${shell_rc}"
-        echo "export RDD_FRAMEWORK_HOME=\"${INSTALL_PREFIX}\"" >> "${shell_rc}"
-        echo "${path_entry}" >> "${shell_rc}"
-        log_info "Added to ${shell_rc}"
-    fi
+  # Check if already added
+  if ! grep -q "RDD_FRAMEWORK_HOME" "${shell_rc}" 2>/dev/null; then
+    echo "" >>"${shell_rc}"
+    echo "# RDD Framework" >>"${shell_rc}"
+    echo "export RDD_FRAMEWORK_HOME=\"${INSTALL_PREFIX}\"" >>"${shell_rc}"
+    echo "${path_entry}" >>"${shell_rc}"
+    log_info "Added to ${shell_rc}"
+  fi
 
-    # Add to current session
-    export PATH="${INSTALL_PREFIX}/bin:${PATH}"
-    export RDD_FRAMEWORK_HOME="${INSTALL_PREFIX}"
+  # Add to current session
+  export PATH="${INSTALL_PREFIX}/bin:${PATH}"
+  export RDD_FRAMEWORK_HOME="${INSTALL_PREFIX}"
 
-    log_info "PATH configured for current session"
+  log_info "PATH configured for current session"
 }
 
 # Install init.sh library
 install_init_lib() {
-    cat > "${INSTALL_PREFIX}/lib/init.sh" << 'INITSH'
+  cat >"${INSTALL_PREFIX}/lib/init.sh" <<'INITSH'
 #!/usr/bin/env bash
 #
 # RDD Init Library
@@ -916,21 +916,21 @@ EOF
 }
 INITSH
 
-    chmod +x "${INSTALL_PREFIX}/lib/init.sh"
+  chmod +x "${INSTALL_PREFIX}/lib/init.sh"
 }
 
 # Install other library files
 install_libs() {
-    # migrate.sh
-    cat > "${INSTALL_PREFIX}/lib/migrate.sh" << 'EOF'
+  # migrate.sh
+  cat >"${INSTALL_PREFIX}/lib/migrate.sh" <<'EOF'
 #!/usr/bin/env bash
 rdd_migrate() {
     echo "Migration not yet implemented. Use 'rdd init' for new projects."
 }
 EOF
 
-    # stage.sh
-    cat > "${INSTALL_PREFIX}/lib/stage.sh" << 'EOF'
+  # stage.sh
+  cat >"${INSTALL_PREFIX}/lib/stage.sh" <<'EOF'
 #!/usr/bin/env bash
 rdd_stage() {
     local cmd="${1:-help}"
@@ -947,8 +947,8 @@ rdd_stage() {
 }
 EOF
 
-    # knowledge.sh
-    cat > "${INSTALL_PREFIX}/lib/knowledge.sh" << 'EOF'
+  # knowledge.sh
+  cat >"${INSTALL_PREFIX}/lib/knowledge.sh" <<'EOF'
 #!/usr/bin/env bash
 rdd_knowledge() {
     local cmd="${1:-help}"
@@ -965,100 +965,100 @@ rdd_knowledge() {
 }
 EOF
 
-    chmod +x "${INSTALL_PREFIX}/lib/"*.sh
+  chmod +x "${INSTALL_PREFIX}/lib/"*.sh
 }
 
 # Show post-install instructions
 show_post_install() {
-    printf '\n'
-    printf '%b\n' "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
-    printf '%b\n' "${GREEN}║                  Installation Complete!                       ║${NC}"
-    printf '%b\n' "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
-    printf '\n'
-    printf '%b\n' "${BOLD}RDD Framework v${RDD_VERSION} installed successfully!${NC}"
-    printf '\n'
-    printf '%b\n' "${BOLD}Installed to:${NC} ${INSTALL_PREFIX}"
-    printf '\n'
-    printf '%b\n' "${BOLD}Next steps:${NC}"
-    printf '\n'
-    printf '%b\n' "  ${YELLOW}1.${NC} Restart your shell or run:"
-    printf '%b\n' "     ${BLUE}source ~/.bashrc${NC}  (or ~/.zshrc)"
-    printf '\n'
-    printf '%b\n' "  ${YELLOW}2.${NC} Verify installation:"
-    printf '%b\n' "     ${BLUE}rdd --version${NC}"
-    printf '\n'
-    printf '%b\n' "  ${YELLOW}3.${NC} Create a new project:"
-    printf '%b\n' "     ${BLUE}rdd init my-project${NC}"
-    printf '\n'
-    printf '%b\n' "  ${YELLOW}4.${NC} Use with Claude Code:"
-    printf '%b\n' "     Open Claude Code in your project directory"
-    printf '%b\n' "     Skills are automatically available"
-    printf '\n'
-    printf '%b\n' "${BOLD}Documentation:${NC} https://github.com/kofj/rdd"
-    printf '\n'
+  printf '\n'
+  printf '%b\n' "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
+  printf '%b\n' "${GREEN}║                  Installation Complete!                       ║${NC}"
+  printf '%b\n' "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
+  printf '\n'
+  printf '%b\n' "${BOLD}RDD Framework v${RDD_VERSION} installed successfully!${NC}"
+  printf '\n'
+  printf '%b\n' "${BOLD}Installed to:${NC} ${INSTALL_PREFIX}"
+  printf '\n'
+  printf '%b\n' "${BOLD}Next steps:${NC}"
+  printf '\n'
+  printf '%b\n' "  ${YELLOW}1.${NC} Restart your shell or run:"
+  printf '%b\n' "     ${BLUE}source ~/.bashrc${NC}  (or ~/.zshrc)"
+  printf '\n'
+  printf '%b\n' "  ${YELLOW}2.${NC} Verify installation:"
+  printf '%b\n' "     ${BLUE}rdd --version${NC}"
+  printf '\n'
+  printf '%b\n' "  ${YELLOW}3.${NC} Create a new project:"
+  printf '%b\n' "     ${BLUE}rdd init my-project${NC}"
+  printf '\n'
+  printf '%b\n' "  ${YELLOW}4.${NC} Use with Claude Code:"
+  printf '%b\n' "     Open Claude Code in your project directory"
+  printf '%b\n' "     Skills are automatically available"
+  printf '\n'
+  printf '%b\n' "${BOLD}Documentation:${NC} https://github.com/kofj/rdd"
+  printf '\n'
 }
 
 # Uninstall
 uninstall() {
-    log_step "Uninstalling RDD Framework..."
+  log_step "Uninstalling RDD Framework..."
 
-    if [[ ! -d "${INSTALL_PREFIX}" ]]; then
-        log_warn "RDD Framework is not installed at ${INSTALL_PREFIX}"
-        exit 0
-    fi
+  if [[ ! -d "${INSTALL_PREFIX}" ]]; then
+    log_warn "RDD Framework is not installed at ${INSTALL_PREFIX}"
+    exit 0
+  fi
 
-    # Remove installation directory
-    rm -rf "${INSTALL_PREFIX}"
-    log_info "Removed ${INSTALL_PREFIX}"
+  # Remove installation directory
+  rm -rf "${INSTALL_PREFIX}"
+  log_info "Removed ${INSTALL_PREFIX}"
 
-    # Remove skills and commands
-    local claude_dir="${HOME}/.claude"
+  # Remove skills and commands
+  local claude_dir="${HOME}/.claude"
 
-    # Remove RDD skills
-    for skill in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop rdd-review-auto rdd-recovery rdd-diagnosis rdd-fresh-check rdd-hooks rdd-core rdd-templates; do
-        rm -f "${claude_dir}/skills/${skill}.md"
-    done
-    log_info "Removed RDD skills"
+  # Remove RDD skills
+  for skill in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop rdd-review-auto rdd-recovery rdd-diagnosis rdd-fresh-check rdd-hooks rdd-core rdd-templates; do
+    rm -f "${claude_dir}/skills/${skill}.md"
+  done
+  log_info "Removed RDD skills"
 
-    # Remove RDD commands
-    for cmd in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop; do
-        rm -f "${claude_dir}/commands/${cmd}.md"
-    done
-    log_info "Removed RDD commands"
+  # Remove RDD commands
+  for cmd in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop; do
+    rm -f "${claude_dir}/commands/${cmd}.md"
+  done
+  log_info "Removed RDD commands"
 
-    # Remove from PATH (need to manually edit shell rc)
-    log_warn "Please manually remove RDD entries from your shell RC file (~/.bashrc, ~/.zshrc, etc.)"
+  # Remove from PATH (need to manually edit shell rc)
+  log_warn "Please manually remove RDD entries from your shell RC file (~/.bashrc, ~/.zshrc, etc.)"
 
-    printf '\n'
-    printf '%b\n' "${GREEN}RDD Framework has been uninstalled.${NC}"
+  printf '\n'
+  printf '%b\n' "${GREEN}RDD Framework has been uninstalled.${NC}"
 }
 
 # Main
 main() {
-    local ACTION="${ACTION:-install}"
+  local ACTION="${ACTION:-install}"
 
-    parse_args "$@"
-    show_banner
+  parse_args "$@"
+  show_banner
 
-    case "${ACTION}" in
-        uninstall)
-            uninstall
-            exit 0
-            ;;
-        upgrade)
-            log_info "Upgrading RDD Framework..."
-            ;;
-    esac
+  case "${ACTION}" in
+    uninstall)
+      uninstall
+      exit 0
+      ;;
+    upgrade)
+      log_info "Upgrading RDD Framework..."
+      ;;
+  esac
 
-    check_os
-    check_dependencies
-    download_rdd
-    install_task
-    install_rdd
-    install_init_lib
-    install_libs
-    configure_path
-    show_post_install
+  check_os
+  check_dependencies
+  download_rdd
+  install_task
+  install_rdd
+  install_init_lib
+  install_libs
+  configure_path
+  show_post_install
 }
 
 # Run main

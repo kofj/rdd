@@ -23,7 +23,7 @@ SCRIPTS_DIR="${RDD_DIR}/scripts"
 
 # Source shared functions
 if [[ -f "${SCRIPTS_DIR}/notify.sh" ]]; then
-    source "${SCRIPTS_DIR}/notify.sh"
+  source "${SCRIPTS_DIR}/notify.sh"
 fi
 
 log_warn "Consecutive failure hook triggered"
@@ -33,11 +33,11 @@ log_warn "Last error: ${RDD_LAST_ERROR:-unknown}"
 
 # This is a critical notification - may block agent progress
 send_notification "consecutive_failure" \
-    "project_name=${RDD_PROJECT_NAME:-Unknown}" \
-    "stage_name=${RDD_STAGE_NAME:-Stage ${RDD_STAGE_NUMBER:-unknown}}" \
-    "failure_count=${RDD_FAILURE_COUNT:-0}" \
-    "last_error=${RDD_LAST_ERROR:-Unknown error}" \
-    "timestamp=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+  "project_name=${RDD_PROJECT_NAME:-Unknown}" \
+  "stage_name=${RDD_STAGE_NAME:-Stage ${RDD_STAGE_NUMBER:-unknown}}" \
+  "failure_count=${RDD_FAILURE_COUNT:-0}" \
+  "last_error=${RDD_LAST_ERROR:-Unknown error}" \
+  "timestamp=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
 
 # Generate handoff document since agent may need to stop
 HANDOFF_DIR="${RDD_DIR}/../docs/handoff"
@@ -45,12 +45,12 @@ mkdir -p "$HANDOFF_DIR"
 
 # Archive previous handoff if exists
 if [[ -f "${HANDOFF_DIR}/handoff-latest.md" ]]; then
-    TIMESTAMP=$(date '+%Y-%m-%d-%H%M')
-    mv "${HANDOFF_DIR}/handoff-latest.md" "${HANDOFF_DIR}/handoff-${TIMESTAMP}.md"
+  TIMESTAMP=$(date '+%Y-%m-%d-%H%M')
+  mv "${HANDOFF_DIR}/handoff-latest.md" "${HANDOFF_DIR}/handoff-${TIMESTAMP}.md"
 fi
 
 # Create handoff document
-cat > "${HANDOFF_DIR}/handoff-latest.md" << EOF
+cat >"${HANDOFF_DIR}/handoff-latest.md" <<EOF
 # Agent Handoff Document
 
 Generated: $(date '+%Y-%m-%d %H:%M')

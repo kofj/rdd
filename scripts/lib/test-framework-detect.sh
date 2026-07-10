@@ -23,229 +23,229 @@ RECOMMENDED_API=""
 
 # Print colored output
 print_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+  echo -e "${BLUE}[INFO]${NC} $1"
 }
 
 print_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+  echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+  echo -e "${YELLOW}[WARNING]${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+  echo -e "${RED}[ERROR]${NC} $1"
 }
 
 # Detect Node.js project
 detect_nodejs() {
-    if [[ -f "package.json" ]]; then
-        DETECTED_LANGUAGE="nodejs"
+  if [[ -f "package.json" ]]; then
+    DETECTED_LANGUAGE="nodejs"
 
-        # Check for frontend frameworks
-        if grep -q '"react"' package.json 2>/dev/null || \
-           grep -q '"vue"' package.json 2>/dev/null || \
-           grep -q '"angular"' package.json 2>/dev/null || \
-           [[ -d "src/components" ]] || \
-           [[ -f "next.config.js" ]] || \
-           [[ -f "nuxt.config.js" ]]; then
-            DETECTED_PROJECT_TYPE="frontend"
-            RECOMMENDED_E2E="playwright"
-        fi
-
-        # Check for backend frameworks
-        if grep -q '"express"' package.json 2>/dev/null || \
-           grep -q '"fastify"' package.json 2>/dev/null || \
-           grep -q '"nest"' package.json 2>/dev/null || \
-           grep -q '"koa"' package.json 2>/dev/null; then
-            if [[ "$DETECTED_PROJECT_TYPE" == "frontend" ]]; then
-                DETECTED_PROJECT_TYPE="fullstack"
-            else
-                DETECTED_PROJECT_TYPE="backend-api"
-            fi
-            RECOMMENDED_API="supertest"
-        fi
-
-        # Default project type
-        if [[ -z "$DETECTED_PROJECT_TYPE" ]]; then
-            DETECTED_PROJECT_TYPE="backend-service"
-        fi
-
-        # Test frameworks
-        RECOMMENDED_BDD="cucumber-js"
-        RECOMMENDED_UNIT="jest"
-        RECOMMENDED_COVERAGE="nyc"
-
-        return 0
+    # Check for frontend frameworks
+    if grep -q '"react"' package.json 2>/dev/null ||
+      grep -q '"vue"' package.json 2>/dev/null ||
+      grep -q '"angular"' package.json 2>/dev/null ||
+      [[ -d "src/components" ]] ||
+      [[ -f "next.config.js" ]] ||
+      [[ -f "nuxt.config.js" ]]; then
+      DETECTED_PROJECT_TYPE="frontend"
+      RECOMMENDED_E2E="playwright"
     fi
-    return 1
+
+    # Check for backend frameworks
+    if grep -q '"express"' package.json 2>/dev/null ||
+      grep -q '"fastify"' package.json 2>/dev/null ||
+      grep -q '"nest"' package.json 2>/dev/null ||
+      grep -q '"koa"' package.json 2>/dev/null; then
+      if [[ "$DETECTED_PROJECT_TYPE" == "frontend" ]]; then
+        DETECTED_PROJECT_TYPE="fullstack"
+      else
+        DETECTED_PROJECT_TYPE="backend-api"
+      fi
+      RECOMMENDED_API="supertest"
+    fi
+
+    # Default project type
+    if [[ -z "$DETECTED_PROJECT_TYPE" ]]; then
+      DETECTED_PROJECT_TYPE="backend-service"
+    fi
+
+    # Test frameworks
+    RECOMMENDED_BDD="cucumber-js"
+    RECOMMENDED_UNIT="jest"
+    RECOMMENDED_COVERAGE="nyc"
+
+    return 0
+  fi
+  return 1
 }
 
 # Detect Python project
 detect_python() {
-    if [[ -f "requirements.txt" ]] || \
-       [[ -f "pyproject.toml" ]] || \
-       [[ -f "setup.py" ]] || \
-       [[ -f "Pipfile" ]]; then
-        DETECTED_LANGUAGE="python"
+  if [[ -f "requirements.txt" ]] ||
+    [[ -f "pyproject.toml" ]] ||
+    [[ -f "setup.py" ]] ||
+    [[ -f "Pipfile" ]]; then
+    DETECTED_LANGUAGE="python"
 
-        # Check for web frameworks
-        if grep -q "django" requirements.txt 2>/dev/null || \
-           [[ -f "settings.py" ]]; then
-            DETECTED_PROJECT_TYPE="backend-api"
-            DETECTED_FRAMEWORKS+=("django")
-        elif grep -q "flask" requirements.txt 2>/dev/null || \
-             [[ -f "app.py" ]] && grep -q "flask" app.py 2>/dev/null; then
-            DETECTED_PROJECT_TYPE="backend-api"
-            DETECTED_FRAMEWORKS+=("flask")
-        elif grep -q "fastapi" requirements.txt 2>/dev/null; then
-            DETECTED_PROJECT_TYPE="backend-api"
-            DETECTED_FRAMEWORKS+=("fastapi")
-        else
-            DETECTED_PROJECT_TYPE="backend-service"
-        fi
-
-        # Test frameworks
-        RECOMMENDED_BDD="pytest-bdd"
-        RECOMMENDED_UNIT="pytest"
-        RECOMMENDED_COVERAGE="coverage.py"
-        RECOMMENDED_E2E="playwright"
-        RECOMMENDED_API="requests"
-
-        return 0
+    # Check for web frameworks
+    if grep -q "django" requirements.txt 2>/dev/null ||
+      [[ -f "settings.py" ]]; then
+      DETECTED_PROJECT_TYPE="backend-api"
+      DETECTED_FRAMEWORKS+=("django")
+    elif grep -q "flask" requirements.txt 2>/dev/null ||
+      [[ -f "app.py" ]] && grep -q "flask" app.py 2>/dev/null; then
+      DETECTED_PROJECT_TYPE="backend-api"
+      DETECTED_FRAMEWORKS+=("flask")
+    elif grep -q "fastapi" requirements.txt 2>/dev/null; then
+      DETECTED_PROJECT_TYPE="backend-api"
+      DETECTED_FRAMEWORKS+=("fastapi")
+    else
+      DETECTED_PROJECT_TYPE="backend-service"
     fi
-    return 1
+
+    # Test frameworks
+    RECOMMENDED_BDD="pytest-bdd"
+    RECOMMENDED_UNIT="pytest"
+    RECOMMENDED_COVERAGE="coverage.py"
+    RECOMMENDED_E2E="playwright"
+    RECOMMENDED_API="requests"
+
+    return 0
+  fi
+  return 1
 }
 
 # Detect Go project
 detect_go() {
-    if [[ -f "go.mod" ]] || [[ -f "go.sum" ]]; then
-        DETECTED_LANGUAGE="go"
-        DETECTED_PROJECT_TYPE="backend-service"
+  if [[ -f "go.mod" ]] || [[ -f "go.sum" ]]; then
+    DETECTED_LANGUAGE="go"
+    DETECTED_PROJECT_TYPE="backend-service"
 
-        # Test frameworks
-        RECOMMENDED_BDD="godog"
-        RECOMMENDED_UNIT="go test"
-        RECOMMENDED_COVERAGE="go cover"
-        RECOMMENDED_API="httptest"
+    # Test frameworks
+    RECOMMENDED_BDD="godog"
+    RECOMMENDED_UNIT="go test"
+    RECOMMENDED_COVERAGE="go cover"
+    RECOMMENDED_API="httptest"
 
-        return 0
-    fi
-    return 1
+    return 0
+  fi
+  return 1
 }
 
 # Detect Rust project
 detect_rust() {
-    if [[ -f "Cargo.toml" ]]; then
-        DETECTED_LANGUAGE="rust"
-        DETECTED_PROJECT_TYPE="backend-service"
+  if [[ -f "Cargo.toml" ]]; then
+    DETECTED_LANGUAGE="rust"
+    DETECTED_PROJECT_TYPE="backend-service"
 
-        # Test frameworks
-        RECOMMENDED_BDD="cucumber-rust"
-        RECOMMENDED_UNIT="cargo test"
-        RECOMMENDED_COVERAGE="tarpaulin"
-        RECOMMENDED_API="reqwest"
+    # Test frameworks
+    RECOMMENDED_BDD="cucumber-rust"
+    RECOMMENDED_UNIT="cargo test"
+    RECOMMENDED_COVERAGE="tarpaulin"
+    RECOMMENDED_API="reqwest"
 
-        return 0
-    fi
-    return 1
+    return 0
+  fi
+  return 1
 }
 
 # Detect Java project
 detect_java() {
-    if [[ -f "pom.xml" ]] || [[ -f "build.gradle" ]]; then
-        DETECTED_LANGUAGE="java"
-        DETECTED_PROJECT_TYPE="backend-api"
+  if [[ -f "pom.xml" ]] || [[ -f "build.gradle" ]]; then
+    DETECTED_LANGUAGE="java"
+    DETECTED_PROJECT_TYPE="backend-api"
 
-        # Test frameworks
-        RECOMMENDED_BDD="cucumber-jvm"
-        RECOMMENDED_UNIT="junit"
-        RECOMMENDED_COVERAGE="jacoco"
-        RECOMMENDED_E2E="selenium"
-        RECOMMENDED_API="rest-assured"
+    # Test frameworks
+    RECOMMENDED_BDD="cucumber-jvm"
+    RECOMMENDED_UNIT="junit"
+    RECOMMENDED_COVERAGE="jacoco"
+    RECOMMENDED_E2E="selenium"
+    RECOMMENDED_API="rest-assured"
 
-        return 0
-    fi
-    return 1
+    return 0
+  fi
+  return 1
 }
 
 # Main detection function
 detect_project() {
-    print_info "Detecting project language and type..."
+  print_info "Detecting project language and type..."
 
-    # Try each language detector
-    if detect_nodejs; then
-        print_success "Detected Node.js project"
-    elif detect_python; then
-        print_success "Detected Python project"
-    elif detect_go; then
-        print_success "Detected Go project"
-    elif detect_rust; then
-        print_success "Detected Rust project"
-    elif detect_java; then
-        print_success "Detected Java project"
-    else
-        print_warning "Could not detect project language"
-        print_info "Please specify manually:"
-        DETECTED_LANGUAGE="unknown"
-        DETECTED_PROJECT_TYPE="unknown"
-    fi
+  # Try each language detector
+  if detect_nodejs; then
+    print_success "Detected Node.js project"
+  elif detect_python; then
+    print_success "Detected Python project"
+  elif detect_go; then
+    print_success "Detected Go project"
+  elif detect_rust; then
+    print_success "Detected Rust project"
+  elif detect_java; then
+    print_success "Detected Java project"
+  else
+    print_warning "Could not detect project language"
+    print_info "Please specify manually:"
+    DETECTED_LANGUAGE="unknown"
+    DETECTED_PROJECT_TYPE="unknown"
+  fi
 
-    # Print detection results
-    echo ""
-    echo "=== Detection Results ==="
-    echo "Language:      ${DETECTED_LANGUAGE}"
-    echo "Project Type:  ${DETECTED_PROJECT_TYPE}"
-    echo "Frameworks:    ${DETECTED_FRAMEWORKS[*]:-none}"
-    echo ""
-    echo "=== Recommended Test Frameworks ==="
-    echo "BDD Framework:    ${RECOMMENDED_BDD:-not recommended}"
-    echo "Unit Test Runner: ${RECOMMENDED_UNIT:-not recommended}"
-    echo "Coverage Tool:    ${RECOMMENDED_COVERAGE:-not recommended}"
-    echo "E2E Tool:         ${RECOMMENDED_E2E:-not recommended}"
-    echo "API Test Tool:    ${RECOMMENDED_API:-not recommended}"
-    echo ""
+  # Print detection results
+  echo ""
+  echo "=== Detection Results ==="
+  echo "Language:      ${DETECTED_LANGUAGE}"
+  echo "Project Type:  ${DETECTED_PROJECT_TYPE}"
+  echo "Frameworks:    ${DETECTED_FRAMEWORKS[*]:-none}"
+  echo ""
+  echo "=== Recommended Test Frameworks ==="
+  echo "BDD Framework:    ${RECOMMENDED_BDD:-not recommended}"
+  echo "Unit Test Runner: ${RECOMMENDED_UNIT:-not recommended}"
+  echo "Coverage Tool:    ${RECOMMENDED_COVERAGE:-not recommended}"
+  echo "E2E Tool:         ${RECOMMENDED_E2E:-not recommended}"
+  echo "API Test Tool:    ${RECOMMENDED_API:-not recommended}"
+  echo ""
 }
 
 # Generate test configuration
 generate_test_config() {
-    local output_file="${1:-.rdd/test-config.yml}"
+  local output_file="${1:-.rdd/test-config.yml}"
 
-    print_info "Generating test configuration..."
+  print_info "Generating test configuration..."
 
-    # Create directory if not exists
-    mkdir -p "$(dirname "$output_file")"
+  # Create directory if not exists
+  mkdir -p "$(dirname "$output_file")"
 
-    # Generate config based on language
-    case "$DETECTED_LANGUAGE" in
-        nodejs)
-            generate_nodejs_config > "$output_file"
-            ;;
-        python)
-            generate_python_config > "$output_file"
-            ;;
-        go)
-            generate_go_config > "$output_file"
-            ;;
-        rust)
-            generate_rust_config > "$output_file"
-            ;;
-        java)
-            generate_java_config > "$output_file"
-            ;;
-        *)
-            print_warning "Unknown language, generating generic config"
-            generate_generic_config > "$output_file"
-            ;;
-    esac
+  # Generate config based on language
+  case "$DETECTED_LANGUAGE" in
+    nodejs)
+      generate_nodejs_config >"$output_file"
+      ;;
+    python)
+      generate_python_config >"$output_file"
+      ;;
+    go)
+      generate_go_config >"$output_file"
+      ;;
+    rust)
+      generate_rust_config >"$output_file"
+      ;;
+    java)
+      generate_java_config >"$output_file"
+      ;;
+    *)
+      print_warning "Unknown language, generating generic config"
+      generate_generic_config >"$output_file"
+      ;;
+  esac
 
-    print_success "Generated test configuration: $output_file"
+  print_success "Generated test configuration: $output_file"
 }
 
 # Node.js test configuration
 generate_nodejs_config() {
-    cat << 'EOF'
+  cat <<'EOF'
 # RDD Test Configuration
 # Auto-generated for Node.js project
 
@@ -304,7 +304,7 @@ EOF
 
 # Python test configuration
 generate_python_config() {
-    cat << 'EOF'
+  cat <<'EOF'
 # RDD Test Configuration
 # Auto-generated for Python project
 
@@ -363,7 +363,7 @@ EOF
 
 # Go test configuration
 generate_go_config() {
-    cat << 'EOF'
+  cat <<'EOF'
 # RDD Test Configuration
 # Auto-generated for Go project
 
@@ -419,7 +419,7 @@ EOF
 
 # Rust test configuration
 generate_rust_config() {
-    cat << 'EOF'
+  cat <<'EOF'
 # RDD Test Configuration
 # Auto-generated for Rust project
 
@@ -475,7 +475,7 @@ EOF
 
 # Java test configuration
 generate_java_config() {
-    cat << 'EOF'
+  cat <<'EOF'
 # RDD Test Configuration
 # Auto-generated for Java project
 
@@ -532,7 +532,7 @@ EOF
 
 # Generic test configuration
 generate_generic_config() {
-    cat << 'EOF'
+  cat <<'EOF'
 # RDD Test Configuration
 # Generic template - please customize for your project
 
@@ -579,12 +579,12 @@ EOF
 
 # Generate example BDD feature file
 generate_example_feature() {
-    local output_dir="${1:-tests/features}"
-    local output_file="$output_dir/example.feature"
+  local output_dir="${1:-tests/features}"
+  local output_file="$output_dir/example.feature"
 
-    mkdir -p "$output_dir"
+  mkdir -p "$output_dir"
 
-    cat > "$output_file" << 'EOF'
+  cat >"$output_file" <<'EOF'
 Feature: Example feature
   As a developer
   I want to verify testing setup
@@ -602,17 +602,17 @@ Feature: Example feature
     And the gate should pass
 EOF
 
-    print_success "Generated example feature file: $output_file"
+  print_success "Generated example feature file: $output_file"
 }
 
 # Generate example step definitions (Node.js)
 generate_nodejs_steps() {
-    local output_dir="${1:-tests/steps}"
-    local output_file="$output_dir/example.steps.js"
+  local output_dir="${1:-tests/steps}"
+  local output_file="$output_dir/example.steps.js"
 
-    mkdir -p "$output_dir"
+  mkdir -p "$output_dir"
 
-    cat > "$output_file" << 'EOF'
+  cat >"$output_file" <<'EOF'
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 Given('the test framework is configured', function () {
@@ -652,17 +652,17 @@ Then('the gate should pass', function () {
 });
 EOF
 
-    print_success "Generated example steps file: $output_file"
+  print_success "Generated example steps file: $output_file"
 }
 
 # Generate example step definitions (Python)
 generate_python_steps() {
-    local output_dir="${1:-tests/steps}"
-    local output_file="$output_dir/example_steps.py"
+  local output_dir="${1:-tests/steps}"
+  local output_file="$output_dir/example_steps.py"
 
-    mkdir -p "$output_dir"
+  mkdir -p "$output_dir"
 
-    cat > "$output_file" << 'EOF'
+  cat >"$output_file" <<'EOF'
 from pytest_bdd import given, when, then
 
 @given('the test framework is configured')
@@ -694,65 +694,65 @@ def gate_passed(run_suite):
     print(f"Gate passed with coverage: {run_suite['coverage_percent']}%")
 EOF
 
-    print_success "Generated example steps file: $output_file"
+  print_success "Generated example steps file: $output_file"
 }
 
 # Main entry point
 main() {
-    local command="${1:-detect}"
-    shift 2>/dev/null || true
+  local command="${1:-detect}"
+  shift 2>/dev/null || true
 
-    case "$command" in
-        detect)
-            detect_project
-            ;;
-        config)
-            generate_test_config "$@"
-            ;;
-        feature)
-            generate_example_feature "$@"
-            ;;
-        steps)
-            case "$DETECTED_LANGUAGE" in
-                nodejs)
-                    generate_nodejs_steps "$@"
-                    ;;
-                python)
-                    generate_python_steps "$@"
-                    ;;
-                *)
-                    print_warning "No step template for $DETECTED_LANGUAGE"
-                    ;;
-            esac
-            ;;
-        all)
-            detect_project
-            generate_test_config "$@"
-            generate_example_feature
-            case "$DETECTED_LANGUAGE" in
-                nodejs)
-                    generate_nodejs_steps
-                    ;;
-                python)
-                    generate_python_steps
-                    ;;
-            esac
-            ;;
+  case "$command" in
+    detect)
+      detect_project
+      ;;
+    config)
+      generate_test_config "$@"
+      ;;
+    feature)
+      generate_example_feature "$@"
+      ;;
+    steps)
+      case "$DETECTED_LANGUAGE" in
+        nodejs)
+          generate_nodejs_steps "$@"
+          ;;
+        python)
+          generate_python_steps "$@"
+          ;;
         *)
-            echo "Usage: $0 {detect|config|feature|steps|all}"
-            echo ""
-            echo "Commands:"
-            echo "  detect  - Detect project language and type"
-            echo "  config  - Generate test configuration"
-            echo "  feature - Generate example BDD feature file"
-            echo "  steps   - Generate example step definitions"
-            echo "  all     - Run all setup steps"
-            exit 1
-            ;;
-    esac
+          print_warning "No step template for $DETECTED_LANGUAGE"
+          ;;
+      esac
+      ;;
+    all)
+      detect_project
+      generate_test_config "$@"
+      generate_example_feature
+      case "$DETECTED_LANGUAGE" in
+        nodejs)
+          generate_nodejs_steps
+          ;;
+        python)
+          generate_python_steps
+          ;;
+      esac
+      ;;
+    *)
+      echo "Usage: $0 {detect|config|feature|steps|all}"
+      echo ""
+      echo "Commands:"
+      echo "  detect  - Detect project language and type"
+      echo "  config  - Generate test configuration"
+      echo "  feature - Generate example BDD feature file"
+      echo "  steps   - Generate example step definitions"
+      echo "  all     - Run all setup steps"
+      exit 1
+      ;;
+  esac
 }
 
 # Run if executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$@"
+  main "$@"
 fi

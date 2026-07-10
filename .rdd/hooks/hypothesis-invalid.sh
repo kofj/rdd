@@ -23,7 +23,7 @@ SCRIPTS_DIR="${RDD_DIR}/scripts"
 
 # Source shared functions
 if [[ -f "${SCRIPTS_DIR}/notify.sh" ]]; then
-    source "${SCRIPTS_DIR}/notify.sh"
+  source "${SCRIPTS_DIR}/notify.sh"
 fi
 
 log_warn "Hypothesis invalidation hook triggered"
@@ -33,18 +33,18 @@ log_warn "Reason: ${RDD_REASON:-unknown}"
 
 # Hypothesis invalidation is high priority
 send_notification "hypothesis_invalid" \
-    "project_name=${RDD_PROJECT_NAME:-Unknown}" \
-    "hypothesis_text=${RDD_HYPOTHESIS:-Unknown}" \
-    "invalidation_reason=${RDD_REASON:-Unknown}" \
-    "evidence=${RDD_EVIDENCE:-No evidence provided}" \
-    "timestamp=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+  "project_name=${RDD_PROJECT_NAME:-Unknown}" \
+  "hypothesis_text=${RDD_HYPOTHESIS:-Unknown}" \
+  "invalidation_reason=${RDD_REASON:-Unknown}" \
+  "evidence=${RDD_EVIDENCE:-No evidence provided}" \
+  "timestamp=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
 
 # Record in ADR
 ADR_FILE="${RDD_DIR}/../docs/08-autonomous-decisions.md"
 if [[ -f "$ADR_FILE" ]]; then
-    log_info "Recording hypothesis invalidation in ADR"
+  log_info "Recording hypothesis invalidation in ADR"
 
-    cat >> "$ADR_FILE" << EOF
+  cat >>"$ADR_FILE" <<EOF
 
 ### Decision: Hypothesis Invalidated (Stage ${RDD_STAGE_NUMBER:-unknown})
 
@@ -70,13 +70,13 @@ fi
 # Update next steps
 NEXT_STEPS="${RDD_DIR}/../docs/11-next-steps.md"
 if [[ -f "$NEXT_STEPS" ]]; then
-    log_info "Adding blocker to next-steps.md"
-    echo "" >> "$NEXT_STEPS"
-    echo "## Blocker" >> "$NEXT_STEPS"
-    echo "" >> "$NEXT_STEPS"
-    echo "A core hypothesis was invalidated. Human review required." >> "$NEXT_STEPS"
-    echo "- **Hypothesis**: ${RDD_HYPOTHESIS:-unknown}" >> "$NEXT_STEPS"
-    echo "- **Reason**: ${RDD_REASON:-unknown}" >> "$NEXT_STEPS"
+  log_info "Adding blocker to next-steps.md"
+  echo "" >>"$NEXT_STEPS"
+  echo "## Blocker" >>"$NEXT_STEPS"
+  echo "" >>"$NEXT_STEPS"
+  echo "A core hypothesis was invalidated. Human review required." >>"$NEXT_STEPS"
+  echo "- **Hypothesis**: ${RDD_HYPOTHESIS:-unknown}" >>"$NEXT_STEPS"
+  echo "- **Reason**: ${RDD_REASON:-unknown}" >>"$NEXT_STEPS"
 fi
 
 log_info "Hypothesis invalidation hook finished"

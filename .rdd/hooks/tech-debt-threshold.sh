@@ -22,7 +22,7 @@ SCRIPTS_DIR="${RDD_DIR}/scripts"
 
 # Source shared functions
 if [[ -f "${SCRIPTS_DIR}/notify.sh" ]]; then
-    source "${SCRIPTS_DIR}/notify.sh"
+  source "${SCRIPTS_DIR}/notify.sh"
 fi
 
 log_warn "Tech debt threshold hook triggered"
@@ -31,17 +31,17 @@ log_warn "Threshold: ${RDD_THRESHOLD:-0}"
 
 # Tech debt exceeding threshold is high priority
 send_notification "tech_debt_alert" \
-    "project_name=${RDD_PROJECT_NAME:-Unknown}" \
-    "debt_count=${RDD_DEBT_COUNT:-0}" \
-    "threshold=${RDD_THRESHOLD:-0}" \
-    "timestamp=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+  "project_name=${RDD_PROJECT_NAME:-Unknown}" \
+  "debt_count=${RDD_DEBT_COUNT:-0}" \
+  "threshold=${RDD_THRESHOLD:-0}" \
+  "timestamp=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
 
 # Update next steps with recommendation
 NEXT_STEPS="${RDD_DIR}/../docs/11-next-steps.md"
 if [[ -f "$NEXT_STEPS" ]]; then
-    log_info "Adding debt recommendation to next-steps.md"
+  log_info "Adding debt recommendation to next-steps.md"
 
-    cat >> "$NEXT_STEPS" << EOF
+  cat >>"$NEXT_STEPS" <<EOF
 
 ## Tech Debt Alert
 

@@ -18,115 +18,115 @@ SUPPORTED_LANGUAGES=("en" "zh")
 
 # Validate language
 validate_language() {
-    local lang="$1"
-    for supported in "${SUPPORTED_LANGUAGES[@]}"; do
-        if [[ "${lang}" == "${supported}" ]]; then
-            return 0
-        fi
-    done
-    return 1
+  local lang="$1"
+  for supported in "${SUPPORTED_LANGUAGES[@]}"; do
+    if [[ "${lang}" == "${supported}" ]]; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 # RDD init function
 rdd_init() {
-    local project_name=""
-    local project_dir=""
-    local interactive=false
-    local language="${DEFAULT_LANGUAGE}"
+  local project_name=""
+  local project_dir=""
+  local interactive=false
+  local language="${DEFAULT_LANGUAGE}"
 
-    # Parse arguments
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            --interactive|-i)
-                interactive=true
-                shift
-                ;;
-            --lang|-l)
-                if [[ -z "${2:-}" ]]; then
-                    log_error "Option --lang requires a value"
-                    echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
-                    exit 1
-                fi
-                language="$2"
-                if ! validate_language "${language}"; then
-                    log_error "Unsupported language: ${language}"
-                    echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
-                    exit 1
-                fi
-                shift 2
-                ;;
-            --lang=*)
-                language="${1#*=}"
-                if ! validate_language "${language}"; then
-                    log_error "Unsupported language: ${language}"
-                    echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
-                    exit 1
-                fi
-                shift
-                ;;
-            --help|-h)
-                show_init_help
-                exit 0
-                ;;
-            -*)
-                log_error "Unknown option: $1"
-                echo "Use 'rdd init --help' for usage"
-                exit 1
-                ;;
-            *)
-                if [[ -z "${project_name}" ]]; then
-                    project_name="$1"
-                fi
-                shift
-                ;;
-        esac
-    done
+  # Parse arguments
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --interactive | -i)
+        interactive=true
+        shift
+        ;;
+      --lang | -l)
+        if [[ -z "${2:-}" ]]; then
+          log_error "Option --lang requires a value"
+          echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
+          exit 1
+        fi
+        language="$2"
+        if ! validate_language "${language}"; then
+          log_error "Unsupported language: ${language}"
+          echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
+          exit 1
+        fi
+        shift 2
+        ;;
+      --lang=*)
+        language="${1#*=}"
+        if ! validate_language "${language}"; then
+          log_error "Unsupported language: ${language}"
+          echo "Supported languages: ${SUPPORTED_LANGUAGES[*]}"
+          exit 1
+        fi
+        shift
+        ;;
+      --help | -h)
+        show_init_help
+        exit 0
+        ;;
+      -*)
+        log_error "Unknown option: $1"
+        echo "Use 'rdd init --help' for usage"
+        exit 1
+        ;;
+      *)
+        if [[ -z "${project_name}" ]]; then
+          project_name="$1"
+        fi
+        shift
+        ;;
+    esac
+  done
 
-    # If interactive mode, use interactive wizard
-    if [[ "${interactive}" == "true" ]]; then
-        source "${SCRIPT_DIR}/init-interactive.sh"
-        interactive_init
-        return
-    fi
+  # If interactive mode, use interactive wizard
+  if [[ "${interactive}" == "true" ]]; then
+    source "${SCRIPT_DIR}/init-interactive.sh"
+    interactive_init
+    return
+  fi
 
-    # Determine project directory
-    if [[ -n "${project_name}" ]]; then
-        project_dir="${project_name}"
-        mkdir -p "${project_dir}"
-    else
-        project_dir="$(pwd)"
-        project_name="$(basename "${project_dir}")"
-    fi
+  # Determine project directory
+  if [[ -n "${project_name}" ]]; then
+    project_dir="${project_name}"
+    mkdir -p "${project_dir}"
+  else
+    project_dir="$(pwd)"
+    project_name="$(basename "${project_dir}")"
+  fi
 
-    log_step "Initializing RDD project: ${project_name} (language: ${language})"
+  log_step "Initializing RDD project: ${project_name} (language: ${language})"
 
-    # Create directory structure
-    log_info "Creating directory structure..."
-    create_dirs "${project_dir}"
+  # Create directory structure
+  log_info "Creating directory structure..."
+  create_dirs "${project_dir}"
 
-    # Create configuration files
-    log_info "Creating configuration files..."
-    create_config "${project_dir}" "${project_name}" "${language}"
+  # Create configuration files
+  log_info "Creating configuration files..."
+  create_config "${project_dir}" "${project_name}" "${language}"
 
-    # Create documentation
-    log_info "Creating documentation..."
-    create_docs "${project_dir}" "${project_name}" "${language}"
+  # Create documentation
+  log_info "Creating documentation..."
+  create_docs "${project_dir}" "${project_name}" "${language}"
 
-    # Create entry points
-    log_info "Creating entry points..."
-    create_entry_points "${project_dir}" "${project_name}" "${language}"
+  # Create entry points
+  log_info "Creating entry points..."
+  create_entry_points "${project_dir}" "${project_name}" "${language}"
 
-    log_success "RDD project initialized at ${project_dir}"
-    echo ""
-    echo "Next steps:"
-    echo "  1. Edit docs/01-charter.md with your project vision"
-    echo "  2. Edit docs/stages/stage-roadmap.md to plan your stages"
-    echo "  3. Run 'task doctor' to verify setup"
-    echo "  4. Open Claude Code and use /rdd-stage-auto to start"
+  log_success "RDD project initialized at ${project_dir}"
+  echo ""
+  echo "Next steps:"
+  echo "  1. Edit docs/01-charter.md with your project vision"
+  echo "  2. Edit docs/stages/stage-roadmap.md to plan your stages"
+  echo "  3. Run 'task doctor' to verify setup"
+  echo "  4. Open Claude Code and use /rdd-stage-auto to start"
 }
 
 show_init_help() {
-    cat << 'EOF'
+  cat <<'EOF'
 RDD Init - Initialize a new RDD project
 
 Usage:
@@ -150,15 +150,15 @@ EOF
 }
 
 create_config() {
-    local dir="$1"
-    local name="$2"
-    local lang="${3:-en}"
-    local date
-    date=$(date +%Y-%m-%d)
+  local dir="$1"
+  local name="$2"
+  local lang="${3:-en}"
+  local date
+  date=$(date +%Y-%m-%d)
 
-    mkdir -p "${dir}/.rdd/config"
+  mkdir -p "${dir}/.rdd/config"
 
-    cat > "${dir}/.rdd/config.yml" << EOF
+  cat >"${dir}/.rdd/config.yml" <<EOF
 # RDD Configuration
 # Generated by RDD Framework
 
@@ -190,21 +190,21 @@ hooks:
   config_file: ".rdd/config/hooks.yml"
 EOF
 
-    echo "1.0.0" > "${dir}/.rdd/VERSION"
+  echo "1.0.0" >"${dir}/.rdd/VERSION"
 }
 
 create_docs() {
-    local dir="$1"
-    local name="$2"
-    local lang="${3:-en}"
-    local date
-    date=$(date +%Y-%m-%d)
+  local dir="$1"
+  local name="$2"
+  local lang="${3:-en}"
+  local date
+  date=$(date +%Y-%m-%d)
 
-    mkdir -p "${dir}/docs/stages"
+  mkdir -p "${dir}/docs/stages"
 
-    if [[ "${lang}" == "zh" ]]; then
-        # Chinese documentation templates
-        cat > "${dir}/docs/01-charter.md" << EOF
+  if [[ "${lang}" == "zh" ]]; then
+    # Chinese documentation templates
+    cat >"${dir}/docs/01-charter.md" <<EOF
 # 项目章程
 
 **项目**: ${name}
@@ -230,7 +230,7 @@ create_docs() {
 - [ ] [可衡量的成功标准 2]
 EOF
 
-        cat > "${dir}/docs/11-next-steps.md" << EOF
+    cat >"${dir}/docs/11-next-steps.md" <<EOF
 # 下一步计划
 
 **最后更新**: ${date}
@@ -246,7 +246,7 @@ EOF
 - [ ] 搭建开发环境
 EOF
 
-        cat > "${dir}/CHANGELOG.md" << EOF
+    cat >"${dir}/CHANGELOG.md" <<EOF
 # 变更日志
 
 ## [未发布]
@@ -254,9 +254,9 @@ EOF
 ### 新增
 - 项目初始化
 EOF
-    else
-        # English documentation templates (default)
-        cat > "${dir}/docs/01-charter.md" << EOF
+  else
+    # English documentation templates (default)
+    cat >"${dir}/docs/01-charter.md" <<EOF
 # Project Charter
 
 **Project**: ${name}
@@ -282,7 +282,7 @@ EOF
 - [ ] [Measurable success criterion 2]
 EOF
 
-        cat > "${dir}/docs/11-next-steps.md" << EOF
+    cat >"${dir}/docs/11-next-steps.md" <<EOF
 # Next Steps
 
 **Last Updated**: ${date}
@@ -298,7 +298,7 @@ EOF
 - [ ] Set up development environment
 EOF
 
-        cat > "${dir}/CHANGELOG.md" << EOF
+    cat >"${dir}/CHANGELOG.md" <<EOF
 # Changelog
 
 ## [Unreleased]
@@ -306,17 +306,17 @@ EOF
 ### Added
 - Initial project setup
 EOF
-    fi
+  fi
 }
 
 create_entry_points() {
-    local dir="$1"
-    local name="$2"
-    local lang="${3:-en}"
+  local dir="$1"
+  local name="$2"
+  local lang="${3:-en}"
 
-    if [[ "${lang}" == "zh" ]]; then
-        # Chinese entry points
-        cat > "${dir}/AGENTS.md" << EOF
+  if [[ "${lang}" == "zh" ]]; then
+    # Chinese entry points
+    cat >"${dir}/AGENTS.md" <<EOF
 # Agent 入口文件
 
 > ${name} 的 AI Agent 入口
@@ -336,7 +336,7 @@ create_entry_points() {
 | /rdd-knowledge | 管理知识 |
 EOF
 
-        cat > "${dir}/CLAUDE.md" << EOF
+    cat >"${dir}/CLAUDE.md" <<EOF
 # Claude Code 入口文件
 
 > Claude Code 快速参考
@@ -358,9 +358,9 @@ task status      # 显示状态
 | /rdd-stage-auto | 执行阶段并通过门禁 |
 | /rdd-knowledge | 记录决策 |
 EOF
-    else
-        # English entry points (default)
-        cat > "${dir}/AGENTS.md" << EOF
+  else
+    # English entry points (default)
+    cat >"${dir}/AGENTS.md" <<EOF
 # Agent Entry Point
 
 > AI Agent entry point for ${name}
@@ -380,7 +380,7 @@ EOF
 | /rdd-knowledge | Manage knowledge |
 EOF
 
-        cat > "${dir}/CLAUDE.md" << EOF
+    cat >"${dir}/CLAUDE.md" <<EOF
 # Claude Code Entry Point
 
 > Quick reference for Claude Code
@@ -402,9 +402,9 @@ task status      # Show status
 | /rdd-stage-auto | Execute stage with gates |
 | /rdd-knowledge | Record decisions |
 EOF
-    fi
+  fi
 
-    cat > "${dir}/Taskfile.yml" << EOF
+  cat >"${dir}/Taskfile.yml" <<EOF
 version: '3'
 
 tasks:
@@ -425,7 +425,7 @@ tasks:
       - echo "Project status"
 EOF
 
-    cat > "${dir}/.gitignore" << EOF
+  cat >"${dir}/.gitignore" <<EOF
 # RDD
 .rdd/cache/
 
@@ -449,5 +449,5 @@ EOF
 
 # Run if called directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    rdd_init "$@"
+  rdd_init "$@"
 fi

@@ -20,7 +20,7 @@ SCRIPTS_DIR="${RDD_DIR}/scripts"
 
 # Source shared functions
 if [[ -f "${SCRIPTS_DIR}/notify.sh" ]]; then
-    source "${SCRIPTS_DIR}/notify.sh"
+  source "${SCRIPTS_DIR}/notify.sh"
 fi
 
 log_info "Stage complete hook triggered"
@@ -30,22 +30,22 @@ log_info "Coverage: ${RDD_COVERAGE:-unknown}%"
 
 # Send notification
 send_notification "stage_complete" \
-    "project_name=${RDD_PROJECT_NAME:-Unknown}" \
-    "stage_name=${RDD_STAGE_NAME:-Stage ${RDD_STAGE_NUMBER:-unknown}}" \
-    "duration=${RDD_STAGE_DURATION:-unknown}" \
-    "coverage=${RDD_COVERAGE:-0}"
+  "project_name=${RDD_PROJECT_NAME:-Unknown}" \
+  "stage_name=${RDD_STAGE_NAME:-Stage ${RDD_STAGE_NUMBER:-unknown}}" \
+  "duration=${RDD_STAGE_DURATION:-unknown}" \
+  "coverage=${RDD_COVERAGE:-0}"
 
 # Update next steps document
 NEXT_STEPS="${RDD_DIR}/../docs/11-next-steps.md"
 if [[ -f "$NEXT_STEPS" ]]; then
-    log_info "Updating next-steps.md with stage completion"
-    # Add progress log entry
-    echo "" >> "$NEXT_STEPS"
-    echo "### $(date '+%Y-%m-%d %H:%M')" >> "$NEXT_STEPS"
-    echo "- **Stage**: ${RDD_STAGE_NUMBER:-unknown}" >> "$NEXT_STEPS"
-    echo "- **Action**: Stage completed" >> "$NEXT_STEPS"
-    echo "- **Status**: Success" >> "$NEXT_STEPS"
-    echo "- **Coverage**: ${RDD_COVERAGE:-unknown}%" >> "$NEXT_STEPS"
+  log_info "Updating next-steps.md with stage completion"
+  # Add progress log entry
+  echo "" >>"$NEXT_STEPS"
+  echo "### $(date '+%Y-%m-%d %H:%M')" >>"$NEXT_STEPS"
+  echo "- **Stage**: ${RDD_STAGE_NUMBER:-unknown}" >>"$NEXT_STEPS"
+  echo "- **Action**: Stage completed" >>"$NEXT_STEPS"
+  echo "- **Status**: Success" >>"$NEXT_STEPS"
+  echo "- **Coverage**: ${RDD_COVERAGE:-unknown}%" >>"$NEXT_STEPS"
 fi
 
 log_info "Stage complete hook finished successfully"

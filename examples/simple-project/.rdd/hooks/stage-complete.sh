@@ -16,26 +16,26 @@ STAGE_ID="${1:-unknown}"
 STAGE_STATUS="${2:-success}"
 
 log_info() {
-    echo "[INFO] $*"
+  echo "[INFO] $*"
 }
 
 main() {
-    log_info "Stage Complete Hook triggered"
-    log_info "Stage: ${STAGE_ID}"
-    log_info "Status: ${STAGE_STATUS}"
+  log_info "Stage Complete Hook triggered"
+  log_info "Stage: ${STAGE_ID}"
+  log_info "Status: ${STAGE_STATUS}"
 
-    # 发送通知
-    if [[ "${STAGE_STATUS}" == "success" ]]; then
-        send_notification "Stage ${STAGE_ID} 完成" "success" "Stage has been completed successfully."
-    else
-        send_notification "Stage ${STAGE_ID} 失败" "error" "Stage execution failed."
-    fi
+  # 发送通知
+  if [[ "${STAGE_STATUS}" == "success" ]]; then
+    send_notification "Stage ${STAGE_ID} 完成" "success" "Stage has been completed successfully."
+  else
+    send_notification "Stage ${STAGE_ID} 失败" "error" "Stage execution failed."
+  fi
 
-    # 记录审计日志
-    if [[ -f "${SCRIPTS_DIR}/audit.sh" ]]; then
-        source "${SCRIPTS_DIR}/audit.sh"
-        audit_log "stage_complete" "Stage ${STAGE_ID} completed with status: ${STAGE_STATUS}"
-    fi
+  # 记录审计日志
+  if [[ -f "${SCRIPTS_DIR}/audit.sh" ]]; then
+    source "${SCRIPTS_DIR}/audit.sh"
+    audit_log "stage_complete" "Stage ${STAGE_ID} completed with status: ${STAGE_STATUS}"
+  fi
 }
 
 main "$@"

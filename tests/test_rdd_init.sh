@@ -16,44 +16,44 @@ TESTS_FAILED=0
 
 # Test helpers
 pass() {
-    echo -e "${GREEN}✓ PASS${NC}: $1"
-    TESTS_PASSED=$((TESTS_PASSED + 1))
+  echo -e "${GREEN}✓ PASS${NC}: $1"
+  TESTS_PASSED=$((TESTS_PASSED + 1))
 }
 
 fail() {
-    echo -e "${RED}✗ FAIL${NC}: $1"
-    TESTS_FAILED=$((TESTS_FAILED + 1))
+  echo -e "${RED}✗ FAIL${NC}: $1"
+  TESTS_FAILED=$((TESTS_FAILED + 1))
 }
 
 check_file() {
-    local file="$1"
-    if [[ -f "$file" ]]; then
-        pass "File exists: $file"
-    else
-        fail "File missing: $file"
-    fi
+  local file="$1"
+  if [[ -f "$file" ]]; then
+    pass "File exists: $file"
+  else
+    fail "File missing: $file"
+  fi
 }
 
 check_dir() {
-    local dir="$1"
-    if [[ -d "$dir" ]]; then
-        pass "Directory exists: $dir"
-    else
-        fail "Directory missing: $dir"
-    fi
+  local dir="$1"
+  if [[ -d "$dir" ]]; then
+    pass "Directory exists: $dir"
+  else
+    fail "Directory missing: $dir"
+  fi
 }
 
 check_yaml() {
-    local file="$1"
-    if command -v python3 &> /dev/null; then
-        if python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then
-            pass "Valid YAML: $file"
-        else
-            fail "Invalid YAML: $file"
-        fi
+  local file="$1"
+  if command -v python3 &>/dev/null; then
+    if python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then
+      pass "Valid YAML: $file"
     else
-        pass "YAML validation skipped (python3 not available): $file"
+      fail "Invalid YAML: $file"
     fi
+  else
+    pass "YAML validation skipped (python3 not available): $file"
+  fi
 }
 
 echo "═══════════════════════════════════════════════════════════════"
@@ -122,11 +122,11 @@ check_file ".rdd/hooks/weekly-report.sh"
 
 # Check if scripts are executable
 for script in .rdd/scripts/notify.sh .rdd/hooks/*.sh; do
-    if [[ -x "$script" ]]; then
-        pass "Executable: $script"
-    else
-        fail "Not executable: $script"
-    fi
+  if [[ -x "$script" ]]; then
+    pass "Executable: $script"
+  else
+    fail "Not executable: $script"
+  fi
 done
 
 # ============================================
@@ -211,51 +211,51 @@ echo "────────────────────────�
 
 # Check config has required fields
 if grep -q "version:" .rdd/config.yml && grep -q "project:" .rdd/config.yml; then
-    pass "config.yml has required fields"
+  pass "config.yml has required fields"
 else
-    fail "config.yml missing required fields"
+  fail "config.yml missing required fields"
 fi
 
 # Check hooks.yml has channels
 if grep -q "channels:" .rdd/hooks.yml; then
-    pass "hooks.yml has channels configured"
+  pass "hooks.yml has channels configured"
 else
-    fail "hooks.yml missing channels"
+  fail "hooks.yml missing channels"
 fi
 
 # Check templates.yml has templates
 if grep -q "templates:" .rdd/templates.yml; then
-    pass "templates.yml has templates"
+  pass "templates.yml has templates"
 else
-    fail "templates.yml missing templates"
+  fail "templates.yml missing templates"
 fi
 
 # Check AGENTS.md has reading order
 if grep -q "reading order" AGENTS.md || grep -q "Read this document first" AGENTS.md; then
-    pass "AGENTS.md has reading order"
+  pass "AGENTS.md has reading order"
 else
-    fail "AGENTS.md missing reading order"
+  fail "AGENTS.md missing reading order"
 fi
 
 # Check stage-roadmap.md has Stage 0
 if grep -q "Stage 0" docs/stages/stage-roadmap.md; then
-    pass "stage-roadmap.md has Stage 0"
+  pass "stage-roadmap.md has Stage 0"
 else
-    fail "stage-roadmap.md missing Stage 0"
+  fail "stage-roadmap.md missing Stage 0"
 fi
 
 # Check autonomous-decisions.md has template
 if grep -q "Decision" docs/08-autonomous-decisions.md; then
-    pass "autonomous-decisions.md has structure"
+  pass "autonomous-decisions.md has structure"
 else
-    fail "autonomous-decisions.md missing structure"
+  fail "autonomous-decisions.md missing structure"
 fi
 
 # Check technical-debt.md has template
 if grep -q "TD-" docs/12-technical-debt.md; then
-    pass "technical-debt.md has structure"
+  pass "technical-debt.md has structure"
 else
-    fail "technical-debt.md missing structure"
+  fail "technical-debt.md missing structure"
 fi
 
 # ============================================
@@ -271,9 +271,9 @@ echo -e "Tests Failed: ${RED}${TESTS_FAILED}${NC}"
 echo ""
 
 if [[ $TESTS_FAILED -eq 0 ]]; then
-    echo -e "${GREEN}All tests passed!${NC}"
-    exit 0
+  echo -e "${GREEN}All tests passed!${NC}"
+  exit 0
 else
-    echo -e "${RED}Some tests failed. Please fix the issues above.${NC}"
-    exit 1
+  echo -e "${RED}Some tests failed. Please fix the issues above.${NC}"
+  exit 1
 fi

@@ -21,7 +21,7 @@ RDD_FRAMEWORK_HOME="${RDD_FRAMEWORK_HOME:-$HOME/.rdd-framework}"
 
 # Banner
 show_banner() {
-    echo -e "
+  echo -e "
 ${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}
 ${CYAN}║${NC}                                                              ${CYAN}║${NC}
 ${CYAN}║${NC}   ${BOLD}Welcome to RDD Framework Project Setup${NC}                       ${CYAN}║${NC}
@@ -35,261 +35,261 @@ ${CYAN}╚═══════════════════════�
 
 # Ask a question with default value
 ask() {
-    local prompt="$1"
-    local default="$2"
-    local answer
+  local prompt="$1"
+  local default="$2"
+  local answer
 
-    if [[ -n "${default}" ]]; then
-        echo -e -n "${GREEN}?${NC} ${prompt} ${CYAN}(${default})${NC}: "
-    else
-        echo -e -n "${GREEN}?${NC} ${prompt}: "
-    fi
+  if [[ -n "${default}" ]]; then
+    echo -e -n "${GREEN}?${NC} ${prompt} ${CYAN}(${default})${NC}: "
+  else
+    echo -e -n "${GREEN}?${NC} ${prompt}: "
+  fi
 
-    read -r answer
+  read -r answer
 
-    if [[ -z "${answer}" && -n "${default}" ]]; then
-        echo "${default}"
-    else
-        echo "${answer}"
-    fi
+  if [[ -z "${answer}" && -n "${default}" ]]; then
+    echo "${default}"
+  else
+    echo "${answer}"
+  fi
 }
 
 # Ask yes/no question
 ask_yes_no() {
-    local prompt="$1"
-    local default="${2:-y}"
-    local answer
+  local prompt="$1"
+  local default="${2:-y}"
+  local answer
 
-    if [[ "${default}" == "y" ]]; then
-        echo -e -n "${GREEN}?${NC} ${prompt} ${CYAN}[Y/n]${NC}: "
-    else
-        echo -e -n "${GREEN}?${NC} ${prompt} ${CYAN}[y/N]${NC}: "
-    fi
+  if [[ "${default}" == "y" ]]; then
+    echo -e -n "${GREEN}?${NC} ${prompt} ${CYAN}[Y/n]${NC}: "
+  else
+    echo -e -n "${GREEN}?${NC} ${prompt} ${CYAN}[y/N]${NC}: "
+  fi
 
-    read -r answer
+  read -r answer
 
-    case "${answer:-${default}}" in
-        y|Y|yes|YES) echo "y" ;;
-        *) echo "n" ;;
-    esac
+  case "${answer:-${default}}" in
+    y | Y | yes | YES) echo "y" ;;
+    *) echo "n" ;;
+  esac
 }
 
 # Ask to select from options
 ask_select() {
-    local prompt="$1"
-    shift
-    local options=("$@")
-    local selected=1
-    local answer
+  local prompt="$1"
+  shift
+  local options=("$@")
+  local selected=1
+  local answer
 
-    echo -e "${GREEN}?${NC} ${prompt}"
-    echo ""
+  echo -e "${GREEN}?${NC} ${prompt}"
+  echo ""
 
-    local i=1
-    for opt in "${options[@]}"; do
-        echo -e "  ${CYAN}${i})${NC} ${opt}"
-        ((i++))
-    done
+  local i=1
+  for opt in "${options[@]}"; do
+    echo -e "  ${CYAN}${i})${NC} ${opt}"
+    ((i++))
+  done
 
-    echo ""
-    echo -e -n "${GREEN}?${NC} Select option ${CYAN}[1-${#options[@]}]${NC}: "
-    read -r answer
+  echo ""
+  echo -e -n "${GREEN}?${NC} Select option ${CYAN}[1-${#options[@]}]${NC}: "
+  read -r answer
 
-    if [[ "${answer}" =~ ^[0-9]+$ && "${answer}" -ge 1 && "${answer}" -le ${#options[@]} ]]; then
-        echo "${options[$((answer-1))]}"
-    else
-        echo "${options[0]}"
-    fi
+  if [[ "${answer}" =~ ^[0-9]+$ && "${answer}" -ge 1 && "${answer}" -le ${#options[@]} ]]; then
+    echo "${options[$((answer - 1))]}"
+  else
+    echo "${options[0]}"
+  fi
 }
 
 # Ask to select multiple options
 ask_multiselect() {
-    local prompt="$1"
-    shift
-    local options=("$@")
-    local selected=()
+  local prompt="$1"
+  shift
+  local options=("$@")
+  local selected=()
 
-    echo -e "${GREEN}?${NC} ${prompt} ${CYAN}(space to select, enter to confirm)${NC}"
+  echo -e "${GREEN}?${NC} ${prompt} ${CYAN}(space to select, enter to confirm)${NC}"
+  echo ""
+
+  local i=1
+  for opt in "${options[@]}"; do
+    echo -e "  ${CYAN}${i})${NC} ${opt}"
+    ((i++))
+  done
+
+  echo ""
+  echo -e "Enter comma-separated numbers (e.g., 1,3,4) or 'none': "
+  echo -e -n "${GREEN}?${NC} Selection: "
+  read -r answer
+
+  if [[ "${answer}" == "none" || -z "${answer}" ]]; then
     echo ""
+    return
+  fi
 
-    local i=1
-    for opt in "${options[@]}"; do
-        echo -e "  ${CYAN}${i})${NC} ${opt}"
-        ((i++))
-    done
-
-    echo ""
-    echo -e "Enter comma-separated numbers (e.g., 1,3,4) or 'none': "
-    echo -e -n "${GREEN}?${NC} Selection: "
-    read -r answer
-
-    if [[ "${answer}" == "none" || -z "${answer}" ]]; then
-        echo ""
-        return
+  # Parse selection
+  IFS=',' read -ra nums <<<"${answer}"
+  for num in "${nums[@]}"; do
+    num="${num// /}" # Remove spaces
+    if [[ "${num}" =~ ^[0-9]+$ && "${num}" -ge 1 && "${num}" -le ${#options[@]} ]]; then
+      selected+=("${options[$((num - 1))]}")
     fi
+  done
 
-    # Parse selection
-    IFS=',' read -ra nums <<< "${answer}"
-    for num in "${nums[@]}"; do
-        num="${num// /}"  # Remove spaces
-        if [[ "${num}" =~ ^[0-9]+$ && "${num}" -ge 1 && "${num}" -le ${#options[@]} ]]; then
-            selected+=("${options[$((num-1))]}")
-        fi
-    done
-
-    echo "${selected[*]}"
+  echo "${selected[*]}"
 }
 
 # Progress indicator
 show_progress() {
-    local current="$1"
-    local total="$2"
-    local message="$3"
+  local current="$1"
+  local total="$2"
+  local message="$3"
 
-    echo -e "\n${BOLD}${BLUE}[${current}/${total}]${NC} ${message}"
+  echo -e "\n${BOLD}${BLUE}[${current}/${total}]${NC} ${message}"
 }
 
 # Success message
 show_success() {
-    echo -e "${GREEN}✓${NC} $*"
+  echo -e "${GREEN}✓${NC} $*"
 }
 
 # Warning message
 show_warning() {
-    echo -e "${YELLOW}!${NC} $*"
+  echo -e "${YELLOW}!${NC} $*"
 }
 
 # Main wizard
 interactive_init() {
-    show_banner
+  show_banner
 
-    # Step 1: Project name
-    show_progress 1 6 "Project Information"
-    local project_name
-    project_name=$(ask "What is your project name?" "$(basename "$(pwd)")")
-    local project_dir
-    if [[ "${project_name}" == "$(basename "$(pwd)")" ]]; then
-        project_dir="$(pwd)"
-    else
-        project_dir="$(pwd)/${project_name}"
-    fi
+  # Step 1: Project name
+  show_progress 1 6 "Project Information"
+  local project_name
+  project_name=$(ask "What is your project name?" "$(basename "$(pwd)")")
+  local project_dir
+  if [[ "${project_name}" == "$(basename "$(pwd)")" ]]; then
+    project_dir="$(pwd)"
+  else
+    project_dir="$(pwd)/${project_name}"
+  fi
 
-    # Step 2: Project description
-    show_progress 2 6 "Project Description"
-    local project_description
-    project_description=$(ask "What is your project description?" "A project using RDD Framework")
+  # Step 2: Project description
+  show_progress 2 6 "Project Description"
+  local project_description
+  project_description=$(ask "What is your project description?" "A project using RDD Framework")
 
-    # Step 3: Notification channels
-    show_progress 3 6 "Notification Configuration"
-    local enable_notifications
-    enable_notifications=$(ask_yes_no "Enable notifications?" "n")
+  # Step 3: Notification channels
+  show_progress 3 6 "Notification Configuration"
+  local enable_notifications
+  enable_notifications=$(ask_yes_no "Enable notifications?" "n")
 
-    local channels=""
-    if [[ "${enable_notifications}" == "y" ]]; then
-        echo ""
-        channels=$(ask_multiselect "Which notification channels?" \
-            "WeChat (WeCom)" \
-            "Email" \
-            "Slack" \
-            "Telegram" \
-            "Webhook")
-    fi
-
-    # Step 4: Stage planning
-    show_progress 4 6 "Stage Planning"
-    local stage_count
-    stage_count=$(ask "How many stages do you plan?" "5")
-
-    # Step 5: Development approach
-    show_progress 5 6 "Development Approach"
-    local dev_approach
-    dev_approach=$(ask_select "What is your development approach?" \
-        "Test-Driven Development (recommended)" \
-        "Behavior-Driven Development" \
-        "Documentation-Driven Development" \
-        "Agile/Iterative")
-
-    # Step 6: Confirm
-    show_progress 6 6 "Confirmation"
+  local channels=""
+  if [[ "${enable_notifications}" == "y" ]]; then
     echo ""
-    echo -e "${BOLD}Configuration Summary:${NC}"
-    echo -e "  Project Name:        ${CYAN}${project_name}${NC}"
-    echo -e "  Project Directory:   ${CYAN}${project_dir}${NC}"
-    echo -e "  Description:         ${CYAN}${project_description}${NC}"
-    echo -e "  Notifications:       ${CYAN}${enable_notifications}${NC}"
-    if [[ -n "${channels}" ]]; then
-        echo -e "  Channels:            ${CYAN}${channels}${NC}"
-    fi
-    echo -e "  Stages:              ${CYAN}${stage_count}${NC}"
-    echo -e "  Approach:            ${CYAN}${dev_approach}${NC}"
-    echo ""
+    channels=$(ask_multiselect "Which notification channels?" \
+      "WeChat (WeCom)" \
+      "Email" \
+      "Slack" \
+      "Telegram" \
+      "Webhook")
+  fi
 
-    local confirm
-    confirm=$(ask_yes_no "Create project with this configuration?" "y")
+  # Step 4: Stage planning
+  show_progress 4 6 "Stage Planning"
+  local stage_count
+  stage_count=$(ask "How many stages do you plan?" "5")
 
-    if [[ "${confirm}" != "y" ]]; then
-        echo -e "${YELLOW}Project creation cancelled.${NC}"
-        exit 0
-    fi
+  # Step 5: Development approach
+  show_progress 5 6 "Development Approach"
+  local dev_approach
+  dev_approach=$(ask_select "What is your development approach?" \
+    "Test-Driven Development (recommended)" \
+    "Behavior-Driven Development" \
+    "Documentation-Driven Development" \
+    "Agile/Iterative")
 
-    # Create project
-    echo ""
-    echo -e "${BOLD}Creating project...${NC}"
-    echo ""
+  # Step 6: Confirm
+  show_progress 6 6 "Confirmation"
+  echo ""
+  echo -e "${BOLD}Configuration Summary:${NC}"
+  echo -e "  Project Name:        ${CYAN}${project_name}${NC}"
+  echo -e "  Project Directory:   ${CYAN}${project_dir}${NC}"
+  echo -e "  Description:         ${CYAN}${project_description}${NC}"
+  echo -e "  Notifications:       ${CYAN}${enable_notifications}${NC}"
+  if [[ -n "${channels}" ]]; then
+    echo -e "  Channels:            ${CYAN}${channels}${NC}"
+  fi
+  echo -e "  Stages:              ${CYAN}${stage_count}${NC}"
+  echo -e "  Approach:            ${CYAN}${dev_approach}${NC}"
+  echo ""
 
-    # Create directory structure
-    show_success "Creating directory structure..."
-    mkdir -p "${project_dir}"/{.rdd/{cache,scripts,hooks,config},docs/{stages,handoff},tests/{unit,bdd,e2e},.claude/{skills,commands}}
+  local confirm
+  confirm=$(ask_yes_no "Create project with this configuration?" "y")
 
-    # Create configuration
-    show_success "Creating configuration files..."
-    create_config "${project_dir}" "${project_name}" "${project_description}" "${enable_notifications}" "${channels}"
+  if [[ "${confirm}" != "y" ]]; then
+    echo -e "${YELLOW}Project creation cancelled.${NC}"
+    exit 0
+  fi
 
-    # Create documentation
-    show_success "Creating documentation..."
-    create_docs "${project_dir}" "${project_name}" "${project_description}" "${stage_count}" "${dev_approach}"
+  # Create project
+  echo ""
+  echo -e "${BOLD}Creating project...${NC}"
+  echo ""
 
-    # Create entry points
-    show_success "Creating entry points..."
-    create_entry_points "${project_dir}" "${project_name}"
+  # Create directory structure
+  show_success "Creating directory structure..."
+  mkdir -p "${project_dir}"/{.rdd/{cache,scripts,hooks,config},docs/{stages,handoff},tests/{unit,bdd,e2e},.claude/{skills,commands}}
 
-    # Create symlinks
-    show_success "Creating framework links..."
-    create_links "${project_dir}"
+  # Create configuration
+  show_success "Creating configuration files..."
+  create_config "${project_dir}" "${project_name}" "${project_description}" "${enable_notifications}" "${channels}"
 
-    # Show completion
-    echo ""
-    echo -e "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║                Project Created Successfully!                   ║${NC}"
-    echo -e "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    echo -e "${BOLD}Project:${NC} ${project_name}"
-    echo -e "${BOLD}Location:${NC} ${project_dir}"
-    echo ""
-    echo -e "${BOLD}Next steps:${NC}"
-    echo ""
-    if [[ "${project_name}" != "$(basename "$(pwd)")" ]]; then
-        echo -e "  ${YELLOW}1.${NC} ${CYAN}cd ${project_name}${NC}"
-    fi
-    echo -e "  ${YELLOW}2.${NC} Edit ${CYAN}docs/01-charter.md${NC} with your project vision"
-    echo -e "  ${YELLOW}3.${NC} Edit ${CYAN}docs/stages/stage-roadmap.md${NC} to plan your stages"
-    echo -e "  ${YELLOW}4.${NC} Run ${CYAN}task doctor${NC} to verify setup"
-    echo -e "  ${YELLOW}5.${NC} Open Claude Code and use ${CYAN}/rdd-stage-auto${NC} to start"
-    echo ""
-    echo -e "${BOLD}Documentation:${NC} https://github.com/kofj/rdd"
-    echo ""
+  # Create documentation
+  show_success "Creating documentation..."
+  create_docs "${project_dir}" "${project_name}" "${project_description}" "${stage_count}" "${dev_approach}"
+
+  # Create entry points
+  show_success "Creating entry points..."
+  create_entry_points "${project_dir}" "${project_name}"
+
+  # Create symlinks
+  show_success "Creating framework links..."
+  create_links "${project_dir}"
+
+  # Show completion
+  echo ""
+  echo -e "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
+  echo -e "${GREEN}║                Project Created Successfully!                   ║${NC}"
+  echo -e "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
+  echo ""
+  echo -e "${BOLD}Project:${NC} ${project_name}"
+  echo -e "${BOLD}Location:${NC} ${project_dir}"
+  echo ""
+  echo -e "${BOLD}Next steps:${NC}"
+  echo ""
+  if [[ "${project_name}" != "$(basename "$(pwd)")" ]]; then
+    echo -e "  ${YELLOW}1.${NC} ${CYAN}cd ${project_name}${NC}"
+  fi
+  echo -e "  ${YELLOW}2.${NC} Edit ${CYAN}docs/01-charter.md${NC} with your project vision"
+  echo -e "  ${YELLOW}3.${NC} Edit ${CYAN}docs/stages/stage-roadmap.md${NC} to plan your stages"
+  echo -e "  ${YELLOW}4.${NC} Run ${CYAN}task doctor${NC} to verify setup"
+  echo -e "  ${YELLOW}5.${NC} Open Claude Code and use ${CYAN}/rdd-stage-auto${NC} to start"
+  echo ""
+  echo -e "${BOLD}Documentation:${NC} https://github.com/kofj/rdd"
+  echo ""
 }
 
 create_config() {
-    local dir="$1"
-    local name="$2"
-    local desc="$3"
-    local notifications="$4"
-    local channels="$5"
+  local dir="$1"
+  local name="$2"
+  local desc="$3"
+  local notifications="$4"
+  local channels="$5"
 
-    mkdir -p "${dir}/.rdd/config"
+  mkdir -p "${dir}/.rdd/config"
 
-    cat > "${dir}/.rdd/config.yml" << EOF
+  cat >"${dir}/.rdd/config.yml" <<EOF
 # RDD Configuration
 # Generated by RDD Framework init wizard
 
@@ -317,8 +317,8 @@ hooks:
   config_file: ".rdd/config/hooks.yml"
 EOF
 
-    if [[ "${notifications}" == "y" ]]; then
-        cat > "${dir}/.rdd/config/hooks.yml" << EOF
+  if [[ "${notifications}" == "y" ]]; then
+    cat >"${dir}/.rdd/config/hooks.yml" <<EOF
 # RDD Hooks Configuration
 # Configure your notification channels below
 
@@ -367,24 +367,24 @@ triggers:
     enabled: true
     priority: "critical"
 EOF
-    fi
+  fi
 
-    echo "0.1.0" > "${dir}/.rdd/VERSION"
+  echo "0.1.0" >"${dir}/.rdd/VERSION"
 }
 
 create_docs() {
-    local dir="$1"
-    local name="$2"
-    local desc="$3"
-    local stages="$4"
-    local approach="$5"
-    local date
-    date=$(date +%Y-%m-%d)
+  local dir="$1"
+  local name="$2"
+  local desc="$3"
+  local stages="$4"
+  local approach="$5"
+  local date
+  date=$(date +%Y-%m-%d)
 
-    mkdir -p "${dir}/docs/stages"
+  mkdir -p "${dir}/docs/stages"
 
-    # Charter
-    cat > "${dir}/docs/01-charter.md" << EOF
+  # Charter
+  cat >"${dir}/docs/01-charter.md" <<EOF
 # Project Charter
 
 **Project**: ${name}
@@ -418,8 +418,8 @@ ${desc}
 - **Target v1.0**: [TBD]
 EOF
 
-    # Next Steps
-    cat > "${dir}/docs/11-next-steps.md" << EOF
+  # Next Steps
+  cat >"${dir}/docs/11-next-steps.md" <<EOF
 # Next Steps
 
 **Last Updated**: ${date}
@@ -444,8 +444,8 @@ EOF
 | 1 | [TBD] | - | - |
 EOF
 
-    # Roadmap
-    cat > "${dir}/docs/stages/stage-roadmap.md" << EOF
+  # Roadmap
+  cat >"${dir}/docs/stages/stage-roadmap.md" <<EOF
 # Project Roadmap
 
 **Last Updated**: ${date}
@@ -463,13 +463,13 @@ ${desc}
 | 0 | Initialization | Planning | P0 | None |
 EOF
 
-    # Add stages based on count
-    for i in $(seq 1 "${stages}"); do
-        echo "| ${i} | [TBD] | - | - | Stage $((i-1)) |" >> "${dir}/docs/stages/stage-roadmap.md"
-    done
+  # Add stages based on count
+  for i in $(seq 1 "${stages}"); do
+    echo "| ${i} | [TBD] | - | - | Stage $((i - 1)) |" >>"${dir}/docs/stages/stage-roadmap.md"
+  done
 
-    # Empty ADR
-    cat > "${dir}/docs/08-autonomous-decisions.md" << EOF
+  # Empty ADR
+  cat >"${dir}/docs/08-autonomous-decisions.md" <<EOF
 # Autonomous Decision Records (ADR)
 
 **Last Updated**: ${date}
@@ -502,8 +502,8 @@ Use this template for new decisions:
 \`\`\`
 EOF
 
-    # Tech Debt
-    cat > "${dir}/docs/12-technical-debt.md" << EOF
+  # Tech Debt
+  cat >"${dir}/docs/12-technical-debt.md" <<EOF
 # Technical Debt Ledger
 
 **Last Updated**: ${date}
@@ -526,8 +526,8 @@ EOF
 \`\`\`
 EOF
 
-    # CHANGELOG
-    cat > "${dir}/CHANGELOG.md" << EOF
+  # CHANGELOG
+  cat >"${dir}/CHANGELOG.md" <<EOF
 # Changelog
 
 ## [Unreleased]
@@ -536,8 +536,8 @@ EOF
 - Initial project setup with RDD Framework
 EOF
 
-    # gitignore
-    cat > "${dir}/.gitignore" << EOF
+  # gitignore
+  cat >"${dir}/.gitignore" <<EOF
 # RDD
 .rdd/cache/
 
@@ -561,11 +561,11 @@ EOF
 }
 
 create_entry_points() {
-    local dir="$1"
-    local name="$2"
+  local dir="$1"
+  local name="$2"
 
-    # AGENTS.md
-    cat > "${dir}/AGENTS.md" << EOF
+  # AGENTS.md
+  cat >"${dir}/AGENTS.md" <<EOF
 # Agent Entry Point
 
 > AI Agent entry point for ${name}
@@ -604,8 +604,8 @@ create_entry_points() {
 - [ ] Gate 5: Completion verified
 EOF
 
-    # CLAUDE.md
-    cat > "${dir}/CLAUDE.md" << EOF
+  # CLAUDE.md
+  cat >"${dir}/CLAUDE.md" <<EOF
 # Claude Code Entry Point
 
 > Quick reference for Claude Code
@@ -636,15 +636,15 @@ EOF
 }
 
 create_links() {
-    local dir="$1"
+  local dir="$1"
 
-    # Symlink Taskfile
-    if [[ -f "${RDD_FRAMEWORK_HOME}/templates/Taskfile.yml" ]]; then
-        ln -sf "${RDD_FRAMEWORK_HOME}/templates/Taskfile.yml" "${dir}/Taskfile.yml"
-    fi
+  # Symlink Taskfile
+  if [[ -f "${RDD_FRAMEWORK_HOME}/templates/Taskfile.yml" ]]; then
+    ln -sf "${RDD_FRAMEWORK_HOME}/templates/Taskfile.yml" "${dir}/Taskfile.yml"
+  fi
 }
 
 # Run if called directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    interactive_init "$@"
+  interactive_init "$@"
 fi

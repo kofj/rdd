@@ -39,21 +39,21 @@ NC='\033[0m' # No Color
 #######################################
 
 log_info() {
-    echo -e "${GREEN}[INFO]${NC} $*"
+  echo -e "${GREEN}[INFO]${NC} $*"
 }
 
 log_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $*"
+  echo -e "${YELLOW}[WARN]${NC} $*"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $*"
+  echo -e "${RED}[ERROR]${NC} $*"
 }
 
 log_debug() {
-    if [[ "${VERBOSE:-false}" == "true" ]]; then
-        echo -e "${BLUE}[DEBUG]${NC} $*"
-    fi
+  if [[ "${VERBOSE:-false}" == "true" ]]; then
+    echo -e "${BLUE}[DEBUG]${NC} $*"
+  fi
 }
 
 #######################################
@@ -62,41 +62,41 @@ log_debug() {
 
 # Simple JSON escape
 json_escape() {
-    local str="$1"
-    str="${str//\\/\\\\}"
-    str="${str//\"/\\\"}"
-    str="${str//$'\n'/\\n}"
-    str="${str//$'\r'/\\r}"
-    str="${str//$'\t'/\\t}"
-    echo "$str"
+  local str="$1"
+  str="${str//\\/\\\\}"
+  str="${str//\"/\\\"}"
+  str="${str//$'\n'/\\n}"
+  str="${str//$'\r'/\\r}"
+  str="${str//$'\t'/\\t}"
+  echo "$str"
 }
 
 # Get current timestamp in ISO 8601 format
 get_timestamp() {
-    date -u +"%Y-%m-%dT%H:%M:%SZ"
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
 }
 
 # Parse JSON value (simple key extraction)
 json_get() {
-    local file="$1"
-    local key="$2"
-    local default="${3:-}"
+  local file="$1"
+  local key="$2"
+  local default="${3:-}"
 
-    if [[ ! -f "$file" ]]; then
-        echo "$default"
-        return
-    fi
+  if [[ ! -f "$file" ]]; then
+    echo "$default"
+    return
+  fi
 
-    # Simple grep-based JSON extraction
-    local value
-    value=$(grep -o "\"${key}\"[[:space:]]*:[[:space:]]*\"[^\"]*\"" "$file" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*"//' | sed 's/"$//' || true)
+  # Simple grep-based JSON extraction
+  local value
+  value=$(grep -o "\"${key}\"[[:space:]]*:[[:space:]]*\"[^\"]*\"" "$file" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*"//' | sed 's/"$//' || true)
 
-    if [[ -z "$value" ]]; then
-        # Try numeric value
-        value=$(grep -o "\"${key}\"[[:space:]]*:[[:space:]]*[0-9]*" "$file" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' || true)
-    fi
+  if [[ -z "$value" ]]; then
+    # Try numeric value
+    value=$(grep -o "\"${key}\"[[:space:]]*:[[:space:]]*[0-9]*" "$file" 2>/dev/null | head -1 | sed 's/.*:[[:space:]]*//' || true)
+  fi
 
-    echo "${value:-$default}"
+  echo "${value:-$default}"
 }
 
 #######################################
@@ -104,10 +104,10 @@ json_get() {
 #######################################
 
 init_checkpoint() {
-    mkdir -p "${CACHE_DIR}"
+  mkdir -p "${CACHE_DIR}"
 
-    if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
-        cat > "${CHECKPOINT_FILE}" << 'EOF'
+  if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
+    cat >"${CHECKPOINT_FILE}" <<'EOF'
 {
   "version": "1.0",
   "project": {
@@ -142,8 +142,8 @@ init_checkpoint() {
   "recovery_count": 0
 }
 EOF
-        log_debug "Initialized checkpoint file: ${CHECKPOINT_FILE}"
-    fi
+    log_debug "Initialized checkpoint file: ${CHECKPOINT_FILE}"
+  fi
 }
 
 #######################################
@@ -151,24 +151,24 @@ EOF
 #######################################
 
 save_checkpoint() {
-    local stage_id="${1:-}"
-    local stage_name="${2:-}"
-    local progress="${3:-}"
+  local stage_id="${1:-}"
+  local stage_name="${2:-}"
+  local progress="${3:-}"
 
-    init_checkpoint
+  init_checkpoint
 
-    local timestamp
-    timestamp=$(get_timestamp)
+  local timestamp
+  timestamp=$(get_timestamp)
 
-    # Read existing values
-    local current_stage current_status
-    current_stage=$(json_get "${CHECKPOINT_FILE}" "current_stage" "")
-    current_status=$(json_get "${CHECKPOINT_FILE}" "status" "")
+  # Read existing values
+  local current_stage current_status
+  current_stage=$(json_get "${CHECKPOINT_FILE}" "current_stage" "")
+  current_status=$(json_get "${CHECKPOINT_FILE}" "status" "")
 
-    # Build new checkpoint JSON
-    local temp_file="${CHECKPOINT_FILE}.tmp"
+  # Build new checkpoint JSON
+  local temp_file="${CHECKPOINT_FILE}.tmp"
 
-    cat > "$temp_file" << EOF
+  cat >"$temp_file" <<EOF
 {
   "version": "${CHECKPOINT_VERSION}",
   "project": {
@@ -201,8 +201,8 @@ save_checkpoint() {
 }
 EOF
 
-    mv "$temp_file" "${CHECKPOINT_FILE}"
-    log_info "Checkpoint saved at ${timestamp}"
+  mv "$temp_file" "${CHECKPOINT_FILE}"
+  log_info "Checkpoint saved at ${timestamp}"
 }
 
 #######################################
@@ -210,13 +210,13 @@ EOF
 #######################################
 
 get_gate_json() {
-    local gate="$1"
-    local status completed_at
+  local gate="$1"
+  local status completed_at
 
-    status=$(json_get "${CHECKPOINT_FILE}" "${gate}_status" "pending")
-    completed_at=$(json_get "${CHECKPOINT_FILE}" "${gate}_completed_at" "")
+  status=$(json_get "${CHECKPOINT_FILE}" "${gate}_status" "pending")
+  completed_at=$(json_get "${CHECKPOINT_FILE}" "${gate}_completed_at" "")
 
-    echo "{\"status\": \"${status}\", \"completed_at\": \"${completed_at}\"}"
+  echo "{\"status\": \"${status}\", \"completed_at\": \"${completed_at}\"}"
 }
 
 #######################################
@@ -224,50 +224,50 @@ get_gate_json() {
 #######################################
 
 get_decisions_json() {
-    if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
-        echo "[]"
-        return
+  if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
+    echo "[]"
+    return
+  fi
+
+  # Extract decisions array using simple parsing
+  local in_decisions=0
+  local decisions="["
+  local first=1
+
+  while IFS= read -r line; do
+    if [[ "$line" == *'"decisions":'* ]]; then
+      in_decisions=1
+      continue
     fi
 
-    # Extract decisions array using simple parsing
-    local in_decisions=0
-    local decisions="["
-    local first=1
+    if [[ $in_decisions -eq 1 ]]; then
+      if [[ "$line" == *'"blockers":'* ]] || [[ "$line" == *'"tech_debt":'* ]]; then
+        break
+      fi
 
-    while IFS= read -r line; do
-        if [[ "$line" == *'"decisions":'* ]]; then
-            in_decisions=1
-            continue
-        fi
-
-        if [[ $in_decisions -eq 1 ]]; then
-            if [[ "$line" == *'"blockers":'* ]] || [[ "$line" == *'"tech_debt":'* ]]; then
-                break
-            fi
-
-            # Skip empty brackets
-            if [[ "$line" == *"[]"* ]]; then
-                decisions="[]"
-                break
-            fi
-
-            if [[ "$line" == *'"id"'* ]] || [[ "$line" == *'"title"'* ]]; then
-                if [[ $first -eq 0 ]]; then
-                    decisions+=","
-                fi
-                first=0
-                decisions+="$line"
-            fi
-        fi
-    done < "${CHECKPOINT_FILE}"
-
-    if [[ "$decisions" == "[" ]]; then
+      # Skip empty brackets
+      if [[ "$line" == *"[]"* ]]; then
         decisions="[]"
-    elif [[ "$decisions" != "[]" ]]; then
-        decisions+="]"
-    fi
+        break
+      fi
 
-    echo "$decisions"
+      if [[ "$line" == *'"id"'* ]] || [[ "$line" == *'"title"'* ]]; then
+        if [[ $first -eq 0 ]]; then
+          decisions+=","
+        fi
+        first=0
+        decisions+="$line"
+      fi
+    fi
+  done <"${CHECKPOINT_FILE}"
+
+  if [[ "$decisions" == "[" ]]; then
+    decisions="[]"
+  elif [[ "$decisions" != "[]" ]]; then
+    decisions+="]"
+  fi
+
+  echo "$decisions"
 }
 
 #######################################
@@ -275,48 +275,48 @@ get_decisions_json() {
 #######################################
 
 get_blockers_json() {
-    if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
-        echo "[]"
-        return
+  if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
+    echo "[]"
+    return
+  fi
+
+  local in_blockers=0
+  local blockers="["
+  local first=1
+
+  while IFS= read -r line; do
+    if [[ "$line" == *'"blockers":'* ]]; then
+      in_blockers=1
+      continue
     fi
 
-    local in_blockers=0
-    local blockers="["
-    local first=1
+    if [[ $in_blockers -eq 1 ]]; then
+      if [[ "$line" == *'"tech_debt":'* ]] || [[ "$line" == *'"next_steps":'* ]]; then
+        break
+      fi
 
-    while IFS= read -r line; do
-        if [[ "$line" == *'"blockers":'* ]]; then
-            in_blockers=1
-            continue
-        fi
-
-        if [[ $in_blockers -eq 1 ]]; then
-            if [[ "$line" == *'"tech_debt":'* ]] || [[ "$line" == *'"next_steps":'* ]]; then
-                break
-            fi
-
-            if [[ "$line" == *"[]"* ]]; then
-                blockers="[]"
-                break
-            fi
-
-            if [[ "$line" == *'"id"'* ]] || [[ "$line" == *'"description"'* ]]; then
-                if [[ $first -eq 0 ]]; then
-                    blockers+=","
-                fi
-                first=0
-                blockers+="$line"
-            fi
-        fi
-    done < "${CHECKPOINT_FILE}"
-
-    if [[ "$blockers" == "[" ]]; then
+      if [[ "$line" == *"[]"* ]]; then
         blockers="[]"
-    elif [[ "$blockers" != "[]" ]]; then
-        blockers+="]"
-    fi
+        break
+      fi
 
-    echo "$blockers"
+      if [[ "$line" == *'"id"'* ]] || [[ "$line" == *'"description"'* ]]; then
+        if [[ $first -eq 0 ]]; then
+          blockers+=","
+        fi
+        first=0
+        blockers+="$line"
+      fi
+    fi
+  done <"${CHECKPOINT_FILE}"
+
+  if [[ "$blockers" == "[" ]]; then
+    blockers="[]"
+  elif [[ "$blockers" != "[]" ]]; then
+    blockers+="]"
+  fi
+
+  echo "$blockers"
 }
 
 #######################################
@@ -324,11 +324,11 @@ get_blockers_json() {
 #######################################
 
 get_tech_debt_json() {
-    local count blocking_count
-    count=$(json_get "${CHECKPOINT_FILE}" "count" "0")
-    blocking_count=$(json_get "${CHECKPOINT_FILE}" "blocking_count" "0")
+  local count blocking_count
+  count=$(json_get "${CHECKPOINT_FILE}" "count" "0")
+  blocking_count=$(json_get "${CHECKPOINT_FILE}" "blocking_count" "0")
 
-    echo "{\"count\": ${count}, \"blocking_count\": ${blocking_count}}"
+  echo "{\"count\": ${count}, \"blocking_count\": ${blocking_count}}"
 }
 
 #######################################
@@ -336,14 +336,14 @@ get_tech_debt_json() {
 #######################################
 
 get_next_action() {
-    local next_steps_file="${PROJECT_ROOT}/docs/11-next-steps.md"
+  local next_steps_file="${PROJECT_ROOT}/docs/11-next-steps.md"
 
-    if [[ -f "$next_steps_file" ]]; then
-        # Extract first action item
-        grep -A 1 "| 1 |" "$next_steps_file" 2>/dev/null | tail -1 | sed 's/|[^|]*| //' | sed 's/ |.*//' || echo ""
-    else
-        echo ""
-    fi
+  if [[ -f "$next_steps_file" ]]; then
+    # Extract first action item
+    grep -A 1 "| 1 |" "$next_steps_file" 2>/dev/null | tail -1 | sed 's/|[^|]*| //' | sed 's/ |.*//' || echo ""
+  else
+    echo ""
+  fi
 }
 
 #######################################
@@ -351,19 +351,19 @@ get_next_action() {
 #######################################
 
 get_next_priority() {
-    local next_steps_file="${PROJECT_ROOT}/docs/11-next-steps.md"
+  local next_steps_file="${PROJECT_ROOT}/docs/11-next-steps.md"
 
-    if [[ -f "$next_steps_file" ]]; then
-        if grep -q "P0" "$next_steps_file" 2>/dev/null; then
-            echo "P0"
-        elif grep -q "P1" "$next_steps_file" 2>/dev/null; then
-            echo "P1"
-        else
-            echo "P2"
-        fi
+  if [[ -f "$next_steps_file" ]]; then
+    if grep -q "P0" "$next_steps_file" 2>/dev/null; then
+      echo "P0"
+    elif grep -q "P1" "$next_steps_file" 2>/dev/null; then
+      echo "P1"
     else
-        echo "P2"
+      echo "P2"
     fi
+  else
+    echo "P2"
+  fi
 }
 
 #######################################
@@ -371,19 +371,19 @@ get_next_priority() {
 #######################################
 
 update_gate() {
-    local gate="$1"
-    local status="${2:-completed}"
+  local gate="$1"
+  local status="${2:-completed}"
 
-    init_checkpoint
+  init_checkpoint
 
-    local timestamp
-    timestamp=$(get_timestamp)
+  local timestamp
+  timestamp=$(get_timestamp)
 
-    # Create a temporary file for the update
-    local temp_file="${CHECKPOINT_FILE}.tmp"
+  # Create a temporary file for the update
+  local temp_file="${CHECKPOINT_FILE}.tmp"
 
-    # Use awk for proper JSON-like update
-    awk -v gate="$gate" -v status="$status" -v ts="$timestamp" '
+  # Use awk for proper JSON-like update
+  awk -v gate="$gate" -v status="$status" -v ts="$timestamp" '
     BEGIN { in_gates = 0; found = 0 }
     /"gates":/ { in_gates = 1 }
     in_gates && /"[^"]*":/ && !/'"$gate"'"/ { in_gates = 0 }
@@ -397,25 +397,25 @@ update_gate() {
         next
     }
     { print }
-    ' "${CHECKPOINT_FILE}" > "$temp_file" 2>/dev/null
+    ' "${CHECKPOINT_FILE}" >"$temp_file" 2>/dev/null
 
-    # If awk didn't find it, try sed as fallback
-    if [[ ! -s "$temp_file" ]]; then
-        rm -f "$temp_file"
-        # Use sed for simpler JSON update
-        if [[ "$status" == "completed" ]]; then
-            sed -i "s/\"${gate}\": {\"status\": \"[^\"]*\", \"completed_at\": \"[^\"]*\"}/\"${gate}\": {\"status\": \"completed\", \"completed_at\": \"${timestamp}\"}/" "${CHECKPOINT_FILE}" 2>/dev/null || true
-        else
-            sed -i "s/\"${gate}\": {\"status\": \"[^\"]*\", \"completed_at\": \"[^\"]*\"}/\"${gate}\": {\"status\": \"${status}\", \"completed_at\": \"\"}/" "${CHECKPOINT_FILE}" 2>/dev/null || true
-        fi
+  # If awk didn't find it, try sed as fallback
+  if [[ ! -s "$temp_file" ]]; then
+    rm -f "$temp_file"
+    # Use sed for simpler JSON update
+    if [[ "$status" == "completed" ]]; then
+      sed -i "s/\"${gate}\": {\"status\": \"[^\"]*\", \"completed_at\": \"[^\"]*\"}/\"${gate}\": {\"status\": \"completed\", \"completed_at\": \"${timestamp}\"}/" "${CHECKPOINT_FILE}" 2>/dev/null || true
     else
-        mv "$temp_file" "${CHECKPOINT_FILE}"
+      sed -i "s/\"${gate}\": {\"status\": \"[^\"]*\", \"completed_at\": \"[^\"]*\"}/\"${gate}\": {\"status\": \"${status}\", \"completed_at\": \"\"}/" "${CHECKPOINT_FILE}" 2>/dev/null || true
     fi
+  else
+    mv "$temp_file" "${CHECKPOINT_FILE}"
+  fi
 
-    log_info "Updated ${gate} status to: ${status}"
+  log_info "Updated ${gate} status to: ${status}"
 
-    # Update timestamp only
-    sed -i "s/\"timestamp\": \"[^\"]*\"/\"timestamp\": \"${timestamp}\"/" "${CHECKPOINT_FILE}" 2>/dev/null || true
+  # Update timestamp only
+  sed -i "s/\"timestamp\": \"[^\"]*\"/\"timestamp\": \"${timestamp}\"/" "${CHECKPOINT_FILE}" 2>/dev/null || true
 }
 
 #######################################
@@ -423,23 +423,23 @@ update_gate() {
 #######################################
 
 add_decision() {
-    local id="$1"
-    local title="$2"
+  local id="$1"
+  local title="$2"
 
-    init_checkpoint
+  init_checkpoint
 
-    # Read current decisions count
-    local decisions_count=0
-    decisions_count=$(grep -c '"id"' "${CHECKPOINT_FILE}" 2>/dev/null || echo "0")
+  # Read current decisions count
+  local decisions_count=0
+  decisions_count=$(grep -c '"id"' "${CHECKPOINT_FILE}" 2>/dev/null || echo "0")
 
-    # Append new decision (simplified - would need proper JSON manipulation)
-    local temp_file="${CHECKPOINT_FILE}.tmp"
-    local escaped_title
-    escaped_title=$(json_escape "$title")
+  # Append new decision (simplified - would need proper JSON manipulation)
+  local temp_file="${CHECKPOINT_FILE}.tmp"
+  local escaped_title
+  escaped_title=$(json_escape "$title")
 
-    # For now, just update the checkpoint with decision info
-    log_info "Decision recorded: ${id} - ${title}"
-    save_checkpoint
+  # For now, just update the checkpoint with decision info
+  log_info "Decision recorded: ${id} - ${title}"
+  save_checkpoint
 }
 
 #######################################
@@ -447,14 +447,14 @@ add_decision() {
 #######################################
 
 add_blocker() {
-    local id="$1"
-    local description="$2"
-    local priority="${3:-P1}"
+  local id="$1"
+  local description="$2"
+  local priority="${3:-P1}"
 
-    init_checkpoint
+  init_checkpoint
 
-    log_info "Blocker recorded: ${id} - ${description}"
-    save_checkpoint
+  log_info "Blocker recorded: ${id} - ${description}"
+  save_checkpoint
 }
 
 #######################################
@@ -462,12 +462,12 @@ add_blocker() {
 #######################################
 
 clear_blocker() {
-    local id="$1"
+  local id="$1"
 
-    init_checkpoint
+  init_checkpoint
 
-    log_info "Blocker cleared: ${id}"
-    save_checkpoint
+  log_info "Blocker cleared: ${id}"
+  save_checkpoint
 }
 
 #######################################
@@ -475,17 +475,17 @@ clear_blocker() {
 #######################################
 
 load_checkpoint() {
-    if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
-        log_warn "No checkpoint file found"
-        return 1
-    fi
+  if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
+    log_warn "No checkpoint file found"
+    return 1
+  fi
 
-    log_info "Loading checkpoint from: ${CHECKPOINT_FILE}"
+  log_info "Loading checkpoint from: ${CHECKPOINT_FILE}"
 
-    # Display checkpoint information
-    show_checkpoint
+  # Display checkpoint information
+  show_checkpoint
 
-    return 0
+  return 0
 }
 
 #######################################
@@ -493,52 +493,52 @@ load_checkpoint() {
 #######################################
 
 show_checkpoint() {
-    if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
-        log_warn "No checkpoint file found"
-        echo "Use 'checkpoint.sh save' to create one."
-        return 1
-    fi
+  if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
+    log_warn "No checkpoint file found"
+    echo "Use 'checkpoint.sh save' to create one."
+    return 1
+  fi
 
-    echo ""
-    echo "=========================================="
-    echo "        RDD Checkpoint State"
-    echo "=========================================="
-    echo ""
+  echo ""
+  echo "=========================================="
+  echo "        RDD Checkpoint State"
+  echo "=========================================="
+  echo ""
 
-    # Parse and display checkpoint
-    local version project_name current_stage status timestamp
-    version=$(json_get "${CHECKPOINT_FILE}" "version" "unknown")
-    project_name=$(json_get "${CHECKPOINT_FILE}" "name" "unknown")
-    current_stage=$(json_get "${CHECKPOINT_FILE}" "current_stage" "none")
-    status=$(json_get "${CHECKPOINT_FILE}" "status" "unknown")
-    timestamp=$(json_get "${CHECKPOINT_FILE}" "timestamp" "never")
+  # Parse and display checkpoint
+  local version project_name current_stage status timestamp
+  version=$(json_get "${CHECKPOINT_FILE}" "version" "unknown")
+  project_name=$(json_get "${CHECKPOINT_FILE}" "name" "unknown")
+  current_stage=$(json_get "${CHECKPOINT_FILE}" "current_stage" "none")
+  status=$(json_get "${CHECKPOINT_FILE}" "status" "unknown")
+  timestamp=$(json_get "${CHECKPOINT_FILE}" "timestamp" "never")
 
-    echo "Version: ${version}"
-    echo "Project: ${project_name}"
-    echo "Current Stage: ${current_stage}"
-    echo "Status: ${status}"
-    echo "Last Checkpoint: ${timestamp}"
-    echo ""
+  echo "Version: ${version}"
+  echo "Project: ${project_name}"
+  echo "Current Stage: ${current_stage}"
+  echo "Status: ${status}"
+  echo "Last Checkpoint: ${timestamp}"
+  echo ""
 
-    echo "Gate Status:"
-    echo "------------"
-    for i in 1 2 3 4 5; do
-        local gate_status
-        gate_status=$(json_get "${CHECKPOINT_FILE}" "gate_${i}_status" "pending")
-        local gate_icon
-        case "$gate_status" in
-            completed) gate_icon="[x]" ;;
-            in_progress) gate_icon="[>]" ;;
-            failed) gate_icon="[!]" ;;
-            *) gate_icon="[ ]" ;;
-        esac
-        echo "  Gate ${i}: ${gate_icon} ${gate_status}"
-    done
-    echo ""
+  echo "Gate Status:"
+  echo "------------"
+  for i in 1 2 3 4 5; do
+    local gate_status
+    gate_status=$(json_get "${CHECKPOINT_FILE}" "gate_${i}_status" "pending")
+    local gate_icon
+    case "$gate_status" in
+      completed) gate_icon="[x]" ;;
+      in_progress) gate_icon="[>]" ;;
+      failed) gate_icon="[!]" ;;
+      *) gate_icon="[ ]" ;;
+    esac
+    echo "  Gate ${i}: ${gate_icon} ${gate_status}"
+  done
+  echo ""
 
-    echo "Recovery Count: $(json_get "${CHECKPOINT_FILE}" "recovery_count" "0")"
-    echo ""
-    echo "=========================================="
+  echo "Recovery Count: $(json_get "${CHECKPOINT_FILE}" "recovery_count" "0")"
+  echo ""
+  echo "=========================================="
 }
 
 #######################################
@@ -546,12 +546,12 @@ show_checkpoint() {
 #######################################
 
 clear_checkpoint() {
-    if [[ -f "${CHECKPOINT_FILE}" ]]; then
-        rm -f "${CHECKPOINT_FILE}"
-        log_info "Checkpoint cleared"
-    else
-        log_warn "No checkpoint file to clear"
-    fi
+  if [[ -f "${CHECKPOINT_FILE}" ]]; then
+    rm -f "${CHECKPOINT_FILE}"
+    log_info "Checkpoint cleared"
+  else
+    log_warn "No checkpoint file to clear"
+  fi
 }
 
 #######################################
@@ -559,16 +559,16 @@ clear_checkpoint() {
 #######################################
 
 increment_recovery_count() {
-    init_checkpoint
+  init_checkpoint
 
-    local current_count
-    current_count=$(json_get "${CHECKPOINT_FILE}" "recovery_count" "0")
-    local new_count=$((current_count + 1))
+  local current_count
+  current_count=$(json_get "${CHECKPOINT_FILE}" "recovery_count" "0")
+  local new_count=$((current_count + 1))
 
-    # Update recovery count
-    sed -i "s/\"recovery_count\": [0-9]*/\"recovery_count\": ${new_count}/" "${CHECKPOINT_FILE}" 2>/dev/null || true
+  # Update recovery count
+  sed -i "s/\"recovery_count\": [0-9]*/\"recovery_count\": ${new_count}/" "${CHECKPOINT_FILE}" 2>/dev/null || true
 
-    log_info "Recovery count: ${new_count}"
+  log_info "Recovery count: ${new_count}"
 }
 
 #######################################
@@ -576,19 +576,19 @@ increment_recovery_count() {
 #######################################
 
 needs_recovery() {
-    if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
-        echo "false"
-        return
-    fi
+  if [[ ! -f "${CHECKPOINT_FILE}" ]]; then
+    echo "false"
+    return
+  fi
 
-    local status
-    status=$(json_get "${CHECKPOINT_FILE}" "status" "")
+  local status
+  status=$(json_get "${CHECKPOINT_FILE}" "status" "")
 
-    if [[ "$status" == "in_progress" ]]; then
-        echo "true"
-    else
-        echo "false"
-    fi
+  if [[ "$status" == "in_progress" ]]; then
+    echo "true"
+  else
+    echo "false"
+  fi
 }
 
 #######################################
@@ -596,7 +596,7 @@ needs_recovery() {
 #######################################
 
 show_usage() {
-    cat << 'EOF'
+  cat <<'EOF'
 RDD Checkpoint Management Script
 
 Usage: checkpoint.sh <command> [options]
@@ -646,81 +646,81 @@ EOF
 #######################################
 
 main() {
-    if [[ $# -lt 1 ]]; then
-        show_usage
+  if [[ $# -lt 1 ]]; then
+    show_usage
+    exit 1
+  fi
+
+  local command="$1"
+  shift
+
+  case "$command" in
+    save)
+      save_checkpoint "$@"
+      ;;
+    load)
+      load_checkpoint "$@"
+      ;;
+    show)
+      show_checkpoint
+      ;;
+    clear)
+      clear_checkpoint
+      ;;
+    update)
+      if [[ $# -lt 2 ]]; then
+        log_error "Usage: checkpoint.sh update <key> <value>"
         exit 1
-    fi
-
-    local command="$1"
-    shift
-
-    case "$command" in
-        save)
-            save_checkpoint "$@"
-            ;;
-        load)
-            load_checkpoint "$@"
-            ;;
-        show)
-            show_checkpoint
-            ;;
-        clear)
-            clear_checkpoint
-            ;;
-        update)
-            if [[ $# -lt 2 ]]; then
-                log_error "Usage: checkpoint.sh update <key> <value>"
-                exit 1
-            fi
-            save_checkpoint
-            ;;
-        gate)
-            if [[ $# -lt 2 ]]; then
-                log_error "Usage: checkpoint.sh gate <gate_num> <status>"
-                exit 1
-            fi
-            update_gate "gate_$1" "$2"
-            ;;
-        decision)
-            if [[ $# -lt 2 ]]; then
-                log_error "Usage: checkpoint.sh decision <id> <title>"
-                exit 1
-            fi
-            add_decision "$1" "$2"
-            ;;
-        blocker)
-            if [[ $# -lt 2 ]]; then
-                log_error "Usage: checkpoint.sh blocker <id> <description> [priority]"
-                exit 1
-            fi
-            add_blocker "$1" "$2" "${3:-P1}"
-            ;;
-        clear-blocker)
-            if [[ $# -lt 1 ]]; then
-                log_error "Usage: checkpoint.sh clear-blocker <id>"
-                exit 1
-            fi
-            clear_blocker "$1"
-            ;;
-        needs-recovery)
-            needs_recovery
-            ;;
-        increment-recovery)
-            increment_recovery_count
-            ;;
-        -h|--help|help)
-            show_usage
-            exit 0
-            ;;
-        *)
-            log_error "Unknown command: $command"
-            show_usage
-            exit 1
-            ;;
-    esac
+      fi
+      save_checkpoint
+      ;;
+    gate)
+      if [[ $# -lt 2 ]]; then
+        log_error "Usage: checkpoint.sh gate <gate_num> <status>"
+        exit 1
+      fi
+      update_gate "gate_$1" "$2"
+      ;;
+    decision)
+      if [[ $# -lt 2 ]]; then
+        log_error "Usage: checkpoint.sh decision <id> <title>"
+        exit 1
+      fi
+      add_decision "$1" "$2"
+      ;;
+    blocker)
+      if [[ $# -lt 2 ]]; then
+        log_error "Usage: checkpoint.sh blocker <id> <description> [priority]"
+        exit 1
+      fi
+      add_blocker "$1" "$2" "${3:-P1}"
+      ;;
+    clear-blocker)
+      if [[ $# -lt 1 ]]; then
+        log_error "Usage: checkpoint.sh clear-blocker <id>"
+        exit 1
+      fi
+      clear_blocker "$1"
+      ;;
+    needs-recovery)
+      needs_recovery
+      ;;
+    increment-recovery)
+      increment_recovery_count
+      ;;
+    -h | --help | help)
+      show_usage
+      exit 0
+      ;;
+    *)
+      log_error "Unknown command: $command"
+      show_usage
+      exit 1
+      ;;
+  esac
 }
 
 # Only run main if script is executed directly (not sourced)
 if [[ "${BASH_SOURCE[0]:-$0}" == "${0}" ]]; then
-    main "$@"
+  main "$@"
 fi

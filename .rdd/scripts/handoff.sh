@@ -39,21 +39,21 @@ NC='\033[0m' # No Color
 #######################################
 
 log_info() {
-    echo -e "${GREEN}[INFO]${NC} $*"
+  echo -e "${GREEN}[INFO]${NC} $*"
 }
 
 log_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $*"
+  echo -e "${YELLOW}[WARN]${NC} $*"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $*"
+  echo -e "${RED}[ERROR]${NC} $*"
 }
 
 log_debug() {
-    if [[ "${VERBOSE:-false}" == "true" ]]; then
-        echo -e "${BLUE}[DEBUG]${NC} $*"
-    fi
+  if [[ "${VERBOSE:-false}" == "true" ]]; then
+    echo -e "${BLUE}[DEBUG]${NC} $*"
+  fi
 }
 
 #######################################
@@ -61,11 +61,11 @@ log_debug() {
 #######################################
 
 get_timestamp() {
-    date -u +"%Y-%m-%dT%H:%M:%SZ"
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
 }
 
 get_readable_timestamp() {
-    date +"%Y-%m-%d %H:%M:%S %Z"
+  date +"%Y-%m-%d %H:%M:%S %Z"
 }
 
 #######################################
@@ -73,17 +73,17 @@ get_readable_timestamp() {
 #######################################
 
 get_current_stage() {
-    if [[ -f "${NEXT_STEPS_FILE}" ]]; then
-        local stage_info
-        stage_info=$(grep -A 5 "当前 Stage" "${NEXT_STEPS_FILE}" 2>/dev/null | grep "| Stage" | head -1 || true)
-        if [[ -n "$stage_info" ]]; then
-            echo "$stage_info" | sed 's/|[^|]*| //' | sed 's/ |.*//' || echo "Unknown"
-        else
-            echo "Unknown"
-        fi
+  if [[ -f "${NEXT_STEPS_FILE}" ]]; then
+    local stage_info
+    stage_info=$(grep -A 5 "当前 Stage" "${NEXT_STEPS_FILE}" 2>/dev/null | grep "| Stage" | head -1 || true)
+    if [[ -n "$stage_info" ]]; then
+      echo "$stage_info" | sed 's/|[^|]*| //' | sed 's/ |.*//' || echo "Unknown"
     else
-        echo "Unknown"
+      echo "Unknown"
     fi
+  else
+    echo "Unknown"
+  fi
 }
 
 #######################################
@@ -91,13 +91,13 @@ get_current_stage() {
 #######################################
 
 get_progress() {
-    if [[ -f "${NEXT_STEPS_FILE}" ]]; then
-        local progress
-        progress=$(grep "整体进度" "${NEXT_STEPS_FILE}" 2>/dev/null | grep -o "[0-9]*%" | head -1 || echo "0%")
-        echo "$progress"
-    else
-        echo "0%"
-    fi
+  if [[ -f "${NEXT_STEPS_FILE}" ]]; then
+    local progress
+    progress=$(grep "整体进度" "${NEXT_STEPS_FILE}" 2>/dev/null | grep -o "[0-9]*%" | head -1 || echo "0%")
+    echo "$progress"
+  else
+    echo "0%"
+  fi
 }
 
 #######################################
@@ -105,13 +105,13 @@ get_progress() {
 #######################################
 
 get_action_items() {
-    if [[ -f "${NEXT_STEPS_FILE}" ]]; then
-        echo ""
-        # Extract P0 action items
-        grep -A 10 "优先级 P0" "${NEXT_STEPS_FILE}" 2>/dev/null | grep "| [0-9]" | head -5 || echo "None"
-    else
-        echo "Unable to determine action items"
-    fi
+  if [[ -f "${NEXT_STEPS_FILE}" ]]; then
+    echo ""
+    # Extract P0 action items
+    grep -A 10 "优先级 P0" "${NEXT_STEPS_FILE}" 2>/dev/null | grep "| [0-9]" | head -5 || echo "None"
+  else
+    echo "Unable to determine action items"
+  fi
 }
 
 #######################################
@@ -119,13 +119,13 @@ get_action_items() {
 #######################################
 
 get_recent_decisions() {
-    if [[ -f "${AUTONOMOUS_DECISIONS_FILE}" ]]; then
-        echo ""
-        # Get last 5 decisions
-        grep -E "^### 决策|^### Decision" "${AUTONOMOUS_DECISIONS_FILE}" 2>/dev/null | tail -5 || echo "None"
-    else
-        echo "Unable to determine recent decisions"
-    fi
+  if [[ -f "${AUTONOMOUS_DECISIONS_FILE}" ]]; then
+    echo ""
+    # Get last 5 decisions
+    grep -E "^### 决策|^### Decision" "${AUTONOMOUS_DECISIONS_FILE}" 2>/dev/null | tail -5 || echo "None"
+  else
+    echo "Unable to determine recent decisions"
+  fi
 }
 
 #######################################
@@ -133,16 +133,16 @@ get_recent_decisions() {
 #######################################
 
 get_blockers() {
-    if [[ -f "${NEXT_STEPS_FILE}" ]]; then
-        # Check for blocker section
-        if grep -q "## Blocker" "${NEXT_STEPS_FILE}" 2>/dev/null; then
-            grep -A 5 "## Blocker" "${NEXT_STEPS_FILE}" 2>/dev/null | head -10 || echo "None"
-        else
-            echo "None identified"
-        fi
+  if [[ -f "${NEXT_STEPS_FILE}" ]]; then
+    # Check for blocker section
+    if grep -q "## Blocker" "${NEXT_STEPS_FILE}" 2>/dev/null; then
+      grep -A 5 "## Blocker" "${NEXT_STEPS_FILE}" 2>/dev/null | head -10 || echo "None"
     else
-        echo "Unknown"
+      echo "None identified"
     fi
+  else
+    echo "Unknown"
+  fi
 }
 
 #######################################
@@ -150,14 +150,14 @@ get_blockers() {
 #######################################
 
 get_tech_debt_summary() {
-    if [[ -f "${TECH_DEBT_FILE}" ]]; then
-        local total blocking
-        total=$(grep -c "^### TD-" "${TECH_DEBT_FILE}" 2>/dev/null || echo "0")
-        blocking=$(grep -c "Priority.*Blocking" "${TECH_DEBT_FILE}" 2>/dev/null || echo "0")
-        echo "Total: ${total}, Blocking: ${blocking}"
-    else
-        echo "Unknown"
-    fi
+  if [[ -f "${TECH_DEBT_FILE}" ]]; then
+    local total blocking
+    total=$(grep -c "^### TD-" "${TECH_DEBT_FILE}" 2>/dev/null || echo "0")
+    blocking=$(grep -c "Priority.*Blocking" "${TECH_DEBT_FILE}" 2>/dev/null || echo "0")
+    echo "Total: ${total}, Blocking: ${blocking}"
+  else
+    echo "Unknown"
+  fi
 }
 
 #######################################
@@ -165,12 +165,12 @@ get_tech_debt_summary() {
 #######################################
 
 get_recent_changes() {
-    if [[ -f "${CHANGELOG_FILE}" ]]; then
-        echo ""
-        head -30 "${CHANGELOG_FILE}" 2>/dev/null || echo "None"
-    else
-        echo "No changelog found"
-    fi
+  if [[ -f "${CHANGELOG_FILE}" ]]; then
+    echo ""
+    head -30 "${CHANGELOG_FILE}" 2>/dev/null || echo "None"
+  else
+    echo "No changelog found"
+  fi
 }
 
 #######################################
@@ -178,18 +178,18 @@ get_recent_changes() {
 #######################################
 
 get_stage_document() {
-    local stage_dir="${PROJECT_ROOT}/docs/stages"
-    if [[ -d "$stage_dir" ]]; then
-        local stage_file
-        stage_file=$(ls "${stage_dir}"/stage-[0-9]*.md 2>/dev/null | head -1 || true)
-        if [[ -n "$stage_file" ]]; then
-            basename "$stage_file"
-        else
-            echo "Not found"
-        fi
+  local stage_dir="${PROJECT_ROOT}/docs/stages"
+  if [[ -d "$stage_dir" ]]; then
+    local stage_file
+    stage_file=$(ls "${stage_dir}"/stage-[0-9]*.md 2>/dev/null | head -1 || true)
+    if [[ -n "$stage_file" ]]; then
+      basename "$stage_file"
     else
-        echo "Not found"
+      echo "Not found"
     fi
+  else
+    echo "Not found"
+  fi
 }
 
 #######################################
@@ -197,23 +197,23 @@ get_stage_document() {
 #######################################
 
 get_gate_status() {
-    local gate_file="${CACHE_DIR}/checkpoints.json"
+  local gate_file="${CACHE_DIR}/checkpoints.json"
 
-    if [[ -f "$gate_file" ]]; then
-        local status=""
-        for i in 1 2 3 4 5; do
-            local gate_status
-            gate_status=$(grep -o "\"gate_${i}_status\": \"[^\"]*\"" "$gate_file" 2>/dev/null | sed 's/.*: "//' | sed 's/"$//' || echo "pending")
-            if [[ "$gate_status" == "completed" ]]; then
-                status+="[x] "
-            else
-                status+="[ ] "
-            fi
-        done
-        echo "$status"
-    else
-        echo "[ ] [ ] [ ] [ ] [ ]"
-    fi
+  if [[ -f "$gate_file" ]]; then
+    local status=""
+    for i in 1 2 3 4 5; do
+      local gate_status
+      gate_status=$(grep -o "\"gate_${i}_status\": \"[^\"]*\"" "$gate_file" 2>/dev/null | sed 's/.*: "//' | sed 's/"$//' || echo "pending")
+      if [[ "$gate_status" == "completed" ]]; then
+        status+="[x] "
+      else
+        status+="[ ] "
+      fi
+    done
+    echo "$status"
+  else
+    echo "[ ] [ ] [ ] [ ] [ ]"
+  fi
 }
 
 #######################################
@@ -221,23 +221,23 @@ get_gate_status() {
 #######################################
 
 generate_handoff() {
-    local trigger="${1:-manual}"
-    local reason="${2:-Scheduled handoff}"
+  local trigger="${1:-manual}"
+  local reason="${2:-Scheduled handoff}"
 
-    mkdir -p "${CACHE_DIR}"
+  mkdir -p "${CACHE_DIR}"
 
-    local timestamp readable_timestamp current_stage progress stage_doc
-    timestamp=$(get_timestamp)
-    readable_timestamp=$(get_readable_timestamp)
-    current_stage=$(get_current_stage)
-    progress=$(get_progress)
-    stage_doc=$(get_stage_document)
+  local timestamp readable_timestamp current_stage progress stage_doc
+  timestamp=$(get_timestamp)
+  readable_timestamp=$(get_readable_timestamp)
+  current_stage=$(get_current_stage)
+  progress=$(get_progress)
+  stage_doc=$(get_stage_document)
 
-    log_info "Generating handoff document..."
-    log_debug "Trigger: ${trigger}"
-    log_debug "Reason: ${reason}"
+  log_info "Generating handoff document..."
+  log_debug "Trigger: ${trigger}"
+  log_debug "Reason: ${reason}"
 
-    cat > "${HANDOFF_FILE}" << EOF
+  cat >"${HANDOFF_FILE}" <<EOF
 # RDD Handoff Document
 
 > This document enables context recovery after a compact operation.
@@ -413,13 +413,13 @@ Before marking recovery complete:
 
 EOF
 
-    log_info "Handoff document generated: ${HANDOFF_FILE}"
+  log_info "Handoff document generated: ${HANDOFF_FILE}"
 
-    # Also update checkpoint timestamp
-    if [[ -f "${CHECKPOINT_FILE}" ]]; then
-        # Update timestamp in checkpoint
-        sed -i "s/\"timestamp\": \"[^\"]*\"/\"timestamp\": \"${timestamp}\"/" "${CHECKPOINT_FILE}" 2>/dev/null || true
-    fi
+  # Also update checkpoint timestamp
+  if [[ -f "${CHECKPOINT_FILE}" ]]; then
+    # Update timestamp in checkpoint
+    sed -i "s/\"timestamp\": \"[^\"]*\"/\"timestamp\": \"${timestamp}\"/" "${CHECKPOINT_FILE}" 2>/dev/null || true
+  fi
 }
 
 #######################################
@@ -427,13 +427,13 @@ EOF
 #######################################
 
 show_handoff() {
-    if [[ ! -f "${HANDOFF_FILE}" ]]; then
-        log_warn "No handoff document found"
-        echo "Use 'handoff.sh generate' to create one."
-        return 1
-    fi
+  if [[ ! -f "${HANDOFF_FILE}" ]]; then
+    log_warn "No handoff document found"
+    echo "Use 'handoff.sh generate' to create one."
+    return 1
+  fi
 
-    cat "${HANDOFF_FILE}"
+  cat "${HANDOFF_FILE}"
 }
 
 #######################################
@@ -441,64 +441,64 @@ show_handoff() {
 #######################################
 
 validate_handoff() {
-    if [[ ! -f "${HANDOFF_FILE}" ]]; then
-        log_error "No handoff document found"
-        return 1
+  if [[ ! -f "${HANDOFF_FILE}" ]]; then
+    log_error "No handoff document found"
+    return 1
+  fi
+
+  log_info "Validating handoff document..."
+
+  local errors=0
+  local warnings=0
+
+  # Check required sections
+  local required_sections=("Current Progress" "Completed Evidence" "Blockers and Risks" "Next Single Action" "Degradation Strategy" "Recovery Instructions")
+
+  for section in "${required_sections[@]}"; do
+    if ! grep -q "## ${section}" "${HANDOFF_FILE}"; then
+      log_error "Missing section: ${section}"
+      ((errors++))
     fi
+  done
 
-    log_info "Validating handoff document..."
+  # Check for placeholder text
+  if grep -q "Unknown" "${HANDOFF_FILE}"; then
+    log_warn "Handoff contains 'Unknown' values - may need update"
+    ((warnings++))
+  fi
 
-    local errors=0
-    local warnings=0
+  # Check timestamp is recent (within 24 hours)
+  local handoff_time
+  handoff_time=$(grep "Generated:" "${HANDOFF_FILE}" | head -1 | sed 's/.*Generated: //' || echo "")
+  if [[ -n "$handoff_time" ]]; then
+    log_debug "Handoff generated at: ${handoff_time}"
+  fi
 
-    # Check required sections
-    local required_sections=("Current Progress" "Completed Evidence" "Blockers and Risks" "Next Single Action" "Degradation Strategy" "Recovery Instructions")
+  # Check for key file references
+  if ! grep -q "docs/11-next-steps.md" "${HANDOFF_FILE}"; then
+    log_warn "Missing reference to docs/11-next-steps.md"
+    ((warnings++))
+  fi
 
-    for section in "${required_sections[@]}"; do
-        if ! grep -q "## ${section}" "${HANDOFF_FILE}"; then
-            log_error "Missing section: ${section}"
-            ((errors++))
-        fi
-    done
+  if ! grep -q "docs/08-autonomous-decisions.md" "${HANDOFF_FILE}"; then
+    log_warn "Missing reference to docs/08-autonomous-decisions.md"
+    ((warnings++))
+  fi
 
-    # Check for placeholder text
-    if grep -q "Unknown" "${HANDOFF_FILE}"; then
-        log_warn "Handoff contains 'Unknown' values - may need update"
-        ((warnings++))
-    fi
+  # Summary
+  echo ""
+  echo "Validation Results:"
+  echo "-------------------"
+  echo "Errors: ${errors}"
+  echo "Warnings: ${warnings}"
 
-    # Check timestamp is recent (within 24 hours)
-    local handoff_time
-    handoff_time=$(grep "Generated:" "${HANDOFF_FILE}" | head -1 | sed 's/.*Generated: //' || echo "")
-    if [[ -n "$handoff_time" ]]; then
-        log_debug "Handoff generated at: ${handoff_time}"
-    fi
-
-    # Check for key file references
-    if ! grep -q "docs/11-next-steps.md" "${HANDOFF_FILE}"; then
-        log_warn "Missing reference to docs/11-next-steps.md"
-        ((warnings++))
-    fi
-
-    if ! grep -q "docs/08-autonomous-decisions.md" "${HANDOFF_FILE}"; then
-        log_warn "Missing reference to docs/08-autonomous-decisions.md"
-        ((warnings++))
-    fi
-
-    # Summary
-    echo ""
-    echo "Validation Results:"
-    echo "-------------------"
-    echo "Errors: ${errors}"
-    echo "Warnings: ${warnings}"
-
-    if [[ $errors -eq 0 ]]; then
-        log_info "Handoff document is valid"
-        return 0
-    else
-        log_error "Handoff document has validation errors"
-        return 1
-    fi
+  if [[ $errors -eq 0 ]]; then
+    log_info "Handoff document is valid"
+    return 0
+  else
+    log_error "Handoff document has validation errors"
+    return 1
+  fi
 }
 
 #######################################
@@ -506,12 +506,12 @@ validate_handoff() {
 #######################################
 
 clear_handoff() {
-    if [[ -f "${HANDOFF_FILE}" ]]; then
-        rm -f "${HANDOFF_FILE}"
-        log_info "Handoff document cleared"
-    else
-        log_warn "No handoff document to clear"
-    fi
+  if [[ -f "${HANDOFF_FILE}" ]]; then
+    rm -f "${HANDOFF_FILE}"
+    log_info "Handoff document cleared"
+  else
+    log_warn "No handoff document to clear"
+  fi
 }
 
 #######################################
@@ -519,11 +519,11 @@ clear_handoff() {
 #######################################
 
 handoff_exists() {
-    if [[ -f "${HANDOFF_FILE}" ]]; then
-        echo "true"
-    else
-        echo "false"
-    fi
+  if [[ -f "${HANDOFF_FILE}" ]]; then
+    echo "true"
+  else
+    echo "false"
+  fi
 }
 
 #######################################
@@ -531,7 +531,7 @@ handoff_exists() {
 #######################################
 
 show_usage() {
-    cat << 'EOF'
+  cat <<'EOF'
 RDD Handoff Document Generator
 
 Usage: handoff.sh <command> [options]
@@ -579,43 +579,43 @@ EOF
 #######################################
 
 main() {
-    if [[ $# -lt 1 ]]; then
-        show_usage
-        exit 1
-    fi
+  if [[ $# -lt 1 ]]; then
+    show_usage
+    exit 1
+  fi
 
-    local command="$1"
-    shift
+  local command="$1"
+  shift
 
-    case "$command" in
-        generate)
-            generate_handoff "${1:-manual}" "${2:-Scheduled handoff}"
-            ;;
-        show)
-            show_handoff
-            ;;
-        validate)
-            validate_handoff
-            ;;
-        clear)
-            clear_handoff
-            ;;
-        exists)
-            handoff_exists
-            ;;
-        -h|--help|help)
-            show_usage
-            exit 0
-            ;;
-        *)
-            log_error "Unknown command: $command"
-            show_usage
-            exit 1
-            ;;
-    esac
+  case "$command" in
+    generate)
+      generate_handoff "${1:-manual}" "${2:-Scheduled handoff}"
+      ;;
+    show)
+      show_handoff
+      ;;
+    validate)
+      validate_handoff
+      ;;
+    clear)
+      clear_handoff
+      ;;
+    exists)
+      handoff_exists
+      ;;
+    -h | --help | help)
+      show_usage
+      exit 0
+      ;;
+    *)
+      log_error "Unknown command: $command"
+      show_usage
+      exit 1
+      ;;
+  esac
 }
 
 # Only run main if script is executed directly (not sourced)
 if [[ "${BASH_SOURCE[0]:-$0}" == "${0}" ]]; then
-    main "$@"
+  main "$@"
 fi
