@@ -183,11 +183,13 @@ examples:
   - "/rdd-loop --to 22                 # Stop after Stage 22"
   - "/rdd-loop --from 21               # Start from Stage 21"
   - "/rdd-loop --from 21 --to 22       # Execute only 21-22"
-  - "/rdd-loop --parallel 2            # Allow 2 parallel stages"
+  - "/rdd-loop --parallel 2            # Allow 2 parallel stages (default: 1)"
   - "/rdd-loop status                  # Show current progress"
   - "/rdd-loop pause                   # Pause at next checkpoint"
   - "/rdd-loop resume                  # Resume from last checkpoint"
----
+
+# --parallel defaults to 1 (sequential). Higher values increase token consumption.
+# Each parallel stage roughly doubles token usage vs sequential.
 ```
 
 ### Task 2: Auto-Detection Engine
@@ -239,81 +241,132 @@ last_checkpoint: "2026-07-10T16:05:00+08:00"
 
 ### Task 3: Fine-Grained Persistence
 
-Persistence hooks injected at every key action point:
+Implemented as a bash script `.rdd/scripts/loop-persist.sh`, extending the existing `checkpoint.sh` patterns. The project is 100% bash + bats — no Python dependency introduced.
 
-```python
-class LoopPersistence:
-    """Atomic persistence for all loop state."""
+**File hierarchy:**
+```
+.rdd/cache/
+├── checkpoints.json     # Single-stage gate tracking (backward compat, maintained by checkpoint.sh)
+├── loop-state.yaml      # Loop execution state (CANONICAL for recovery — new file)
+└── heartbeat/            # Timestamped heartbeat snapshots
+    ├── 20260710-143022.yaml
+    └── 20260710-143522.yaml
+```
 
-    CHECKPOINT_FILE = ".rdd/cache/checkpoints.json"
-    LOOP_STATE_FILE = ".rdd/cache/loop-state.yaml"
-    ADR_FILE = "docs/08-autonomous-decisions.md"
-    DEBT_FILE = "docs/12-technical-debt.md"
-    NEXT_STEPS_FILE = "docs/11-next-steps.md"
+**loop-state.yaml** is the single source of truth for loop execution. `checkpoints.json` is preserved for backward compatibility with single-stage operations (`rdd-stage-auto`).
 
-    def on_gate_enter(self, stage_id: int, gate: int):
-        """Atomically persist gate entry."""
-        self._update_loop_state(stage=stage_id, gate=gate, status="in_progress")
-        self._atomic_write(self.CHECKPOINT_FILE, self._build_checkpoint())
+```bash
+# .rdd/scripts/loop-persist.sh
+# Extends checkpoint.sh with fine-grained persistence hooks
 
-    def on_gate_exit(self, stage_id: int, gate: int, result: dict):
-        """Persist gate completion with test results."""
-        self._update_loop_state(stage=stage_id, gate=gate, result=result)
-        self._atomic_write(self.CHECKPOINT_FILE, self._build_checkpoint())
-        self._update_next_steps()
+# Atomic write: write to .tmp then mv (prevents corruption on crash)
+atomic_write() {
+    local file="$1"
+    local content="$2"
+    local tmp="${file}.tmp"
+    echo "$content" > "$tmp"
+    mv "$tmp" "$file"
+}
 
-    def on_decision(self, decision: dict):
-        """Write ADR immediately on decision, not deferred to Gate 5."""
-        entry = f"\n### Decision {decision['id']}: {decision['title']}\n"
-        entry += f"**Background**: {decision['background']}\n"
-        entry += f"**Decision**: {decision['decision']}\n"
-        entry += f"**Rationale**: {decision['rationale']}\n"
-        entry += f"**Impact on Subsequent Stages**: {decision['impact']}\n"
-        entry += f"**Date**: {decision['date']}\n"
-        entry += f"**Related Stage**: Stage {decision['stage']}\n"
-        self._atomic_append(self.ADR_FILE, entry)
+atomic_append() {
+    local file="$1"
+    local entry="$2"
+    echo "$entry" >> "$file"
+}
 
-    def on_debt_discovered(self, debt: dict):
-        """Write tech debt immediately on discovery."""
-        entry = f"\n### TD-{debt['id']}: {debt['title']}\n"
-        entry += f"- **Priority**: {debt['priority']}\n"
-        entry += f"- **Source**: Stage {debt['stage']}\n"
-        entry += f"- **Original Description**: \"{debt['description']}\"\n"
-        entry += f"- **Source File**: {debt['source_file']}:{debt['source_line']}\n"
-        entry += f"- **Suggested Stage**: Stage {debt['suggested_stage']}\n"
-        self._atomic_append(self.DEBT_FILE, entry)
+# Called on every gate transition
+on_gate_enter() {
+    local stage_id="$1" gate="$2"
+    yq -i ".stages[] |= select(.id == ${stage_id}).gate = ${gate}" \
+        "${RDD_DIR}/cache/loop-state.yaml"
+    yq -i ".stages[] |= select(.id == ${stage_id}).status = \"in_progress\"" \
+        "${RDD_DIR}/cache/loop-state.yaml"
+    bash "${RDD_DIR}/scripts/checkpoint.sh" gate "$gate" "in_progress"
+}
 
-    def on_test_run(self, results: dict):
-        """Persist test results. Non-zero exit blocks progression."""
-        self._update_loop_state(test_results=results)
-        if results["exit_code"] != 0:
-            self._block_gate("tests failed", results)
+on_gate_exit() {
+    local stage_id="$1" gate="$2" result="${3:-success}"
+    yq -i ".stages[] |= select(.id == ${stage_id}).gates[${gate}] = \"${result}\"" \
+        "${RDD_DIR}/cache/loop-state.yaml"
+    bash "${RDD_DIR}/scripts/checkpoint.sh" gate "$gate" "completed"
+}
 
-    def heartbeat(self):
-        """Every 5 minutes: full snapshot save."""
-        self._atomic_write(self.CHECKPOINT_FILE, self._build_checkpoint())
-        self._atomic_write(self.LOOP_STATE_FILE, self._build_loop_state())
+# ADR written immediately on decision
+on_decision() {
+    local id="$1" title="$2" background="$3" decision="$4" \
+          rationale="$5" impact="$6" stage="$7" date="$8"
+    local entry="
+### Decision ${id}: ${title}
+**Background**: ${background}
+**Decision**: ${decision}
+**Rationale**: ${rationale}
+**Impact on Subsequent Stages**: ${impact}
+**Date**: ${date}
+**Related Stage**: Stage ${stage}
+"
+    atomic_append "docs/08-autonomous-decisions.md" "$entry"
+}
 
-    def _atomic_write(self, path, content):
-        """Write to temp file then rename — prevents corruption on crash."""
-        tmp = path + ".tmp"
-        write(tmp, content)
-        os.rename(tmp, path)
+# Tech debt written immediately on discovery
+on_debt_discovered() {
+    local id="$1" title="$2" priority="$3" stage="$4" \
+          description="$5" source_file="$6" source_line="$7" suggested_stage="$8"
+    local entry="
+### TD-${id}: ${title}
+- **Priority**: ${priority}
+- **Source**: Stage ${stage}
+- **Original Description**: \"${description}\"
+- **Source File**: ${source_file}:${source_line}
+- **Suggested Stage**: Stage ${suggested_stage}
+"
+    atomic_append "docs/12-technical-debt.md" "$entry"
+}
 
-    def _atomic_append(self, path, entry):
-        """Append to file safely."""
-        with open(path, "a") as f:
-            f.write(entry)
-            f.flush()
-            os.fsync(f.fileno())
+# Called after every test run
+on_test_run() {
+    local results="$1"  # JSON: {"unit": {"pass": N, "fail": N}, "e2e": ...}
+    yq -i ".last_test_results = ${results}" "${RDD_DIR}/cache/loop-state.yaml"
+}
+
+# Every 5 minutes: full snapshot
+heartbeat() {
+    local ts
+    ts=$(date -u +"%Y%m%d-%H%M%S")
+    mkdir -p "${RDD_DIR}/cache/heartbeat"
+    cp "${RDD_DIR}/cache/loop-state.yaml" "${RDD_DIR}/cache/heartbeat/${ts}.yaml"
+    # Keep only last 20 heartbeats
+    ls -t "${RDD_DIR}/cache/heartbeat/" | tail -n +21 | xargs -I {} rm -f "${RDD_DIR}/cache/heartbeat/{}"
+}
+```
+
+**Recovery protocol:**
+```
+1. Read .rdd/cache/loop-state.yaml (canonical)
+   ↓
+2. If missing, fall back to .rdd/cache/checkpoints.json (single-stage mode)
+   ↓
+3. If both missing → fresh start
 ```
 
 ### Task 4: Hardened Gate 3
 
-Replace all echo-only gate implementations with real execution:
+Replace all echo-only gate implementations with real execution. **Tools selected for the actual bash-based codebase:** `bats` (test), `shellcheck` (lint), `shfmt` (format), not Go tools.
 
+**Dependency bootstrap:**
 ```yaml
-# Taskfile.yml — Gate 3 (hardened)
+# Add to Taskfile.yml
+bootstrap:deps:
+  desc: Install required development tools
+  cmds:
+    - echo "Checking required tools..."
+    - which shellcheck || (echo "Install: brew install shellcheck" && exit 1)
+    - which shfmt || (echo "Install: brew install shfmt" && exit 1)
+    - echo "All dependencies satisfied."
+```
+
+**Hardened Gate 3:**
+```yaml
+# Taskfile.yml — Gate 3 (hardened for bash project)
 gate:3:
   desc: Gate 3 - Implementation & testing (REAL EXECUTION)
   cmds:
@@ -339,68 +392,68 @@ gate:3:
   silent: false
 
 lint:check:
-  desc: Run lint checks
+  desc: Run lint checks (shellcheck for .sh, bats syntax for .bats)
   cmds:
-    - echo "Running lint checks..."
-    - test -f .golangci.yml && golangci-lint run ./... || echo "No Go project, skipping golangci-lint"
-    - test -f .eslintrc.js && npx eslint . || echo "No JS project, skipping eslint"
+    - echo "Running shellcheck on scripts..."
+    - find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shellcheck
+    - echo "Checking bats test syntax..."
+    - find tests -name "*.bats" -not -path "*/lib/*" -print0 | xargs -0 -I {} sh -c './tests/lib/bats-core/bin/bats --formatter pretty --count-only "{}" > /dev/null 2>&1 || echo "Syntax error in {}" && exit 1'
 
 fmt:check:
-  desc: Check code formatting
+  desc: Check code formatting (shfmt for .sh)
   cmds:
-    - echo "Checking code formatting..."
-    # Go
-    - test -f go.mod && (gofmt -l . | grep -q . && echo "Go format violations found" && exit 1 || echo "Go formatting OK") || true
-    - test -f go.mod && (goimports -l . | grep -q . && echo "Go imports violations found" && exit 1 || echo "Go imports OK") || true
-    # Shell
-    - find . -name "*.sh" -not -path "./tests/lib/*" | xargs -I {} sh -c 'shellcheck {} || exit 1' || echo "No shell scripts to check"
+    - echo "Checking shell script formatting..."
+    - find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shfmt -d
+    - echo "Checking YAML formatting..."
+    - find . -name "*.yml" -o -name "*.yaml" | while read f; do python3 -c "import yaml; yaml.safe_load(open('$f'))" || (echo "YAML parse error in $f" && exit 1); done
 
 task:check:
-  desc: Check no orphan commands exist (all commands must be in Taskfile)
+  desc: Check no orphan scripts exist (all scripts must be Taskfile-registered)
   cmds:
-    - echo "Checking for orphan commands..."
-    - echo "All scripts must be registered as task entries"
+    - echo "Checking for orphan scripts..."
+    - echo "All scripts must be registered as task entries in Taskfile.yml"
     - test -f Taskfile.yml && echo "  [OK] Taskfile exists"
 ```
 
 ### Task 5: gotask Convergence
 
-When the loop creates new scripts/commands, auto-register them:
+When the loop creates new scripts/commands, auto-register them as `task` entries in `Taskfile.yml`. Orphan detection limited to `scripts/` and `.rdd/scripts/` directories (not `.claude/` which contains markdown skills/commands).
 
-```python
-class TaskRegistry:
-    """Ensure all new commands are registered in Taskfile.yml."""
+```bash
+# .rdd/scripts/task-registry.sh
+# Auto-register new scripts as Taskfile entries
 
-    TASKFILE = "Taskfile.yml"
+register_task() {
+    local name="$1" desc="$2" command="$3"
+    # Append to Taskfile.yml
+    cat >> Taskfile.yml << EOF
 
-    def register(self, name: str, desc: str, command: str):
-        """Register a new task entry.
-        
-        Called automatically whenever a new script is created
-        during loop execution.
-        """
-        entry = f"""
-  {name}:
-    desc: {desc}
+  ${name}:
+    desc: ${desc}
     cmds:
-      - {command}
-"""
-        self._append_to_taskfile(entry)
+      - ${command}
+EOF
+}
 
-    def verify_no_orphans(self) -> bool:
-        """Gate 3 check: are there scripts not registered as tasks?
-        
-        Scans .rdd/scripts/ and .claude/ for executable files
-        not referenced in Taskfile.yml.
-        """
-        scripts = self._find_executables()
-        registered = self._parse_task_commands()
-        orphans = scripts - registered
-        if orphans:
-            for o in orphans:
-                print(f"  [FAIL] Orphan command: {o}")
-            return False
-        return True
+verify_no_orphans() {
+    local orphans=0
+    # Scan scripts/ and .rdd/scripts/ only (not .claude/)
+    for dir in "scripts" ".rdd/scripts"; do
+        for script in "$dir"/*.sh; do
+            local name
+            name=$(basename "$script")
+            if ! grep -q "$name" Taskfile.yml 2>/dev/null; then
+                echo "  [WARN] Orphan script not in Taskfile: $script"
+                ((orphans++))
+            fi
+        done
+    done
+    if [ "$orphans" -gt 0 ]; then
+        echo "  [FAIL] ${orphans} orphan script(s) found — gate blocked"
+        return 1
+    fi
+    return 0
+}
 ```
 
 ### Task 6: Dependency Graph Analyzer
@@ -681,5 +734,5 @@ Large (3 days)
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0 | 2026-07-10 | Major redesign: auto-detect default, remove `start`/`--goal`, fine-grained persistence, hardened Gate 3, gotask convergence |
+| 2.0 | 2026-07-10 | Major redesign: auto-detect default, remove `start`/`--goal`, fine-grained persistence (bash), hardened Gate 3 (shellcheck/shfmt), gotask convergence |
 | 1.0 | 2026-03-13 | Initial design |
