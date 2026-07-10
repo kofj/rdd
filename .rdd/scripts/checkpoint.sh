@@ -565,8 +565,8 @@ increment_recovery_count() {
   current_count=$(json_get "${CHECKPOINT_FILE}" "recovery_count" "0")
   local new_count=$((current_count + 1))
 
-  # Update recovery count
-  sed -i "s/\"recovery_count\": [0-9]*/\"recovery_count\": ${new_count}/" "${CHECKPOINT_FILE}" 2>/dev/null || true
+  # Update recovery count (portable: temp file + mv, not sed -i)
+  sed "s/\"recovery_count\": [0-9]*/\"recovery_count\": ${new_count}/" "${CHECKPOINT_FILE}" > "${CHECKPOINT_FILE}.tmp" 2>/dev/null && mv "${CHECKPOINT_FILE}.tmp" "${CHECKPOINT_FILE}"
 
   log_info "Recovery count: ${new_count}"
 }
