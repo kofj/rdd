@@ -183,20 +183,30 @@ tasks:
     silent: false
 
   gate:3:
-    desc: Gate 3 - Implementation and testing check
+    desc: Gate 3 - Implementation and testing (REAL EXECUTION)
     summary: |
       Gate 3: Verify implementation and testing completeness.
-      Checks: implementation complete, unit tests >= 20% coverage, E2E tests (2+ high-signal paths), real env verification, clean env verification.
+      Runs actual test/lint/format checks. Non-zero exit blocks progression.
     cmds:
-      - 'echo "Gate 3: Implementation & Testing Check"'
-      - 'echo "--------------------------------------"'
-      - 'echo "[ ] Implementation is complete"'
-      - 'echo "[ ] Unit test coverage >= 20%"'
-      - 'echo "[ ] E2E tests: at least 2 high-signal paths"'
-      - 'echo "[ ] Real environment verification (not mock)"'
-      - 'echo "[ ] Clean environment secondary verification passed"'
-      - echo ""
-      - echo "Run 'task test' to verify tests."
+      - 'echo "Gate 3: Implementation & Testing (Hardened)"'
+      - 'echo "--------------------------------------------"'
+      - 'echo "[1/5] Running unit tests..."'
+      - 'task test:unit || (echo "  [FAIL] Unit tests failed - gate blocked" && exit 1)'
+      - 'echo "  [PASS] Unit tests passed"'
+      - 'echo "[2/5] Running E2E tests..."'
+      - 'task test:e2e || (echo "  [FAIL] E2E tests failed - gate blocked" && exit 1)'
+      - 'echo "  [PASS] E2E tests passed"'
+      - 'echo "[3/5] Checking test coverage..."'
+      - 'task test:coverage || (echo "  [FAIL] Coverage below threshold - gate blocked" && exit 1)'
+      - 'echo "  [PASS] Coverage meets threshold"'
+      - 'echo "[4/5] Running lint checks..."'
+      - 'task lint:check || (echo "  [FAIL] Lint violations - gate blocked" && exit 1)'
+      - 'echo "  [PASS] Lint check passed"'
+      - 'echo "[5/5] Running format checks..."'
+      - 'task fmt:check || (echo "  [FAIL] Format violations - gate blocked" && exit 1)'
+      - 'echo "  [PASS] Format check passed"'
+      - 'echo ""'
+      - 'echo "Gate 3: ALL CHECKS PASSED"'
     silent: false
 
   gate:4:
@@ -332,12 +342,9 @@ tasks:
 
   test:unit:
     desc: Run unit tests
-    summary: |
-      Run unit tests only.
-      Override with your project's unit test command.
     cmds:
       - echo "Running unit tests..."
-      - ./tests/lib/bats-core/bin/bats tests/unit/*.bats
+      - bats tests/unit/*.bats
     silent: false
 
   test:bdd:
@@ -347,7 +354,7 @@ tasks:
       Override with your project's BDD test command.
     cmds:
       - echo "Running BDD tests..."
-      - ./tests/lib/bats-core/bin/bats tests/bdd/*.bats
+      - bats tests/bdd/*.bats
     silent: false
 
   test:e2e:
@@ -357,7 +364,7 @@ tasks:
       Override with your project's E2E test command.
     cmds:
       - echo "Running E2E tests..."
-      - ./tests/lib/bats-core/bin/bats tests/e2e/*.bats
+      - bats tests/e2e/*.bats
     silent: false
 
   test:coverage:
@@ -914,5 +921,171 @@ tasks:
       audit, crypto, and security validation tests.
     cmds:
       - echo "Running security unit tests..."
-      - ./tests/lib/bats-core/bin/bats tests/unit/permissions.bats tests/unit/audit.bats tests/unit/crypto.bats tests/unit/security.bats tests/unit/security-check.bats
+      - bats tests/unit/permissions.bats tests/unit/audit.bats tests/unit/crypto.bats tests/unit/security.bats tests/unit/security-check.bats
+    silent: false
+
+  # ===========================================
+  # Lint & Format
+  # ===========================================
+
+  lint:check:
+    desc: Run lint checks (shellcheck for .sh, bats syntax for .bats)
+    summary: |
+      Run lint checks on all shell scripts and bats test files.
+      shellcheck validates .sh files, bats --count-only checks .bats syntax.
+    cmds:
+      - echo "Running shellcheck on scripts..."
+      - find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shellcheck -x
+      - echo "Checking bats test syntax..."
+      - find tests -name "*.bats" -not -path "*/lib/*" -print0 | xargs -0 -I {} sh -c 'bats --formatter pretty --count-only "{}" > /dev/null 2>&1 || (echo "Syntax error in {}" && exit 1)'
+      - echo "Lint check complete."
+    silent: false
+
+  fmt:check:
+    desc: Check code formatting (shfmt for .sh)
+    summary: |
+      Check that all shell scripts follow consistent formatting.
+      Uses shfmt with standard indentation.
+    cmds:
+      - echo "Checking shell script formatting..."
+      - find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shfmt -d -i 2 -ci
+      - echo "Format check complete."
+    silent: false
+
+  fmt:fix:
+    desc: Auto-fix code formatting (shfmt -w)
+    cmds:
+      - echo "Fixing shell script formatting..."
+      - find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shfmt -w -i 2 -ci
+      - echo "Format fixed."
+    silent: false
+
+  # ===========================================
+  # Bootstrap & Dependencies
+  # ===========================================
+
+  bootstrap:deps:
+    desc: Install required development tools
+    summary: |
+      Check and install required development dependencies.
+      Required: shellcheck, shfmt, yq.
+    cmds:
+      - 'echo "Checking required development tools..."'
+      - 'which shellcheck || (echo "  [MISSING] shellcheck - install: brew install shellcheck" && exit 1)'
+      - 'echo "  [OK] shellcheck"'
+      - 'which shfmt || (echo "  [MISSING] shfmt - install: brew install shfmt" && exit 1)'
+      - 'echo "  [OK] shfmt"'
+      - 'which yq || (echo "  [MISSING] yq - install: brew install yq" && exit 1)'
+      - 'echo "  [OK] yq"'
+      - 'echo "All dependencies satisfied."'
+    silent: false
+
+  # ===========================================
+  # Loop Operations (Stage 22)
+  # ===========================================
+
+  loop:detect:
+    desc: Auto-detect incomplete stages from roadmap
+    summary: |
+      Scan stage-roadmap.md for incomplete stages, resolve dependency
+      ordering, and display execution plan.
+      Options: --from N --to M for range filtering.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/auto-detect.sh {{.CLI_ARGS}}
+    silent: false
+
+  loop:state:
+    desc: Show loop execution state
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/loop-persist.sh show
+    silent: false
+
+  loop:persist:
+    desc: Save loop heartbeat snapshot
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/loop-persist.sh heartbeat
+    silent: false
+
+  loop:dashboard:
+    desc: Show multi-stage progress dashboard
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/progress-dashboard.sh
+    silent: false
+
+  loop:recovery:
+    desc: Check if loop recovery is needed
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/loop-persist.sh needs-recovery
+    silent: false
+
+  pool:list:
+    desc: List worktree pool status
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/worktree-pool.sh list
+    silent: false
+
+  pool:cleanup:
+    desc: Clean up all worktrees
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/worktree-pool.sh cleanup
+    silent: false
+
+  health:check:
+    desc: Run RDD framework health check
+    cmds:
+      - bash scripts/health.sh
+    silent: false
+
+  metrics:show:
+    desc: Show RDD framework metrics
+    cmds:
+      - bash scripts/metrics.sh
+    silent: false
+
+  logger:test:
+    desc: Test RDD logging system
+    cmds:
+      - bash scripts/logger.sh
+    silent: false
+
+  circuit:status:
+    desc: Show circuit breaker status
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/circuit_breaker.sh status
+    silent: false
+
+  notify:test:
+    desc: Test notification system
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/notify.sh test
+    silent: false
+
+  retry:test:
+    desc: Test retry mechanism
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/retry.sh --help
+    silent: false
+
+  scheduler:status:
+    desc: Show subagent scheduler status
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/subagent-scheduler.sh status
+    silent: false
+
+  scheduler:execute:
+    desc: Execute stage via subagent scheduler
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/subagent-scheduler.sh execute {{.CLI_ARGS}}
+    silent: false
+
+  registry:verify:
+    desc: Check for orphan scripts not in Taskfile
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/task-registry.sh verify
+    silent: false
+
+  registry:list:
+    desc: List all script registration status
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/task-registry.sh list-orphans
     silent: false
