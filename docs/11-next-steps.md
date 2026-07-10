@@ -10,10 +10,10 @@
 
 | Project Name | RDD Framework |
 |--------------|---------------|
-| Current Phase | Phase 4 Completed ✅ |
+| Current Phase | Phase 4 In Progress (75%) |
 | Current Version | v1.1.0 |
 | Start Date | 2026-03-06 |
-| Last Updated | 2026-03-13 |
+| Last Updated | 2026-07-10 |
 
 ### Current Progress
 
@@ -21,7 +21,7 @@
 Phase 1 Core Development: ████████████████████ 100% (11/11 Stage)
 Phase 2 E2E Testing:      ████████████████████ 100% (5/5 Stage)
 Phase 3 Release & Ops:    ████████████████████ 100% (3/3 Stage)
-Phase 4 User Readiness:   ████████████████████ 100% (4/4 Stage)
+Phase 4 User Readiness:   ███████████████░░░░░  75% (3/4 Stage)
 ```
 
 ### Test Statistics
@@ -49,18 +49,18 @@ Phase 4 User Readiness:   ██████████████████
 - Stage 18: Docker test environment ✅
 
 **Phase 4: User Readiness 🔄 (In Progress)**
-- Stage 19: Command hint system ⏳
-- Stage 20: Help & workflow system ⏳
-- Stage 21: TDD/BDD initialization enhancement ⏳
-- Stage 22: Multi-stage autonomous progression ⏳
+- Stage 19: Command hint system ✅
+- Stage 20: Help & workflow system ✅
+- Stage 21: TDD/BDD initialization enhancement ✅
+- Stage 22: Multi-stage autonomous progression 🔄 (design v2.0 complete)
 
 ---
 
 ## Next Single Action
 
-**Current Stage**: Stage 19 - Command Hint System
-**Current Gate**: Gate 0 - Stage Startup
-**Immediate Task**: Create Phase 4 design document and roadmap
+**Current Stage**: Stage 22 - Multi-stage Autonomous Progression
+**Current Gate**: Gate 1 (Design) — Design v2.0 complete, needs review
+**Immediate Task**: Stage 22 Gate 2 — Design Review, then proceed to implementation
 
 ---
 
@@ -78,16 +78,16 @@ Phase 4 focuses on improving user experience and developer productivity:
 ### Stage Dependencies
 
 ```
-Stage 19 (Command Hints)
+Stage 19 (Command Hints) ✅
     ↓
-Stage 20 (Help & Workflow) ← depends on Stage 19
+Stage 20 (Help & Workflow) ✅ ← depends on Stage 19
     ↓
-Stage 21 (TDD/BDD Setup) ← independent
-    ↓
-Stage 22 (Multi-stage) ← depends on Stage 19, 20
+Stage 22 (Multi-stage Progression) 🔄 ← depends on Stage 19, 20
+
+Stage 21 (TDD/BDD Setup) ✅ ← independent, now complete
 ```
 
-**Concurrent Execution Possible**: Stage 19 + Stage 21 can run in parallel
+**All dependencies for Stage 22 satisfied.**
 
 ---
 
@@ -95,10 +95,10 @@ Stage 22 (Multi-stage) ← depends on Stage 19, 20
 
 | Stage | Title | Status | Priority | Dependencies |
 |-------|-------|--------|----------|--------------|
-| 19 | Command Hint System | Planning | P0 | None |
-| 20 | Help & Workflow System | Pending | P0 | Stage 19 |
-| 21 | TDD/BDD Initialization Enhancement | Pending | P0 | None |
-| 22 | Multi-stage Autonomous Progression | Pending | P0 | Stage 19, 20 |
+| 19 | Command Hint System | ✅ Complete | P0 | None |
+| 20 | Help & Workflow System | ✅ Complete | P0 | Stage 19 |
+| 21 | TDD/BDD Initialization Enhancement | ✅ Complete | P0 | None |
+| 22 | Multi-stage Autonomous Progression | 🔄 In Progress | P0 | Stage 19, 20 |
 
 ---
 
@@ -112,372 +112,16 @@ None currently.
 
 | Version | Date | Revision Content |
 |---------|------|------------------|
+| v8.0 | 2026-07-10 | Stage 22 design v2.0, cleaned redundant logs, updated statuses |
 | v7.0 | 2026-03-13 | Phase 4 initiated, added Stage 19-22 |
 | v6.0 | 2026-03-10 | Phase 3 completed, added Stage 16-18 |
 | v5.0 | 2026-03-09 | Stage 11-15 completed, all E2E tests passed |
 | v4.0 | 2026-03-09 | Added Stage 11-15 E2E test plan |
 | v3.0 | 2026-03-09 | v1.0.0 code completed |
 
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-13 17:40
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-13 17:40
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-13 17:40
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-13 18:02
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-13 18:02
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-13 18:02
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-13 18:16
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-13 18:16
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-13 18:16
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-13 10:31
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-13 10:31
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-13 10:31
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-13 10:34
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-13 10:34
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-13 10:34
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-13 10:42
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-13 10:42
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-13 10:42
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-14 23:19
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-14 23:19
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-14 23:19
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-14 23:22
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-14 23:22
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-14 23:22
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-14 23:28
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-14 23:28
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-14 23:28
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-14 23:31
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-14 23:31
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-14 23:31
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-14 23:35
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-14 23:35
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-14 23:35
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-25 11:02
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-25 11:02
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-25 11:02
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-25 11:58
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-25 11:58
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-25 11:58
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Blocker
-
-A core hypothesis was invalidated. Human review required.
-- **Hypothesis**: unknown
-- **Reason**: unknown
-
-### 2026-03-25 12:22
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
-
-## Tech Debt Alert
-
-**Debt Count**: 0 (threshold: 0)
-**Time**: 2026-03-25 12:22
-
-Consider scheduling a tech debt resolution sprint before proceeding with new features.
-
-
-### 2026-03-25 12:22
-- **Stage**: unknown
-- **Action**: Stage completed
-- **Status**: Success
-- **Coverage**: unknown%
+### 2026-07-10
+- **Stage**: Stage 22
+- **Action**: Design document v2.0 — major redesign
+- **Status**: Design updated
+- **Decisions**: ADR-22A (auto-detect), ADR-22B (remove start), ADR-22C (remove --goal), ADR-22D (fine-grained persistence), ADR-22E (hardened Gate 3), ADR-22F (gotask convergence)
+- **Coverage**: N/A (design phase)

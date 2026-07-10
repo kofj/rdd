@@ -129,22 +129,37 @@ Phase 4 User Readiness:   ░░░░░░░░░░░░░░░░░░
 
 ### Stage 22: Multi-stage Autonomous Progression
 
-**Goal**: Enable autonomous execution across multiple stages
+**Goal**: Enable autonomous execution across multiple stages with auto-detection, hard quality gates, and crash-resilient persistence
 
 **Features**:
-- Extended `/rdd-loop` with range execution (`--from N --to M`)
-- Stage dependency graph analysis
-- Git worktree pool management
-- Subagent concurrent scheduling
-- Natural language goal → stage breakdown (intelligent planning)
-- Progress dashboard and status aggregation
+- `/rdd-loop` auto-detects all incomplete stages from roadmap (zero args = execute all pending)
+- `--from N` / `--to M` as optional range filters (not required)
+- Fine-grained atomic persistence: checkpoint/ADR/tech debt saved at every key action, not just gate boundaries
+- Hardened Gate 3: real `task test`/`task lint`/`task fmt` execution with non-zero exit blocking progression
+- gotask convergence: all new scripts auto-registered as `task` entries, orphan commands treated as gate failure
+- Stage dependency graph analysis for parallel execution
+- Git worktree pool management for isolation
+- Subagent concurrent scheduling (max 3 parallel)
+- Progress dashboard with autosave indicator
+
+**Non-Goals (removed from v1)**:
+- ~~`start` subcommand~~ — `/rdd-loop` is inherently start
+- ~~`--goal` NL parsing~~ — roadmap Goal field is the deterministic source
 
 **Acceptance Criteria**:
-- [ ] Range execution works end-to-end
+- [ ] `/rdd-loop` (no args) auto-detects and executes all incomplete stages
+- [ ] `--from N --to M` works as optional filter
+- [ ] Each gate transition atomically persists checkpoint
+- [ ] ADR decisions written immediately, not deferred to Gate 5
+- [ ] Tech debt entries written immediately on discovery
+- [ ] `task test` non-zero exit blocks gate progression
+- [ ] `task lint:check` and `task fmt:check` added to Gate 3
+- [ ] New scripts auto-register as `task` entries
+- [ ] Crash recovery resumes from last action (not last gate boundary)
 - [ ] Dependency graph correctly identifies parallel stages
-- [ ] Worktree isolation verified
-- [ ] Concurrent execution stable
-- [ ] Progress tracking accurate
+- [ ] Worktree isolation verified (no cross-contamination)
+- [ ] Concurrent execution stable up to 3 parallel stages
+- [ ] Progress dashboard shows accurate real-time status
 - [ ] E2E tests for multi-stage scenarios
 
 ---
@@ -163,6 +178,7 @@ Phase 4 User Readiness:   ░░░░░░░░░░░░░░░░░░
 
 | Version | Date | Revision Content | Author |
 |---------|------|------------------|--------|
+| v6.1 | 2026-07-10 | Stage 22 redesign: auto-detect, hard gates, fine-grained persistence | Claude |
 | v6.0 | 2026-03-13 | Phase 4 initiated, added Stage 19-22 | Claude |
 | v5.0 | 2026-03-09 | Stage 11-15 completed, all E2E tests passed | Claude |
 | v4.0 | 2026-03-09 | Added Stage 11-15 E2E test plan | Claude |
