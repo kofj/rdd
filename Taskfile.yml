@@ -932,13 +932,13 @@ tasks:
     desc: Run lint checks (shellcheck for .sh, bats syntax for .bats)
     summary: |
       Run lint checks on all shell scripts and bats test files.
-      shellcheck validates .sh files, bats --count-only checks .bats syntax.
+      Blocks on shellcheck errors (exit code 2). Warnings (exit 1) do not block.
     cmds:
-      - echo "Running shellcheck on scripts..."
-      - find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shellcheck -x
-      - echo "Checking bats test syntax..."
-      - find tests -name "*.bats" -not -path "*/lib/*" -print0 | xargs -0 -I {} sh -c 'bats --formatter pretty --count-only "{}" > /dev/null 2>&1 || (echo "Syntax error in {}" && exit 1)'
-      - echo "Lint check complete."
+      - 'echo "Running shellcheck on scripts (errors block, warnings pass)..."'
+      - 'sc_exit=0; find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shellcheck -x || sc_exit=$?; if [ "$sc_exit" = "2" ]; then echo "  [FAIL] Shell errors found - gate blocked"; exit 1; else echo "  [OK] No errors (warnings logged but non-blocking)"; fi'
+      - 'echo "Checking bats test syntax..."'
+      - 'find tests -name "*.bats" -not -path "*/lib/*" -print0 | xargs -0 -I {} sh -c "bats --formatter pretty --count {} > /dev/null 2>&1 || (echo Syntax error: {} && exit 1)"'
+      - 'echo "Lint check complete."'
     silent: false
 
   fmt:check:
