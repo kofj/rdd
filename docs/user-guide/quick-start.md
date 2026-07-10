@@ -181,14 +181,16 @@ If context is lost (Claude compaction), RDD can recover automatically.
 
 1. Read [Installation Guide](installation.md) for detailed setup
 2. Review [Basic Usage](basic-usage.md) for common workflows
-3. Explore [API Reference](../api-reference/README.md) for all commands
-4. Check [Best Practices](best-practices.md) for tips
+3. Check [Release Guide](../operations/release-guide.md) for version upgrade
+4. Explore [API Reference](../api-reference/README.md) for all commands
+5. Check [Best Practices](best-practices.md) for tips
 
 ## Getting Help
 
 - Check [Troubleshooting Guide](../operations/troubleshooting.md)
 - Review [FAQ](../operations/faq.md)
 - Open an issue on GitHub
+- See [Release Guide](../operations/release-guide.md) for version upgrade and release process
 
 ---
 

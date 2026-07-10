@@ -47,6 +47,7 @@ When starting a new session, read documents in this order:
 | `docs/stages/` | Stage documents |
 | `docs/08-autonomous-decisions.md` | ADR log |
 | `docs/12-technical-debt.md` | Tech debt ledger |
+| `docs/operations/release-guide.md` | Release & version upgrade guide |
 
 ---
 
