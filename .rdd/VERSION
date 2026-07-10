@@ -2,7 +2,7 @@
 # This file is managed by version.sh
 # Do not edit manually
 
-VERSION=1.0.0
+VERSION=1.2.0
 COMPAT_MIN=0.9.0
 COMPAT_MAX=2.0.0
 
