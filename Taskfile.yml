@@ -146,6 +146,26 @@ tasks:
       - echo "Review the output above for any failures."
     silent: false
 
+  stages:archive:
+    desc: Archive old stage documents, keeping the 5 most recent completed stages
+    summary: |
+      Archive stage-N.md files older than the 5 most recent completed stages
+      to docs/stages/archived/. Keeps incomplete stages regardless of count.
+      Only pure numeric stage-N.md files are moved; other files are untouched.
+      Usage: task stages:archive [-- --dry-run] [-- --keep N]
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/stages-archive.sh {{.CLI_ARGS}}
+    silent: false
+
+  stages:archive:dry-run:
+    desc: Preview archive without making changes
+    summary: |
+      Dry-run mode for stages:archive. Shows what would be moved
+      without actually moving anything.
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/stages-archive.sh --dry-run {{.CLI_ARGS}}
+    silent: false
+
   # ===========================================
   # Individual Gate Checks
   # ===========================================
