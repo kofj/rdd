@@ -1,3 +1,8 @@
+---
+name: rdd-help
+description: Search RDD documentation for topics, commands, workflows, and troubleshooting guides
+---
+
 # RDD Help Skill
 
 > Search and display RDD documentation for topics, commands, and guides.
@@ -157,8 +162,7 @@ Related Commands:
 - /rdd-migrate - Migrate existing project
 
 Documentation:
-- .claude/commands/rdd-init.md
-- .claude/skills/rdd-init.md
+- .claude/skills/rdd-init/SKILL.md
 
 Workflow:
 1. Run /rdd-init [project-name]

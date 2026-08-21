@@ -1,3 +1,8 @@
+---
+name: rdd-recovery
+description: Recover an RDD project from failures, blockers, and interrupted stages
+---
+
 # RDD Recovery Skill
 
 > **Purpose**: Recover from failures, blockers, and interrupted stages.
@@ -468,6 +473,6 @@ After any recovery:
 ## Reference
 
 For related information, see:
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-loop.md` - Loop control and state machine
-- `/data/works/play/sbd/.claude/skills/rdd-knowledge.md` - Handoff generation
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-loop/SKILL.md` - Loop control and state machine
+- `.claude/skills/rdd-knowledge/SKILL.md` - Handoff generation

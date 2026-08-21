@@ -1,3 +1,8 @@
+---
+name: rdd-fresh-check
+description: Verify that a fresh agent can take over the RDD project from documentation alone
+---
+
 # RDD Fresh Check Skill
 
 > **Purpose**: Verify that a fresh agent can take over the project from documentation alone.
@@ -380,6 +385,6 @@ If FAIL: Must fix issues before stage completion
 ## Reference
 
 For related information, see:
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-knowledge.md` - Knowledge management
-- `/data/works/play/sbd/docs/03-stage-based-development.md` - Stage completion criteria
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-knowledge/SKILL.md` - Knowledge management
+- `docs/03-stage-based-development.md` - Stage completion criteria

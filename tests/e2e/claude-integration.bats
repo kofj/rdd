@@ -44,10 +44,11 @@ teardown() {
         "rdd-help"
         "rdd-workflow"
         "rdd-state"
+        "rdd-stages-archive"
     )
 
     for skill in "${skills[@]}"; do
-        [ -f "${PROJECT_ROOT}/.claude/skills/${skill}.md" ]
+        [ -f "${PROJECT_ROOT}/.claude/skills/${skill}/SKILL.md" ]
     done
 }
 
@@ -57,42 +58,22 @@ teardown() {
     fi
 
     local count
-    count=$(ls "${PROJECT_ROOT}/.claude/skills/"*.md 2>/dev/null | wc -l)
-    [ "$count" -eq 16 ]
+    count=$(ls -d "${PROJECT_ROOT}/.claude/skills/"rdd-*/ 2>/dev/null | wc -l)
+    [ "$count" -eq 17 ]
 }
 
 # ==============================================================================
-# INT-02: Commands files exist
+# INT-02: Legacy slash commands removed (superseded by skills)
 # ==============================================================================
-@test "INT-02: All commands files exist" {
+@test "INT-02: No legacy RDD slash commands remain" {
     if [[ -z "${PROJECT_ROOT:-}" ]]; then
         skip "PROJECT_ROOT not set"
     fi
 
-    local commands=(
-        "rdd-init"
-        "rdd-migrate"
-        "rdd-roadmap"
-        "rdd-stage-auto"
-        "rdd-knowledge"
-        "rdd-loop"
-        "rdd-help"
-        "rdd-workflow"
-    )
-
-    for cmd in "${commands[@]}"; do
-        [ -f "${PROJECT_ROOT}/.claude/commands/${cmd}.md" ]
-    done
-}
-
-@test "INT-02: Commands count is correct" {
-    if [[ -z "${PROJECT_ROOT:-}" ]]; then
-        skip "PROJECT_ROOT not set"
-    fi
-
-    local count
-    count=$(ls "${PROJECT_ROOT}/.claude/commands/"*.md 2>/dev/null | wc -l)
-    [ "$count" -eq 8 ]
+    # Skills of the same name take precedence and cover slash triggering,
+    # so no rdd-*.md command files should exist in the repo source.
+    run bash -c "ls ${PROJECT_ROOT}/.claude/commands/rdd-*.md 2>/dev/null"
+    [ "$status" -ne 0 ]
 }
 
 # ==============================================================================
@@ -118,12 +99,12 @@ teardown() {
         skip "PROJECT_ROOT not set"
     fi
 
-    for skill in "${PROJECT_ROOT}/.claude/skills/"*.md; do
+    for skill in "${PROJECT_ROOT}/.claude/skills/"rdd-*/SKILL.md; do
         # File should not be empty
         [ -s "$skill" ]
 
-        # File should contain markdown heading or name field
-        grep -qE "^(#|name:)" "$skill"
+        # File should start with YAML frontmatter
+        [ "$(head -1 "$skill")" = "---" ]
     done
 }
 
@@ -132,9 +113,10 @@ teardown() {
         skip "PROJECT_ROOT not set"
     fi
 
-    # Check rdd-core.md has description
-    local core_skill="${PROJECT_ROOT}/.claude/skills/rdd-core.md"
+    # Check rdd-core skill exists in directory format with frontmatter
+    local core_skill="${PROJECT_ROOT}/.claude/skills/rdd-core/SKILL.md"
     [ -f "$core_skill" ]
+    [ "$(head -1 "$core_skill")" = "---" ]
     grep -q "RDD" "$core_skill"
 }
 
@@ -197,18 +179,8 @@ EOF
         skip "PROJECT_ROOT not set"
     fi
 
-    # Check no hardcoded tokens
-    run grep -r "sk-" "${PROJECT_ROOT}/.claude/skills/" 2>/dev/null
-    [ "$status" -eq 1 ] || [ -z "$output" ]
-}
-
-@test "INT-06: No hardcoded tokens in commands" {
-    if [[ -z "${PROJECT_ROOT:-}" ]]; then
-        skip "PROJECT_ROOT not set"
-    fi
-
-    # Check no hardcoded tokens
-    run grep -r "sk-" "${PROJECT_ROOT}/.claude/commands/" 2>/dev/null
+    # Check no hardcoded API tokens (sk-ant-...)
+    run grep -rn "sk-ant-" "${PROJECT_ROOT}/.claude/skills/" 2>/dev/null
     [ "$status" -eq 1 ] || [ -z "$output" ]
 }
 

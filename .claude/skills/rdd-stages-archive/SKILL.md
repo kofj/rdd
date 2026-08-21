@@ -1,3 +1,8 @@
+---
+name: rdd-stages-archive
+description: Archive old RDD stage documents to keep the working directory clean and focused
+---
+
 # RDD Stages Archive Skill
 
 > Archive old stage documents to keep the working directory clean and focused on current work.

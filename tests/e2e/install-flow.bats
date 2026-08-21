@@ -51,25 +51,27 @@ teardown() {
     run cp -r "${PROJECT_ROOT}/.claude/skills/"* "${TEST_DIR}/.claude/skills/"
     [ "$status" -eq 0 ]
 
-    # Verify files exist
-    [ -f "${TEST_DIR}/.claude/skills/rdd-init.md" ]
-    [ -f "${TEST_DIR}/.claude/skills/rdd-stage-auto.md" ]
+    # Verify files exist (directory format: <name>/SKILL.md)
+    [ -f "${TEST_DIR}/.claude/skills/rdd-init/SKILL.md" ]
+    [ -f "${TEST_DIR}/.claude/skills/rdd-stage-auto/SKILL.md" ]
 }
 
-@test "INST-02: Manual commands installation" {
+@test "INST-02: Skills use directory format with frontmatter" {
     if [[ -z "${PROJECT_ROOT:-}" ]]; then
         skip "PROJECT_ROOT not set"
     fi
 
-    # Create target directories
-    mkdir -p "${TEST_DIR}/.claude/commands"
-
-    # Copy commands
-    run cp -r "${PROJECT_ROOT}/.claude/commands/"* "${TEST_DIR}/.claude/commands/"
+    # Skills must be <name>/SKILL.md with a YAML frontmatter description,
+    # otherwise Claude Code will not load them.
+    local skill="${PROJECT_ROOT}/.claude/skills/rdd-init/SKILL.md"
+    [ -f "$skill" ]
+    [ "$(head -1 "$skill")" = "---" ]
+    run grep -q "^description:" "$skill"
     [ "$status" -eq 0 ]
 
-    # Verify files exist
-    [ -f "${TEST_DIR}/.claude/commands/rdd-init.md" ]
+    # No legacy flat skill files should remain
+    run bash -c "ls ${PROJECT_ROOT}/.claude/skills/rdd-*.md 2>/dev/null"
+    [ "$status" -ne 0 ]
 }
 
 # ==============================================================================

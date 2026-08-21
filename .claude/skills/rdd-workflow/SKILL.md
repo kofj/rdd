@@ -1,3 +1,8 @@
+---
+name: rdd-workflow
+description: Interactive wizard to guide through common RDD workflows step-by-step
+---
+
 # RDD Workflow Skill
 
 > Interactive wizard for guided RDD workflows.
@@ -290,4 +295,4 @@ Actions:
 For more information:
 - `/rdd-help workflow` - Workflow documentation
 - `docs/03-stage-based-development.md` - Stage workflow
-- `.claude/skills/rdd-stage-auto.md` - Stage execution
+- `.claude/skills/rdd-stage-auto/SKILL.md` - Stage execution

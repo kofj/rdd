@@ -1,3 +1,8 @@
+---
+name: rdd-knowledge
+description: Manage knowledge artifacts - record ADRs, track technical debt, generate handoff documents
+---
+
 # RDD Knowledge Management Skill
 
 > **Core Philosophy**: Technical debt must be visible, not managed as tacit knowledge. New agents can bootstrap from documentation alone.
@@ -625,6 +630,6 @@ This skill integrates with:
 ## Reference
 
 For detailed specifications, see:
-- `/data/works/play/sbd/prompt.md` - Full RDD specification
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-templates.md` - Document templates
+- `prompt.md` - Full RDD specification
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-templates/SKILL.md` - Document templates

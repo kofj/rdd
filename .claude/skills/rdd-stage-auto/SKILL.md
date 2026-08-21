@@ -1,3 +1,8 @@
+---
+name: rdd-stage-auto
+description: Execute a complete RDD stage autonomously through all 5 quality gates with verification
+---
+
 # RDD Stage Auto Skill
 
 > **Purpose**: Execute a complete RDD Stage autonomously with gate verification, design document generation, review triggering, and completion verification.
@@ -122,7 +127,7 @@ Ensure a proper design document exists before any implementation.
 
 ### Design Document Generation
 
-Use the Stage Template from `/data/works/play/sbd/.claude/skills/rdd-templates.md`:
+Use the Stage Template from `.claude/skills/rdd-templates/SKILL.md`:
 
 ```markdown
 # Stage N: [Title]
@@ -641,6 +646,6 @@ When resuming an interrupted stage:
 ## Reference
 
 For templates and detailed specifications, see:
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-templates.md` - Document templates
-- `/data/works/play/sbd/prompt.md` - Full RDD specification
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-templates/SKILL.md` - Document templates
+- `prompt.md` - Full RDD specification

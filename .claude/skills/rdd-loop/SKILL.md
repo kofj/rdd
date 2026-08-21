@@ -1,3 +1,8 @@
+---
+name: rdd-loop
+description: Autonomous multi-stage execution — auto-detects incomplete stages from roadmap, executes with hard quality gates
+---
+
 # RDD Loop Skill
 
 > **Purpose**: Autonomous stage execution loop with auto-detection, fine-grained persistence, hard quality gates, and crash-resilient recovery.

@@ -146,13 +146,16 @@ upgrade() {
   cp -r "${extracted_dir}/.rdd/scripts/"* "${INSTALL_PREFIX}/scripts/"
   cp -r "${extracted_dir}/.rdd/hooks/"* "${INSTALL_PREFIX}/hooks/"
 
-  # Update skills
+  # Update skills (directory format: <name>/SKILL.md)
   local claude_dir="${HOME}/.claude"
   if [[ -d "${extracted_dir}/.claude/skills" ]]; then
+    # Clean up legacy flat skill files from older versions before copying
+    rm -f "${claude_dir}/skills/"rdd-*.md
     cp -r "${extracted_dir}/.claude/skills/"* "${claude_dir}/skills/"
   fi
-  if [[ -d "${extracted_dir}/.claude/commands" ]]; then
-    cp -r "${extracted_dir}/.claude/commands/"* "${claude_dir}/commands/"
+  # Clean up legacy RDD slash commands (superseded by skills of the same name)
+  if [[ -d "${claude_dir}/commands" ]]; then
+    rm -f "${claude_dir}/commands/"rdd-*.md
   fi
 
   # Update templates

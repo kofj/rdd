@@ -1,3 +1,8 @@
+---
+name: rdd-migrate
+description: Migrate an existing project to RDD framework, preserving existing structure and documentation
+---
+
 # RDD Migration Skill
 
 > Migrate existing projects to RDD (Roadmap Driven Development) paradigm
@@ -416,7 +421,7 @@ For Claude Code agents:
 
 ## Reference
 
-See `.claude/skills/rdd-core.md` for detailed RDD specification.
+See `.claude/skills/rdd-core/SKILL.md` for detailed RDD specification.
 ```
 
 ---
@@ -443,7 +448,7 @@ notifications:
 
 documentation:
   auto_sync: true
-  templates: .claude/skills/rdd-templates.md
+  templates: .claude/skills/rdd-templates/SKILL.md
 ```
 
 #### 4.2 Create Hooks Configuration (`.rdd/hooks.yml`)
@@ -716,6 +721,6 @@ After successful migration:
 ## Reference
 
 For detailed RDD specification, see:
-- `/data/works/play/sbd/prompt.md` - Full RDD specification
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-templates.md` - Document templates
+- `prompt.md` - Full RDD specification
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-templates/SKILL.md` - Document templates

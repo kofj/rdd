@@ -73,18 +73,17 @@ uninstall() {
   local commands_dir="${claude_dir}/commands"
 
   if [[ -d "${skills_dir}" ]]; then
-    for skill in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop rdd-review-auto rdd-recovery rdd-diagnosis rdd-fresh-check rdd-hooks rdd-core rdd-templates; do
+    for skill in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop rdd-review-auto rdd-recovery rdd-diagnosis rdd-fresh-check rdd-hooks rdd-core rdd-templates rdd-help rdd-state rdd-workflow rdd-stages-archive; do
+      rm -rf "${skills_dir}/${skill}"
       rm -f "${skills_dir}/${skill}.md"
     done
     log_info "Removed RDD skills from ${skills_dir}"
   fi
 
-  # Remove commands
+  # Remove legacy commands (superseded by skills of the same name)
   if [[ -d "${commands_dir}" ]]; then
-    for cmd in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop; do
-      rm -f "${commands_dir}/${cmd}.md"
-    done
-    log_info "Removed RDD commands from ${commands_dir}"
+    rm -f "${commands_dir}/"rdd-*.md
+    log_info "Removed legacy RDD commands from ${commands_dir}"
   fi
 
   echo ""

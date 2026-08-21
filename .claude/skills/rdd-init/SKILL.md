@@ -1,3 +1,8 @@
+---
+name: rdd-init
+description: Initialize RDD framework in a new or existing project with TDD/BDD configuration
+---
+
 # RDD Init Skill
 
 > Initialize a new RDD (Roadmap Driven Development) project structure
@@ -622,7 +627,7 @@ Review implementation after E2E pass:
 
 ## Review Log Template
 
-See `.claude/skills/rdd-templates.md` for the full review log template.
+See `.claude/skills/rdd-templates/SKILL.md` for the full review log template.
 ```
 
 #### 4.6 Create `docs/11-next-steps.md`
@@ -1335,6 +1340,6 @@ If Task commands fail:
 ## Reference
 
 For more information:
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-templates.md` - Document templates
-- `/data/works/play/sbd/docs/plans/2026-03-06-rdd-framework.md` - Implementation plan
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-templates/SKILL.md` - Document templates
+- `docs/plans/2026-03-06-rdd-framework.md` - Implementation plan

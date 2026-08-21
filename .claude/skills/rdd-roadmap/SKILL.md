@@ -1,3 +1,8 @@
+---
+name: rdd-roadmap
+description: View and manage project roadmap stages - add, modify, reorder, and track progress
+---
+
 # RDD Roadmap Management Skill
 
 > **Purpose**: Operational guide for creating, modifying, and tracking the project roadmap
@@ -331,5 +336,5 @@ docs/stages/stage-roadmap.md
 ## Reference
 
 For templates and related skills:
-- `/data/works/play/sbd/.claude/skills/rdd-templates.md` - Document templates including Roadmap Template
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts and workflow
+- `.claude/skills/rdd-templates/SKILL.md` - Document templates including Roadmap Template
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts and workflow

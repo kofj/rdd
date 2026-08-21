@@ -1,3 +1,8 @@
+---
+name: rdd-diagnosis
+description: Diagnose RDD project issues, analyze root causes, and provide remediation recommendations
+---
+
 # RDD Diagnosis Skill
 
 > **Purpose**: Diagnose issues, analyze root causes, and provide remediation recommendations.
@@ -511,6 +516,6 @@ Full Diagnostic
 ## Reference
 
 For related information, see:
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-recovery.md` - Recovery procedures
-- `/data/works/play/sbd/.claude/skills/rdd-stage-auto.md` - Stage execution
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-recovery/SKILL.md` - Recovery procedures
+- `.claude/skills/rdd-stage-auto/SKILL.md` - Stage execution

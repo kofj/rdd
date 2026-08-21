@@ -137,33 +137,23 @@ echo "────────────────────────�
 echo "SKILLS"
 echo "───────────────────────────────────────────────────────────────"
 
-check_file ".claude/skills/rdd-core.md"
-check_file ".claude/skills/rdd-templates.md"
-check_file ".claude/skills/rdd-init.md"
-check_file ".claude/skills/rdd-migrate.md"
-check_file ".claude/skills/rdd-roadmap.md"
-check_file ".claude/skills/rdd-stage-auto.md"
-check_file ".claude/skills/rdd-knowledge.md"
-check_file ".claude/skills/rdd-loop.md"
-check_file ".claude/skills/rdd-review-auto.md"
-check_file ".claude/skills/rdd-recovery.md"
-check_file ".claude/skills/rdd-diagnosis.md"
-check_file ".claude/skills/rdd-fresh-check.md"
-
-# ============================================
-# Commands Tests
-# ============================================
-echo ""
-echo "───────────────────────────────────────────────────────────────"
-echo "COMMANDS"
-echo "───────────────────────────────────────────────────────────────"
-
-check_file ".claude/commands/rdd-init.md"
-check_file ".claude/commands/rdd-migrate.md"
-check_file ".claude/commands/rdd-roadmap.md"
-check_file ".claude/commands/rdd-stage-auto.md"
-check_file ".claude/commands/rdd-knowledge.md"
-check_file ".claude/commands/rdd-loop.md"
+check_file ".claude/skills/rdd-core/SKILL.md"
+check_file ".claude/skills/rdd-templates/SKILL.md"
+check_file ".claude/skills/rdd-init/SKILL.md"
+check_file ".claude/skills/rdd-migrate/SKILL.md"
+check_file ".claude/skills/rdd-roadmap/SKILL.md"
+check_file ".claude/skills/rdd-stage-auto/SKILL.md"
+check_file ".claude/skills/rdd-knowledge/SKILL.md"
+check_file ".claude/skills/rdd-loop/SKILL.md"
+check_file ".claude/skills/rdd-review-auto/SKILL.md"
+check_file ".claude/skills/rdd-recovery/SKILL.md"
+check_file ".claude/skills/rdd-diagnosis/SKILL.md"
+check_file ".claude/skills/rdd-fresh-check/SKILL.md"
+check_file ".claude/skills/rdd-help/SKILL.md"
+check_file ".claude/skills/rdd-state/SKILL.md"
+check_file ".claude/skills/rdd-workflow/SKILL.md"
+check_file ".claude/skills/rdd-stages-archive/SKILL.md"
+check_file ".claude/skills/rdd-hooks/SKILL.md"
 
 # ============================================
 # Documentation Tests

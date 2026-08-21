@@ -1,3 +1,9 @@
+---
+name: rdd-state
+description: RDD state machine reference for tracking user progress and context-aware guidance
+disable-model-invocation: true
+---
+
 # RDD State Skill
 
 > State machine for tracking user progress and providing context-aware guidance.

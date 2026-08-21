@@ -71,8 +71,7 @@ cd rdd-framework
 ./scripts/install/install.sh
 
 # Or install manually
-cp -r .claude/skills/* ~/.claude/skills/
-cp -r .claude/commands/* ~/.claude/commands/
+cp -r .claude/skills/rdd-* ~/.claude/skills/
 cp -r .rdd/scripts/* ~/.rdd-framework/scripts/
 cp -r .rdd/hooks/* ~/.rdd-framework/hooks/
 ```

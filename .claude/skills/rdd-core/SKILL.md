@@ -1,3 +1,9 @@
+---
+name: rdd-core
+description: RDD core philosophy and paradigm reference: humans lay the roadmap, agents execute autonomously
+disable-model-invocation: true
+---
+
 # RDD (Roadmap Driven Development) Core Skill
 
 > **Core Philosophy**: Humans lay the tracks (Roadmap), Agents move along the tracks autonomously
@@ -217,5 +223,5 @@ Document Update Obligations (synchronous, no "docs pending"):
 ## Reference
 
 For detailed specifications, see:
-- `/data/works/play/sbd/prompt.md` - Full RDD specification
-- `/data/works/play/sbd/.claude/skills/rdd-templates.md` - Document templates
+- `prompt.md` - Full RDD specification
+- `.claude/skills/rdd-templates/SKILL.md` - Document templates

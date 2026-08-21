@@ -18,6 +18,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Releases are now automatically created when version tags are pushed
 - ASCII Banner now correctly displays "RDD" instead of "RER"
 - go-task installation now uses official taskfile.dev script with fallback
+- RDD skills now support both slash (`/rdd-init`) and natural-language triggers
+- Reference-only skills (`rdd-core`, `rdd-state`, `rdd-templates`, `rdd-hooks`) use
+  `disable-model-invocation: true` to avoid spurious auto-triggering
+
+### Fixed
+- **Skills were never recognized by Claude Code**: skill files were installed as flat
+  `~/.claude/skills/rdd-*.md` without YAML frontmatter, but Claude Code requires the
+  directory format `<name>/SKILL.md` with a `description` field. All 17 skills are now
+  converted to the correct format, so they load and can be triggered by natural language.
+- All distributors (`postinstall.js`, `install.sh`, `upgrade.sh`, `uninstall.sh`) now
+  deploy/remove skills in directory format and clean up legacy flat files on upgrade.
+
+### Removed
+- Duplicate `.claude/commands/rdd-*.md` slash commands — superseded by same-named skills
+  (skills take precedence and already provide slash triggering).
 
 ## [1.0.0] - 2026-03-09
 

@@ -1,3 +1,8 @@
+---
+name: rdd-review-auto
+description: Automated multi-model review for RDD design documents and code
+---
+
 # RDD Review Auto Skill
 
 > **Purpose**: Automated multi-model review for design documents and code.
@@ -510,6 +515,6 @@ ADR Review Checklist
 ## Reference
 
 For related information, see:
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
-- `/data/works/play/sbd/.claude/skills/rdd-knowledge.md` - Knowledge management
-- `/data/works/play/sbd/docs/10-review-practices.md` - Review practices document
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `.claude/skills/rdd-knowledge/SKILL.md` - Knowledge management
+- `docs/10-review-practices.md` - Review practices document

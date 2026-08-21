@@ -409,14 +409,16 @@ install_rdd() {
     cp -r "${RDD_DOWNLOAD_DIR}/.rdd/hooks/"* "${INSTALL_PREFIX}/hooks/"
   fi
 
-  # Skills
+  # Skills (directory format: <name>/SKILL.md)
   if [[ -d "${RDD_DOWNLOAD_DIR}/.claude/skills" ]]; then
+    # Clean up legacy flat skill files from older versions before copying
+    rm -f "${HOME}/.claude/skills/"rdd-*.md
     cp -r "${RDD_DOWNLOAD_DIR}/.claude/skills/"* "${HOME}/.claude/skills/"
   fi
 
-  # Commands
-  if [[ -d "${RDD_DOWNLOAD_DIR}/.claude/commands" ]]; then
-    cp -r "${RDD_DOWNLOAD_DIR}/.claude/commands/"* "${HOME}/.claude/commands/"
+  # Clean up legacy RDD slash commands (superseded by skills of the same name)
+  if [[ -d "${HOME}/.claude/commands" ]]; then
+    rm -f "${HOME}/.claude/commands/"rdd-*.md
   fi
 
   # Templates
@@ -1014,17 +1016,16 @@ uninstall() {
   # Remove skills and commands
   local claude_dir="${HOME}/.claude"
 
-  # Remove RDD skills
-  for skill in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop rdd-review-auto rdd-recovery rdd-diagnosis rdd-fresh-check rdd-hooks rdd-core rdd-templates; do
+  # Remove RDD skills (directory format), plus legacy flat files
+  for skill in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop rdd-review-auto rdd-recovery rdd-diagnosis rdd-fresh-check rdd-hooks rdd-core rdd-templates rdd-help rdd-state rdd-workflow rdd-stages-archive; do
+    rm -rf "${claude_dir}/skills/${skill}"
     rm -f "${claude_dir}/skills/${skill}.md"
   done
   log_info "Removed RDD skills"
 
-  # Remove RDD commands
-  for cmd in rdd-init rdd-migrate rdd-roadmap rdd-stage-auto rdd-knowledge rdd-loop; do
-    rm -f "${claude_dir}/commands/${cmd}.md"
-  done
-  log_info "Removed RDD commands"
+  # Remove legacy RDD commands (superseded by skills)
+  rm -f "${claude_dir}/commands/"rdd-*.md
+  log_info "Removed legacy RDD commands"
 
   # Remove from PATH (need to manually edit shell rc)
   log_warn "Please manually remove RDD entries from your shell RC file (~/.bashrc, ~/.zshrc, etc.)"

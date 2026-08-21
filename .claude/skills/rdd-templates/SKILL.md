@@ -1,3 +1,9 @@
+---
+name: rdd-templates
+description: RDD document templates reference (charter, stage, ADR, tech-debt, handoff)
+disable-model-invocation: true
+---
+
 # RDD Document Templates
 
 All document templates for RDD (Roadmap Driven Development) in one place.
@@ -554,5 +560,5 @@ When filling templates, replace:
 ## Reference
 
 For detailed RDD specification, see:
-- `/data/works/play/sbd/prompt.md` - Full RDD specification
-- `/data/works/play/sbd/.claude/skills/rdd-core.md` - Core RDD concepts
+- `prompt.md` - Full RDD specification
+- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts

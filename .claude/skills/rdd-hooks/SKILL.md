@@ -1,3 +1,9 @@
+---
+name: rdd-hooks
+description: RDD hooks reference: trigger rules and hook invocation utilities
+disable-model-invocation: true
+---
+
 # RDD Hooks Skill
 
 > **Purpose**: Define Hook trigger rules and provide Hook invocation utilities.
@@ -412,6 +418,6 @@ When a P0 or P1 hook fires:
 
 ## Reference
 
-- `/data/works/play/sbd/.rdd/hooks.yml` - Channel configuration
-- `/data/works/play/sbd/.rdd/templates.yml` - Message templates
-- `/data/works/play/sbd/.rdd/scripts/notify.sh` - Notification dispatcher
+- `.rdd/hooks.yml` - Channel configuration
+- `.rdd/templates.yml` - Message templates
+- `.rdd/scripts/notify.sh` - Notification dispatcher
