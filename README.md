@@ -22,7 +22,7 @@ curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/insta
 
 ```bash
 # Install specific version
-curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --version v1.1.0
+curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --version v1.2.1
 
 # Install to custom directory
 curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --prefix /opt/rdd
