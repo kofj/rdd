@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # RDD Compatibility Checker Script
 # Validates configuration compatibility and checks for breaking changes

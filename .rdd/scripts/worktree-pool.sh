@@ -26,9 +26,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
-log_info() { echo -e "${GREEN}[POOL]${NC} $*"; }
-log_warn() { echo -e "${YELLOW}[POOL]${NC} $*"; }
-log_error() { echo -e "${RED}[POOL]${NC} $*"; }
+log_info() { echo -e "${GREEN}[POOL]${NC} $*" >&2; }
+log_warn() { echo -e "${YELLOW}[POOL]${NC} $*" >&2; }
+log_error() { echo -e "${RED}[POOL]${NC} $*" >&2; }
 
 get_timestamp() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 
@@ -59,7 +59,7 @@ allocate() {
 
   # Check if already allocated
   local existing_path
-  existing_path=$(grep -o "\"${stage_id}\":[[:space:]]*\"[^\"]*\"" "$POOL_FILE" 2>/dev/null | sed 's/.*: "//' | sed 's/"$//' || true)
+  existing_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["active"].get(sys.argv[2], ""))' "$POOL_FILE" "$stage_id")
   if [ -n "$existing_path" ] && [ -d "$existing_path" ]; then
     log_info "Worktree already allocated for Stage ${stage_id}: ${existing_path}"
     echo "$existing_path"
@@ -68,14 +68,14 @@ allocate() {
 
   # Check max parallel limit
   local active_count
-  active_count=$(grep -c '"[0-9]*":[[:space:]]*"' "$POOL_FILE" 2>/dev/null || echo 0)
+  active_count=$(python3 -c 'import json,sys; print(len(json.load(open(sys.argv[1]))["active"]))' "$POOL_FILE")
   if [ "$active_count" -ge "$MAX_PARALLEL" ]; then
     log_error "Max parallel worktrees reached (${MAX_PARALLEL})"
     return 1
   fi
 
   # Determine base branch
-  local base_ref="$DEFAULT_BRANCH"
+  local base_ref="origin/$DEFAULT_BRANCH"
   if ! git rev-parse --verify "origin/${DEFAULT_BRANCH}" >/dev/null 2>&1; then
     base_ref="HEAD"
   fi
@@ -92,18 +92,16 @@ allocate() {
   log_info "  Branch: ${branch_name}"
   log_info "  Path: ${worktree_path}"
 
-  if ! git worktree add "$worktree_path" -b "$branch_name" "origin/${DEFAULT_BRANCH}" 2>/dev/null; then
-    # Fallback: branch from HEAD
-    log_warn "Falling back to HEAD..."
-    git worktree add "$worktree_path" -b "$branch_name" HEAD
-  fi
+  git worktree add "$worktree_path" -b "$branch_name" "$base_ref" >&2
 
-  # Update pool state
-  local ts_str
-  ts_str=$(get_timestamp)
-  # Simple JSON manipulation — append to active
-  local tmp_file="${POOL_FILE}.tmp"
-  sed "s/\"active\": {/\"active\": {\n    \"${stage_id}\": \"${worktree_path}\",/" "$POOL_FILE" >"$tmp_file" 2>/dev/null && mv "$tmp_file" "$POOL_FILE"
+  python3 - "$POOL_FILE" "$stage_id" "$worktree_path" <<'PYPOOL'
+import json, os, sys
+path, stage, worktree = sys.argv[1:]
+with open(path) as f: state = json.load(f)
+state['active'][stage] = worktree
+with open(path + '.tmp', 'w') as f: json.dump(state, f, indent=2)
+os.replace(path + '.tmp', path)
+PYPOOL
 
   echo "$worktree_path"
 }
@@ -118,7 +116,7 @@ release() {
   init_pool
 
   local worktree_path
-  worktree_path=$(grep -o "\"${stage_id}\":[[:space:]]*\"[^\"]*\"" "$POOL_FILE" 2>/dev/null | sed 's/.*: "//' | sed 's/"$//' || true)
+  worktree_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["active"].get(sys.argv[2], ""))' "$POOL_FILE" "$stage_id")
 
   if [ -z "$worktree_path" ]; then
     log_warn "No worktree found for Stage ${stage_id}"
@@ -129,15 +127,20 @@ release() {
 
   # Remove worktree
   if [ -d "$worktree_path" ]; then
-    git worktree remove "$worktree_path" --force 2>/dev/null || {
-      log_warn "Worktree remove failed for ${worktree_path}, cleaning up directory"
-      rm -rf "$worktree_path"
+    git worktree remove "$worktree_path" || {
+      log_error "Worktree retained: commit/stash changes and verify stage completion before release"
+      return 1
     }
   fi
 
-  # Remove from pool state
-  local tmp_file="${POOL_FILE}.tmp"
-  sed "/\"${stage_id}\": \"[^\"]*\",*/d" "$POOL_FILE" >"$tmp_file" 2>/dev/null && mv "$tmp_file" "$POOL_FILE"
+  python3 - "$POOL_FILE" "$stage_id" <<'PYPOOL'
+import json, os, sys
+path, stage = sys.argv[1:]
+with open(path) as f: state = json.load(f)
+state['active'].pop(stage, None)
+with open(path + '.tmp', 'w') as f: json.dump(state, f, indent=2)
+os.replace(path + '.tmp', path)
+PYPOOL
 
   log_info "Worktree released for Stage ${stage_id}"
 }
@@ -250,6 +253,29 @@ main() {
 
   local cmd="$1"
   shift
+  cd "$PROJECT_ROOT"
+  case "$cmd" in
+    allocate | release)
+      [[ "${1:-}" =~ ^[0-9]+$ ]] || {
+        log_error "Numeric stage id required"
+        return 2
+      }
+      [[ "$MAX_PARALLEL" =~ ^[1-9][0-9]*$ ]] || {
+        log_error "Positive pool limit required"
+        return 2
+      }
+      ;;
+  esac
+  case "$cmd" in
+    allocate | release | cleanup)
+      mkdir -p "$POOL_DIR"
+      mkdir "$POOL_DIR/.lock" 2>/dev/null || {
+        log_error "Pool busy; retry after the active operation"
+        return 1
+      }
+      trap 'rmdir "$POOL_DIR/.lock"' EXIT
+      ;;
+  esac
   case "$cmd" in
     allocate) allocate "$@" ;;
     release) release "$@" ;;

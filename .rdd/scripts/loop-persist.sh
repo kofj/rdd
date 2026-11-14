@@ -97,7 +97,7 @@ stage_start() {
   local stage_id="$1" stage_name="$2" ts
   ts=$(get_timestamp)
 
-  if yq eval ".stages[] | select(.id == ${stage_id})" "$LOOP_STATE_FILE" >/dev/null 2>&1; then
+  if yq eval -e ".stages[] | select(.id == ${stage_id})" "$LOOP_STATE_FILE" >/dev/null 2>&1; then
     # Update existing
     yq -i ".stages[] |= select(.id == ${stage_id}).status = \"in_progress\"" "$LOOP_STATE_FILE"
     yq -i ".stages[] |= select(.id == ${stage_id}).started_at = \"${ts}\"" "$LOOP_STATE_FILE"

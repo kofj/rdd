@@ -423,7 +423,8 @@ EOF
 
   # Run migration scripts
   if [[ -d "$MIGRATION_DIR" ]]; then
-    find "$MIGRATION_DIR" -name "*.sh" -type f -executable 2>/dev/null | sort | while read -r script; do
+    find "$MIGRATION_DIR" -name "*.sh" -type f 2>/dev/null | sort | while read -r script; do
+      [[ -x "$script" ]] || continue
       if [[ "$DRY_RUN" != "true" ]]; then
         log_info "Running migration script: $(basename "$script")"
         if bash "$script"; then

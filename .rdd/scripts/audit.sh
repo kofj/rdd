@@ -529,7 +529,7 @@ EOF
   else
     # Remove trailing ], add new entry, add ] back
     local tmp_file="${AUDIT_JSON}.tmp"
-    head -n -1 "$AUDIT_JSON" >"$tmp_file"
+    sed '$d' "$AUDIT_JSON" >"$tmp_file"
     echo "  ,$json_entry" >>"$tmp_file"
     echo "]" >>"$tmp_file"
     mv "$tmp_file" "$AUDIT_JSON"

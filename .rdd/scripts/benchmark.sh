@@ -107,7 +107,7 @@ get_memory_kb() {
   else
     # Fallback for macOS
     if command -v ps &>/dev/null; then
-      ps -o rss= -p "$pid" 2>/dev/null || echo "0"
+      ps -o rss= -p "$pid" 2>/dev/null | tr -d "[:space:]" || echo "0"
     else
       echo "0"
     fi

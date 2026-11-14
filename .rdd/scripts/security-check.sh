@@ -250,7 +250,7 @@ check_exposed_credentials() {
   log_info "Checking environment variable usage..."
 
   local env_usage
-  env_usage=$(grep -r '\${' "${RDD_DIR}" --include="*.yml" --include="*.yaml" 2>/dev/null | wc -l || echo "0")
+  env_usage=$(grep -r '\${' "${RDD_DIR}" --include="*.yml" --include="*.yaml" 2>/dev/null | wc -l || true)
 
   if [[ "$env_usage" -gt 0 ]]; then
     log_ok "Found $env_usage environment variable references (good practice)"

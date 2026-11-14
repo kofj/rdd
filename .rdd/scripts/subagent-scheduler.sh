@@ -6,9 +6,9 @@
 # Usage: subagent-scheduler.sh <command> [args]
 #
 # Commands:
-#   execute <stage_id> <worktree_path>    - Execute /rdd-stage-auto for a stage in its worktree
-#   parallel <stage_ids>                  - Launch parallel execution of multiple stages
-#   sequential <stage_ids>                - Execute stages one after another
+#   execute <stage_id> <worktree_path>    - Queue rdd-stage-auto for the active host
+#   parallel <stage_ids>                  - Queue requests for multiple stages
+#   sequential <stage_ids>                - Queue the first stage; host must verify before requesting the next
 #   status                                - Show scheduler status
 #
 
@@ -35,6 +35,10 @@ get_timestamp() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 
 execute_stage() {
   local stage_id="$1"
+  [[ "$stage_id" =~ ^[0-9]+$ ]] || {
+    log_error "Numeric stage id required"
+    return 2
+  }
   local worktree_path="$2"
 
   log_info "Scheduling Stage ${stage_id} in ${worktree_path}..."
@@ -45,8 +49,9 @@ execute_stage() {
   fi
 
   # Execute rdd-stage-auto in the worktree
-  # The skill will be invoked by Claude Code autonomously
+  # The active Claude Code or Codex host must consume this pending request.
   # For script-based execution, we write a trigger file
+  mkdir -p "${worktree_path}/.rdd"
   local trigger_file="${worktree_path}/.rdd/trigger-stage-${stage_id}"
   cat >"$trigger_file" <<EOF
 # RDD Subagent Trigger
@@ -54,7 +59,8 @@ execute_stage() {
 # Worktree: ${worktree_path}
 # Generated: $(get_timestamp)
 #
-# Execute: /rdd-stage-auto ${stage_id}
+# Status: pending (not executed)
+# Execute with the active host: rdd-stage-auto ${stage_id}
 # Then: merge back to main
 EOF
 
@@ -74,20 +80,17 @@ parallel_execute() {
   for stage_id in $stage_ids; do
     # Allocate worktree
     local wt_path
-    wt_path=$(bash "${RDD_DIR}/scripts/worktree-pool.sh" allocate "$stage_id" 2>&1)
-    if [ $? -ne 0 ]; then
+    if ! wt_path=$(bash "${RDD_DIR}/scripts/worktree-pool.sh" allocate "$stage_id"); then
       log_error "Failed to allocate worktree for Stage ${stage_id}"
       continue
     fi
 
-    # Execute in background
-    execute_stage "$stage_id" "$wt_path" &
-    log_info "Stage ${stage_id} launched (PID $!)"
+    # Queue requests serially; the host owns actual parallel execution
+    execute_stage "$stage_id" "$wt_path"
+    log_info "Stage ${stage_id} request pending; host execution required"
   done
 
-  # Wait for all
-  wait
-  log_info "Parallel execution complete"
+  log_info "Parallel requests queued; execution pending"
 }
 
 # ==========================================
@@ -102,8 +105,7 @@ sequential_execute() {
 
     # Allocate worktree
     local wt_path
-    wt_path=$(bash "${RDD_DIR}/scripts/worktree-pool.sh" allocate "$stage_id" 2>&1)
-    if [ $? -ne 0 ]; then
+    if ! wt_path=$(bash "${RDD_DIR}/scripts/worktree-pool.sh" allocate "$stage_id"); then
       log_error "Failed to allocate worktree for Stage ${stage_id}"
       return 1
     fi
@@ -111,11 +113,13 @@ sequential_execute() {
     # Execute (foreground)
     execute_stage "$stage_id" "$wt_path"
 
-    # Cleanup after completion
-    bash "${RDD_DIR}/scripts/worktree-pool.sh" release "$stage_id" 2>/dev/null || true
+    # Only the first request is queued. The host must verify completion
+    # before requesting the next stage; never release a pending worktree.
+    log_info "Stage ${stage_id} pending; continue in the active host"
+    return 0
   done
 
-  log_info "Sequential execution complete"
+  log_info "No sequential requests queued"
 }
 
 # ==========================================
@@ -148,8 +152,8 @@ Usage: subagent-scheduler.sh <command> [args]
 
 Commands:
   execute <stage_id> <worktree_path>     Trigger stage execution in worktree
-  parallel <stage_id1> <stage_id2> ...   Launch parallel execution
-  sequential <stage_id1> <stage_id2> ... Execute stages one after another
+  parallel <stage_id1> <stage_id2> ...   Queue pending stage requests
+  sequential <stage_id1> <stage_id2> ... Queue the first stage; host must verify before requesting the next
   status                                 Show scheduler status
 
 EOF

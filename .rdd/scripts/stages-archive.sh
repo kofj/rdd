@@ -28,8 +28,8 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-log_info()  { echo -e "${GREEN}[INFO]${NC} $*"; }
-log_warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
+log_info() { echo -e "${GREEN}[INFO]${NC} $*"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 log_debug() {
   if [[ "${VERBOSE:-false}" == "true" ]]; then
@@ -50,8 +50,8 @@ get_completed_stages() {
 
   # Extract stage numbers from completed rows
   # Pattern: | Stage <num> | ✅ Completed |
-  completed=$(grep -E '^\| Stage [0-9]+ \| ✅ Completed \|' "$ROADMAP_FILE" | \
-    sed -E 's/^\| Stage ([0-9]+) \|.*/\1/' | \
+  completed=$(grep -E '^\| Stage [0-9]+ \| ✅ Completed \|' "$ROADMAP_FILE" |
+    sed -E 's/^\| Stage ([0-9]+) \|.*/\1/' |
     sort -n)
 
   echo "$completed"
@@ -93,7 +93,7 @@ parse_args() {
         fi
         shift 2
         ;;
-      --help|-h)
+      --help | -h)
         show_help
         exit 0
         ;;
@@ -150,7 +150,7 @@ do_archive() {
   declare -A is_completed
   while IFS= read -r num; do
     [[ -n "$num" ]] && is_completed[$num]=1
-  done <<< "$completed"
+  done <<<"$completed"
 
   log_debug "Completed stages: $completed"
 
