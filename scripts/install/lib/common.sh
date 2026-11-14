@@ -40,7 +40,7 @@ get_rdd_home() {
 # Check if in RDD project
 is_rdd_project() {
   local dir="${1:-$(pwd)}"
-  [[ -d "${dir}/.rdd" ]] && [[ -f "${dir}/CLAUDE.md" ]]
+  [[ -d "${dir}/.rdd" ]] && [[ -f "${dir}/AGENTS.md" ]]
 }
 
 # Get project name
