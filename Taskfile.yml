@@ -710,7 +710,7 @@ tasks:
       Use this before ending a session or at regular intervals.
     cmds:
       - echo "Saving context recovery information..."
-      - bash {{.RDD_DIR}}/scripts/checkpoint.sh save
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh save {{.CLI_ARGS}}
       - bash {{.RDD_DIR}}/scripts/handoff.sh generate manual "Manual save"
       - echo ""
       - echo "Context recovery information saved."
@@ -731,7 +731,7 @@ tasks:
   checkpoint:save:
     desc: Save checkpoint only
     cmds:
-      - bash {{.RDD_DIR}}/scripts/checkpoint.sh save
+      - bash {{.RDD_DIR}}/scripts/checkpoint.sh save {{.CLI_ARGS}}
     silent: false
 
   checkpoint:show:
@@ -952,10 +952,10 @@ tasks:
     desc: Run lint checks (shellcheck for .sh, bats syntax for .bats)
     summary: |
       Run lint checks on all shell scripts and bats test files.
-      Blocks on shellcheck errors (exit code 2). Warnings (exit 1) do not block.
+      Blocks on shellcheck error-severity diagnostics or tool failure. Warnings are not selected.
     cmds:
       - 'echo "Running shellcheck on scripts (errors block, warnings pass)..."'
-      - 'sc_exit=0; find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shellcheck -x || sc_exit=$?; if [ "$sc_exit" = "2" ]; then echo "  [FAIL] Shell errors found - gate blocked"; exit 1; else echo "  [OK] No errors (warnings logged but non-blocking)"; fi'
+      - 'find . -name "*.sh" -not -path "./tests/lib/*" -print0 | xargs -0 shellcheck -x --severity=error'
       - 'echo "Checking bats test syntax..."'
       - 'find tests -name "*.bats" -not -path "*/lib/*" -print0 | xargs -0 -I {} sh -c "bats --formatter pretty --count {} > /dev/null 2>&1 || (echo Syntax error: {} && exit 1)"'
       - 'echo "Lint check complete."'
@@ -1109,3 +1109,59 @@ tasks:
     cmds:
       - bash {{.RDD_DIR}}/scripts/task-registry.sh list-orphans
     silent: false
+
+  test:agents:
+    desc: Isolated dual-client installer and project lifecycle tests
+    cmds:
+      - python3 tests/test_agents.py
+
+  test:agents:coverage:
+    desc: Executed-line coverage for the shared Python lifecycle manager
+    cmds:
+      - mkdir -p .rdd/cache/agent-coverage
+      - python3 -m trace --count --missing --summary --coverdir .rdd/cache/agent-coverage tests/test_agents.py
+
+  install:agents:
+    desc: Install RDD from this checkout (CLI_ARGS selects agent/prefix)
+    cmds:
+      - bash scripts/install/install.sh --source . {{.CLI_ARGS}}
+
+  stage:status:
+    desc: Show current stage status
+    cmds:
+      - task status
+
+  knowledge:adr:
+    desc: Record ADR (id title background decision rationale impact stage)
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/loop-persist.sh decision {{.CLI_ARGS}}
+
+  knowledge:debt:
+    desc: Record debt (id title priority stage description source line suggested-stage)
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/loop-persist.sh debt {{.CLI_ARGS}}
+
+  knowledge:handoff:
+    desc: Generate a shared handoff document
+    cmds:
+      - bash {{.RDD_DIR}}/scripts/handoff.sh generate
+
+  knowledge:check:
+    desc: Verify fresh-agent documentation
+    cmds:
+      - task docs:fresh-check
+
+  test:clean:
+    desc: Run task test in a disposable source copy with notification channels disabled
+    cmds:
+      - python3 tests/run_clean.py
+
+  test:clients:
+    desc: Opt-in authenticated Claude/Codex skill and shared-checkpoint smoke
+    cmds:
+      - python3 tests/client_smoke.py
+
+  test:linux:
+    desc: Opt-in Linux lifecycle smoke in a Python container (IMAGE override supported)
+    cmds:
+      - docker run --rm --network none --entrypoint python3 -v '{{.ROOT_DIR}}:/source:ro' -w /source {{.IMAGE | default "python:3.13"}} tests/linux_smoke.py

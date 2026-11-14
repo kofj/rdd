@@ -28,11 +28,13 @@ teardown() {
 
     # Run install script with test prefix
     run bash "${PROJECT_ROOT}/scripts/install/install.sh" \
+        --source "${PROJECT_ROOT}" \
         --prefix "${TEST_DIR}/.rdd-test" \
+        --user-home "${TEST_DIR}/user" \
         --no-path
 
-    # Should succeed or fail gracefully
-    [ "$status" -eq 0 ] || [ "$status" -eq 1 ]
+    # Real local installation must succeed
+    [ "$status" -eq 0 ]
 }
 
 # ==============================================================================

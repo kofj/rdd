@@ -221,7 +221,8 @@ teardown() {
     source "${SCRIPTS_DIR}/compat.sh"
 
     # Remove a required field
-    sed -i '/min_coverage/d' "$CONFIG_FILE"
+    sed '/min_coverage/d' "$CONFIG_FILE" > "${CONFIG_FILE}.tmp"
+    mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
 
     # Call function directly to capture array changes
     validate_config

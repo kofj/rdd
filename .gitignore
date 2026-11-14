@@ -49,3 +49,7 @@ temp/
 
 # Git worktrees
 .worktrees/
+
+# Python runtime/test caches
+__pycache__/
+*.pyc
