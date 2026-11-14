@@ -1,8 +1,11 @@
 ---
 name: rdd-hooks
-description: RDD hooks reference: trigger rules and hook invocation utilities
+description: "RDD hooks reference: trigger rules and hook invocation utilities"
 disable-model-invocation: true
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Hooks Skill
 

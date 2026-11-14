@@ -1,0 +1,10 @@
+# Shared Claude Code / Codex runtime contract
+
+- All RDD skills work in Claude Code and Codex. `/rdd-name` examples mean the Claude skill invocation; use `$rdd-name` in Codex CLI/IDE or select the skill in the host UI. These are agent prompts, not shell commands. Natural-language requests may select the same skill.
+- Resolve `../rdd-name/SKILL.md` relative to the current skill directory. Resolve `docs/`, `.rdd/` and `Taskfile.yml` relative to the active project, never the global skill install directory. Locate runtime assets through `rdd` or the installed runtime prefix.
+- Start with the project's AGENTS.md and docs/11-next-steps.md. CLAUDE.md bridges to AGENTS.md. Existing client-specific guidance still applies; installation never overwrites client config or changes permissions.
+- Run `rdd init` to scaffold a new project or `rdd migrate` to add missing files. Existing files are preserved. If Taskfile.rdd.yml was generated, integrate its RDD tasks into the existing Taskfile and bind project-specific tests before executing gates. Unconfigured tests are failures, never passes.
+- Use the same Task commands, scripts, checkpoints, review logs, ADR and debt ledger in either host. P0 stops; P2/P3 may continue while the authorized host session is active. This is not an OS daemon and does not promise execution after the host exits.
+- For parallel work use available native host delegation, retain worktrees until results and gates are verified, and record task ownership. Scheduler trigger files are pending requests only: writing one is NOT execution or completion. If delegation is unavailable, execute sequentially in the active host and record the fallback.
+- Independent contexts are not evidence of different models. Record actual reviewer/model evidence; if required multi-model review is unavailable, leave the gate pending. Never fabricate reviews or treat model consensus as proof.
+- Hook scripts are shared explicit Task actions. No client lifecycle hook is auto-registered. Send external notifications only when the user/project has authorized the destination and action; otherwise report in-session and record the event locally.

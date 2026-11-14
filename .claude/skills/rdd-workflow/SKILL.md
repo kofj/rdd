@@ -1,7 +1,10 @@
 ---
 name: rdd-workflow
-description: Interactive wizard to guide through common RDD workflows step-by-step
+description: "Interactive wizard to guide through common RDD workflows step-by-step"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Workflow Skill
 
@@ -295,4 +298,4 @@ Actions:
 For more information:
 - `/rdd-help workflow` - Workflow documentation
 - `docs/03-stage-based-development.md` - Stage workflow
-- `.claude/skills/rdd-stage-auto/SKILL.md` - Stage execution
+- `../rdd-stage-auto/SKILL.md` - Stage execution

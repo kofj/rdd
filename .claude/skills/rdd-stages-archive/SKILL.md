@@ -1,7 +1,10 @@
 ---
 name: rdd-stages-archive
-description: Archive old RDD stage documents to keep the working directory clean and focused
+description: "Archive old RDD stage documents to keep the working directory clean and focused"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Stages Archive Skill
 

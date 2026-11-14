@@ -1,7 +1,10 @@
 ---
 name: rdd-recovery
-description: Recover an RDD project from failures, blockers, and interrupted stages
+description: "Recover an RDD project from failures, blockers, and interrupted stages"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Recovery Skill
 
@@ -473,6 +476,6 @@ After any recovery:
 ## Reference
 
 For related information, see:
-- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
-- `.claude/skills/rdd-loop/SKILL.md` - Loop control and state machine
-- `.claude/skills/rdd-knowledge/SKILL.md` - Handoff generation
+- `../rdd-core/SKILL.md` - Core RDD concepts
+- `../rdd-loop/SKILL.md` - Loop control and state machine
+- `../rdd-knowledge/SKILL.md` - Handoff generation

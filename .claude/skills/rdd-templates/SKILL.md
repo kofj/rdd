@@ -1,8 +1,11 @@
 ---
 name: rdd-templates
-description: RDD document templates reference (charter, stage, ADR, tech-debt, handoff)
+description: "RDD document templates reference (charter, stage, ADR, tech-debt, handoff)"
 disable-model-invocation: true
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Document Templates
 
@@ -561,4 +564,4 @@ When filling templates, replace:
 
 For detailed RDD specification, see:
 - `prompt.md` - Full RDD specification
-- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
+- `../rdd-core/SKILL.md` - Core RDD concepts

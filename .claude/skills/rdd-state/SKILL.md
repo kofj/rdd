@@ -1,8 +1,11 @@
 ---
 name: rdd-state
-description: RDD state machine reference for tracking user progress and context-aware guidance
+description: "RDD state machine reference for tracking user progress and context-aware guidance"
 disable-model-invocation: true
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD State Skill
 

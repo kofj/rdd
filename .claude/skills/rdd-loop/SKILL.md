@@ -1,7 +1,10 @@
 ---
 name: rdd-loop
-description: Autonomous multi-stage execution — auto-detects incomplete stages from roadmap, executes with hard quality gates
+description: "Autonomous multi-stage execution — auto-detects incomplete stages from roadmap, executes with hard quality gates"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Loop Skill
 

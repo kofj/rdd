@@ -1,7 +1,10 @@
 ---
 name: rdd-help
-description: Search RDD documentation for topics, commands, workflows, and troubleshooting guides
+description: "Search RDD documentation for topics, commands, workflows, and troubleshooting guides"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Help Skill
 
@@ -37,8 +40,8 @@ The `rdd-help` skill provides comprehensive documentation search capabilities fo
 
 | Location | Priority | Content Type |
 |----------|----------|--------------|
-| `.claude/commands/` | High | Command documentation |
-| `.claude/skills/` | High | Skill documentation |
+| Active host skill directory | High | Installed RDD workflow documentation |
+| Sibling `../rdd-*/SKILL.md` files | High | Shared skill documentation |
 | `docs/` | Medium | User documentation |
 | `CLAUDE.md` | High | Quick reference |
 | `AGENTS.md` | High | Agent entry point |
@@ -162,7 +165,7 @@ Related Commands:
 - /rdd-migrate - Migrate existing project
 
 Documentation:
-- .claude/skills/rdd-init/SKILL.md
+- ../rdd-init/SKILL.md
 
 Workflow:
 1. Run /rdd-init [project-name]

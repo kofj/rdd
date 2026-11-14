@@ -1,7 +1,10 @@
 ---
 name: rdd-diagnosis
-description: Diagnose RDD project issues, analyze root causes, and provide remediation recommendations
+description: "Diagnose RDD project issues, analyze root causes, and provide remediation recommendations"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Diagnosis Skill
 
@@ -516,6 +519,6 @@ Full Diagnostic
 ## Reference
 
 For related information, see:
-- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
-- `.claude/skills/rdd-recovery/SKILL.md` - Recovery procedures
-- `.claude/skills/rdd-stage-auto/SKILL.md` - Stage execution
+- `../rdd-core/SKILL.md` - Core RDD concepts
+- `../rdd-recovery/SKILL.md` - Recovery procedures
+- `../rdd-stage-auto/SKILL.md` - Stage execution

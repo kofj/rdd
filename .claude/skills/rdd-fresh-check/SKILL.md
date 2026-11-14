@@ -1,7 +1,10 @@
 ---
 name: rdd-fresh-check
-description: Verify that a fresh agent can take over the RDD project from documentation alone
+description: "Verify that a fresh agent can take over the RDD project from documentation alone"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Fresh Check Skill
 
@@ -268,10 +271,10 @@ Read each document in order and answer the check questions:
 
 ```bash
 # Run automated verification
-task rdd:fresh-check
+task docs:fresh-check
 
 # Or with verbose output
-task rdd:fresh-check --verbose
+task --verbose docs:fresh-check
 ```
 
 ### Check Output
@@ -385,6 +388,6 @@ If FAIL: Must fix issues before stage completion
 ## Reference
 
 For related information, see:
-- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
-- `.claude/skills/rdd-knowledge/SKILL.md` - Knowledge management
+- `../rdd-core/SKILL.md` - Core RDD concepts
+- `../rdd-knowledge/SKILL.md` - Knowledge management
 - `docs/03-stage-based-development.md` - Stage completion criteria

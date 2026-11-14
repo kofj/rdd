@@ -1,7 +1,10 @@
 ---
 name: rdd-roadmap
-description: View and manage project roadmap stages - add, modify, reorder, and track progress
+description: "View and manage project roadmap stages - add, modify, reorder, and track progress"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Roadmap Management Skill
 
@@ -336,5 +339,5 @@ docs/stages/stage-roadmap.md
 ## Reference
 
 For templates and related skills:
-- `.claude/skills/rdd-templates/SKILL.md` - Document templates including Roadmap Template
-- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts and workflow
+- `../rdd-templates/SKILL.md` - Document templates including Roadmap Template
+- `../rdd-core/SKILL.md` - Core RDD concepts and workflow

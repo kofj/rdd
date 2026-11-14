@@ -1,8 +1,11 @@
 ---
 name: rdd-core
-description: RDD core philosophy and paradigm reference: humans lay the roadmap, agents execute autonomously
+description: "RDD core philosophy and paradigm reference: humans lay the roadmap, agents execute autonomously"
 disable-model-invocation: true
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD (Roadmap Driven Development) Core Skill
 
@@ -224,4 +227,4 @@ Document Update Obligations (synchronous, no "docs pending"):
 
 For detailed specifications, see:
 - `prompt.md` - Full RDD specification
-- `.claude/skills/rdd-templates/SKILL.md` - Document templates
+- `../rdd-templates/SKILL.md` - Document templates

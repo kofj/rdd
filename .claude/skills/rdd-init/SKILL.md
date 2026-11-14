@@ -1,7 +1,10 @@
 ---
 name: rdd-init
-description: Initialize RDD framework in a new or existing project with TDD/BDD configuration
+description: "Initialize RDD framework in a new or existing project with TDD/BDD configuration"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Init Skill
 
@@ -627,7 +630,7 @@ Review implementation after E2E pass:
 
 ## Review Log Template
 
-See `.claude/skills/rdd-templates/SKILL.md` for the full review log template.
+See `../rdd-templates/SKILL.md` for the full review log template.
 ```
 
 #### 4.6 Create `docs/11-next-steps.md`
@@ -1340,6 +1343,6 @@ If Task commands fail:
 ## Reference
 
 For more information:
-- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
-- `.claude/skills/rdd-templates/SKILL.md` - Document templates
+- `../rdd-core/SKILL.md` - Core RDD concepts
+- `../rdd-templates/SKILL.md` - Document templates
 - `docs/plans/2026-03-06-rdd-framework.md` - Implementation plan

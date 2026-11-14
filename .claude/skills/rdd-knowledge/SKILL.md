@@ -1,7 +1,10 @@
 ---
 name: rdd-knowledge
-description: Manage knowledge artifacts - record ADRs, track technical debt, generate handoff documents
+description: "Manage knowledge artifacts - record ADRs, track technical debt, generate handoff documents"
 ---
+
+Read [the shared runtime contract](../rdd-core/references/runtime.md) before following this workflow.
+
 
 # RDD Knowledge Management Skill
 
@@ -631,5 +634,5 @@ This skill integrates with:
 
 For detailed specifications, see:
 - `prompt.md` - Full RDD specification
-- `.claude/skills/rdd-core/SKILL.md` - Core RDD concepts
-- `.claude/skills/rdd-templates/SKILL.md` - Document templates
+- `../rdd-core/SKILL.md` - Core RDD concepts
+- `../rdd-templates/SKILL.md` - Document templates
