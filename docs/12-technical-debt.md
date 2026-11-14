@@ -252,7 +252,9 @@ When technical debt accumulation reaches threshold, trigger dedicated handling:
 
 | Number | Title | Priority | Suggested Stage | Status |
 |--------|-------|----------|-----------------|--------|
-| (None) | - | - | - | - |
+| TD-24 | Installer kill recovery / filesystem limits | Tech Optimization / Module | As Needed | Open |
+| TD-25 | Historical charter template | Tech Optimization / Architectural | Dedicated | Open |
+| TD-26 | Historical shell coverage estimate | Tech Optimization / Module | Dedicated | Open |
 
 ### In Progress Technical Debt
 
@@ -275,6 +277,7 @@ When technical debt accumulation reaches threshold, trigger dedicated handling:
 | TD-09 | Credentials stored in plaintext | Blocking / Module-level | 2026-03-07 | Added expand_env_vars function supporting ${VAR} |
 | TD-10 | No state persistence | Feature Degradation / Architecture-level | 2026-03-08 | Implemented checkpoint.sh state persistence |
 | TD-11 | Taskfile YAML parsing issue | Feature Degradation / Local | 2026-03-08 | Fixed YAML syntax issues |
+| TD-23 | Dual-client installation and execution truthfulness | Feature Degradation / Architectural | 2026-11-14 | Shared lifecycle/runtime, tested pending requests and actual execution coverage |
 
 ---
 
@@ -519,52 +522,16 @@ When technical debt accumulation reaches threshold, trigger dedicated handling:
 
 ## Technical Debt Statistics
 
-### By Priority
+Updated 2026-11-14. Counts exclude illustrative template examples.
 
-| Priority | Count | Percentage |
-|----------|-------|------------|
-| Blocks Subsequent Stage | 0 | 0% |
-| Feature Degradation + Architecture-level | 0 | 0% |
-| Feature Degradation + Module-level | 0 | 0% |
-| Feature Degradation + Local | 0 | 0% |
-| Tech Optimization + Architecture-level | 0 | 0% |
-| Tech Optimization + Module-level | 0 | 0% |
-| Tech Optimization + Local | 0 | 0% |
-| **Resolved** | **11** | **100%** |
-| **Total** | **11** | **100%** |
+| Status | Count | Items |
+|--------|-------|-------|
+| Open | 3 | TD-24, TD-25, TD-26 |
+| In progress | 0 | None |
+| Resolved | 12 | TD-01 through TD-11, TD-23 |
+| Total | 15 | No Phase 5 blocking debt |
 
-### By Source
-
-| Source | Count | Percentage |
-|--------|-------|------------|
-| Stage Document (Non-goals/Known Limitations) | 10 | 90.9% |
-| Review Log (Deferred/Rejected) | 0 | 0% |
-| ADR (Impact on Subsequent) | 0 | 0% |
-| Code Scan (TODO/FIXME/HACK/XXX) | 1 | 9.1% |
-| **Total** | **11** | **100%** |
-
-### By Status
-
-| Status | Count | Percentage |
-|--------|-------|------------|
-| Pending | 0 | 0% |
-| In Progress | 0 | 0% |
-| Resolved | 11 | 100% |
-| Not Applicable | 0 | 0% |
-| **Total** | **11** | **100%** |
-
-### By Stage Distribution
-
-| Stage | Pending | Resolved | Total |
-|-------|---------|----------|-------|
-| Stage 0 | 0 | 0 | 0 |
-| Stage 1 | 0 | 5 | 5 |
-| Stage 2 | 0 | 4 | 4 |
-| Stage 3 | 0 | 2 | 2 |
-| Stage 4+ | 0 | 0 | 0 |
-| **Total** | **0** | **11** | **11** |
-
----
+Open debt: 1 architectural optimization and 2 module optimizations. The historical TD-28 revision note has no active ledger entry and is not counted.
 
 ## Regular Review
 
@@ -602,3 +569,39 @@ When technical debt accumulation reaches threshold, trigger dedicated handling:
 ---
 
 > **Key Reminder**: Technical debt must be explicitly recorded, not managed as tacit knowledge. "Managing technical debt as tacit knowledge" is one of the prohibited behaviors in RDD.
+
+### TD-23: Client-specific installation and unverified orchestration
+
+- **Priority**: Feature Degradation / Architectural
+- **Source**: Autonomous decision (Stage 23)
+- **Original Description**: "The skill will be invoked by Claude Code autonomously"
+- **Source File**: .rdd/scripts/subagent-scheduler.sh:47
+- **Suggested Stage**: Stages 23–25
+- **Status**: Resolved for Phase 5. Installer deploys both hosts from the same source; scheduler explicitly queues pending requests for the host and retains worktrees; genuine Python execution coverage measured 89%. Historical shell-wide coverage fallback is separate debt (TD-26), not Phase 5 coverage evidence.
+
+### TD-24: Installer process-kill recovery and supported filesystem layout
+
+- **Priority**: Tech Optimization / Module
+- **Source**: Review deferred (Stage 23)
+- **Original Description**: "安装中途 SIGKILL，验证 prefix / 技能均回到旧状态"
+- **Source File**: scripts/install/manage.py (transaction commit)
+- **Suggested Stage**: As Needed, operational hardening
+- **Status**: Exception rollback is tested; SIGKILL/power-loss automatic recovery is not implemented. Backups remain for explicit restoration. Parent-directory symlinks are intentionally rejected and documented. Prefixes are single-user. These are explicit environment/operational limits, not missing Claude/Codex parity.
+
+### TD-25: Historical project charter remains a generic template
+
+- **Priority**: Tech Optimization / Architectural
+- **Source**: Review deferred (Stage 25 fresh-agent check)
+- **Original Description**: "[Fill in the project vision here ...]"
+- **Source File**: docs/01-charter.md:13
+- **Suggested Stage**: Dedicated documentation governance, when the human defines the charter
+- **Status**: Open. The current project goal is stated in README and the user-authorized Phase 5 roadmap; no new charter vision was invented. Phase 5 fresh-agent review is scoped to its implementation and handoff, not recertification of every historical template.
+
+### TD-26: Historical shell coverage fallback is only an estimate
+
+- **Priority**: Tech Optimization / Module
+- **Source**: Autonomous decision (Stage 25)
+- **Original Description**: "Estimated Coverage"
+- **Source File**: tests/lib/coverage.sh
+- **Suggested Stage**: Dedicated coverage infrastructure
+- **Status**: Open. Legacy task test:coverage estimates coverage from test counts without kcov. Phase 5 uses task test:agents:coverage with executed Python lines; generated user projects fail closed until their actual coverage command is configured. Do not cite the legacy estimate as measured coverage.

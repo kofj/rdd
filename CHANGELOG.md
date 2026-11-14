@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-14
+
+### Phase 5 — Claude Code / Codex parity (Stages 23–25 complete, 2026-11-14)
+- Shared manifest-driven one-command installer with `--agent claude|codex|both`, local source installation, additive client selection, offline reconfiguration, upgrades and owned-file uninstall.
+- Transaction rollback, collision preflight, backups, dry-run and per-prefix/user lifecycle locking; client credentials, security settings and shell profiles remain unchanged.
+- Same skills for both clients, relative references, repository Codex discovery links and explicit-only reference-skill metadata.
+- Fresh project scaffolding, non-destructive migration and deliberately failing unconfigured test gates; npm requires explicit `rdd install`.
+- Pending-only scheduler requests retain worktrees; initial stage persistence fixed. macOS runtime portability regressions addressed during clean verification.
+- Verification: 909/909 clean full-suite tests, 25 focused lifecycle tests, 89% changed Python execution coverage, 4 Linux lifecycle paths and real Claude Code/Codex checkpoint + failed-test smoke evidence. Full autonomous skill execution is not exhaustively certified; see Stage 25 review log.
+
+
 ### Added
 - GitHub Actions CI/CD workflow for automated releases
 - Release helper script `scripts/release/create-release.sh`
@@ -27,8 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `~/.claude/skills/rdd-*.md` without YAML frontmatter, but Claude Code requires the
   directory format `<name>/SKILL.md` with a `description` field. All 17 skills are now
   converted to the correct format, so they load and can be triggered by natural language.
-- All distributors (`postinstall.js`, `install.sh`, `upgrade.sh`, `uninstall.sh`) now
-  deploy/remove skills in directory format and clean up legacy flat files on upgrade.
+- Shell/npm installation uses the shared lifecycle manager. Legacy unowned assets are preserved; explicit replacement backs up conflicts. npm postinstall no longer mutates user skills.
 
 ### Removed
 - Duplicate `.claude/commands/rdd-*.md` slash commands — superseded by same-named skills

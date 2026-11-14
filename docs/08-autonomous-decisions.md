@@ -925,3 +925,33 @@ When decisions are no longer applicable, record the deprecation reason here:
 **Date**: 2026-07-10
 **Related Stage**: Stage unknown
 
+
+### Decision 23A: Shared RDD workflows with explicit client installation targets
+
+**Background**: User authorized Codex one-command installation and Claude Code parity on 2026-11-14.
+
+**Decision**: Add Phase 5 Stages 23–25. Share all 17 skills and runtime; select claude/codex/both only at distribution boundaries. Keep canonical skill paths compatible and use sibling references internally. Distinguish scheduling requests, actual execution, and independently verified completion.
+
+**Reason**: Duplicated workflows would drift; existing scheduler trigger files do not prove execution. Current status contained contradictory and unknown-stage entries without supporting evidence.
+
+**Impact on Subsequent Stages**: Stage 23 supplies installation lifecycle, Stage 24 removes host assumptions, Stage 25 verifies real behavior and records unavailable evidence. Publication requires a separate release action. No Stage is complete solely because static skill checks pass.
+
+### Decision 23B: Manifest-owned lifecycle and explicit npm installation
+
+**Background**: Independent design/code review identified user-file collision, ownership, version drift and backup-discovery risks.
+
+**Decision**: Python 3 standard-library manager, schema-1 ownership/content manifest, additive client selection, preflight + exception rollback, backups outside skill discovery roots, no client-config/profile edits. npm postinstall only explains the explicit install command. Per-prefix/user locking prevents concurrent lifecycle mutations.
+
+**Reason**: One implementation supports shell/npm, measurable execution coverage and reversible operations without separate client workflows.
+
+**Impact on Subsequent Stages**: Future releases must preserve manifest compatibility and offline version identity, keep source skill content shared, and test backup discovery and retained-user-file behavior. Automated process-kill recovery remains TD-24.
+
+### Decision 25A: Evidence-scoped parity and supported-platform corrections
+
+**Background**: Clean verification reproduced 19 pre-existing macOS failures on HEAD, and host smoke distinguished real workflow behavior from file assertions.
+
+**Decision**: Apply bounded shell portability fixes, fix false-success lint exit handling, and certify installation/shared-workflow parity using actual Task, client and Linux evidence. Keep unconfigured project tests failing; preserve historical charter/coverage gaps as TD-25/TD-26.
+
+**Reason**: Both clients need the same truthful gates; a static skill copy or a test-count coverage estimate cannot certify them.
+
+**Impact on Subsequent Stages**: New work must run task test:clean and appropriate focused checks, explicitly trigger costly client/container smoke, and distinguish model capability from framework behavior. Release/version selection remains outside this implementation phase.

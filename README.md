@@ -1,90 +1,92 @@
 # RDD (Roadmap Driven Development) Framework
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/kofj/rdd)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](https://github.com/kofj/rdd)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://claude.ai/code)
 
 A disciplined development framework for AI agents, inspired by Gary's Stage-Based Development methodology.
 
-## Installation
+## Installation — Claude Code and Codex
 
-### Quick Install (macOS / Linux)
+Version 1.3.0 provides a shared installer and the same RDD skills/runtime for Claude Code and Codex. From a local checkout, run:
 
 ```bash
-# Short URL via CDN (recommended)
-curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh
+# Both clients (default)
+bash scripts/install/install.sh --source . --agent both
 
-# Or full URL
-curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/scripts/install/install.sh | sh
+# Codex only
+bash scripts/install/install.sh --source . --agent codex
+
+# Claude Code only
+bash scripts/install/install.sh --source . --agent claude
 ```
 
-### Install Options
+The installer prints the absolute CLI path. It does not edit shell profiles:
 
 ```bash
-# Install specific version
-curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --version v1.2.1
-
-# Install to custom directory
-curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --prefix /opt/rdd
-
-# Install without modifying PATH
-curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --no-path
-
-# Upgrade to latest version
-curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --upgrade
-
-# Uninstall
-curl -fsSL https://cdn.jsdelivr.net/gh/kofj/rdd/install.sh | sh -s -- --uninstall
-```
-
-### Verify Installation
-
-```bash
+export PATH="$HOME/.rdd-framework/bin:$PATH"
 rdd --version
-```
-
-### Initialize a Project
-
-```bash
-# Create a new project
 rdd init my-project
 cd my-project
-
-# Or initialize in current directory
-rdd init
+task doctor
 ```
 
-### Requirements
+Installation requires **Python 3.8+**, Bash and macOS/Linux. Project workflows additionally require **Bash 4+ on PATH**, Git, go-task (`task`), jq and Mike Farah yq v4. macOS's bundled `/bin/bash` is older; the bootstrap works with it, but install a newer Bash for the full runtime. Node/npm are only needed for the npm route. Dependency installation and client authentication remain explicit user setup.
 
-- **Bash 4.0+** (pre-installed on macOS/Linux)
-- **Git 2.0+** (for version control)
-- **Task 3.0+** (will be installed automatically if missing)
-
-### Manual Installation
+Install the tagged version without cloning:
 
 ```bash
-# Clone the repository
-git clone https://github.com/kofj/rdd.git
-cd rdd-framework
-
-# Run the installer
-./scripts/install/install.sh
-
-# Or install manually
-cp -r .claude/skills/rdd-* ~/.claude/skills/
-cp -r .rdd/scripts/* ~/.rdd-framework/scripts/
-cp -r .rdd/hooks/* ~/.rdd-framework/hooks/
+# POSIX bootstrap invokes the full installer using Bash
+curl -fsSL https://raw.githubusercontent.com/kofj/rdd/main/install.sh | sh -s -- --version v1.3.0 --agent both
 ```
 
-### Using with Claude Code
+The npm registry is published separately from Git tags. Until `@kofj/rdd@1.3.0` is published there, use the shell installer or local checkout above. npm postinstall does not modify user skills; published npm packages require an explicit `rdd install`.
 
-After installation, RDD skills are automatically available in Claude Code:
+| Client | User skill directory | Invocation |
+|--------|----------------------|------------|
+| Claude Code | `~/.claude/skills/rdd-*` | `/rdd-help`, `/rdd-init`, `/rdd-loop` |
+| Codex CLI/IDE | `~/.agents/skills/rdd-*` | `$rdd-help`, `$rdd-init`, `$rdd-loop` |
 
-- `/rdd-init` - Initialize a new RDD project
-- `/rdd-migrate` - Migrate existing project
-- `/rdd-stage-auto` - Execute stage with gates
-- `/rdd-knowledge` - Manage ADRs and tech debt
-- `/rdd-loop` - Control autonomous execution
+Codex supports built-in slash commands, but this installer registers **Skills**, not a custom `/rdd` command. Use `$rdd-help` in the Codex CLI/IDE prompt (not in your shell); `/skills` lists available skills. Restart the client if discovery has not refreshed. The same workflow can also be requested in natural language. Reference-only skills retain explicit invocation behavior through each client's metadata. [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills).
+
+### Upgrade, add a client, and uninstall
+
+```bash
+# Add Codex to the installed runtime without downloading anything
+rdd install --agent codex
+
+# Upgrade from a checked-out new version; selected clients are preserved
+rdd upgrade --source /path/to/rdd
+
+# Or upgrade to a published tag
+rdd upgrade --version vX.Y.Z
+
+# Preview, then remove owned and unchanged assets
+rdd uninstall --dry-run
+rdd uninstall
+```
+
+`--agent` is additive for an existing prefix: adding Codex retains Claude support. Upgrades keep all previously selected clients in sync. Each prefix belongs to one user home; use separate prefixes for different users. `--prefix DIR` chooses another runtime location. `--no-path` remains accepted; shell profiles are never modified.
+
+A manifest records file ownership and hashes. Unrelated or locally edited assets are preserved. Conflicting/legacy installations stop with an explanation; `--replace-skills` explicitly backs up conflicting skills and the runtime before replacement. Skill backups are kept outside discovery directories under `~/.rdd-backups/<prefix-hash>/<client>/`; runtime backups remain beside the prefix as `.rdd-backup-*`; restore them only after uninstalling the new owned assets. Symlinked skill-parent directories are refused; ordinary skill-directory symlinks can be backed up with explicit replacement. Uninstall retains modified assets, caches and user files.
+
+### Shared workflows and limits
+
+Both clients share initialization, migration, roadmap planning, five gates, review, ADR/debt, hooks, checkpoint recovery, stage archive, diagnosis, help and loop instructions. Internal skill links are relative; project documents and `.rdd` always refer to the active project. Host permissions and review-model availability still apply.
+
+`rdd init` creates fresh project state and runnable RDD scripts. `--lang zh` provides Chinese charter/status prompts; `--interactive` asks for directory and language. `rdd migrate` only fills missing files. Existing `AGENTS.md`, `CLAUDE.md` and Taskfile are preserved. If an existing Taskfile is present, RDD writes `Taskfile.rdd.yml`: integrate its tasks with your own test commands before running gates, and point existing Claude guidance at AGENTS.md. Unconfigured unit/E2E/coverage tasks fail deliberately.
+
+Scheduling scripts create **pending requests**. The active host consumes them using available delegation or sequential execution; a trigger file is not proof of execution. Worktrees remain until results are verified and explicitly released. There is no background daemon or promise of execution after the client exits. Independent contexts alone do not satisfy a multi-model review requirement. Hook scripts are shared explicit actions; installation does not register client hooks or send notifications.
+
+### Verification
+
+```bash
+task test:agents           # Real isolated filesystem + shell/npm lifecycle tests
+task test:agents:coverage  # Executed Python lines, not a test-count estimate
+task test:clean           # Full task test in a disposable copy; notifications disabled
+```
+
+Both installed clients have been smoke-tested in an isolated project: they loaded `rdd-help` and the shared runtime contract, saved/read the common checkpoint, and treated an unconfigured unit-test exit as a Gate 3 blocker. This establishes the tested common workflow, not identical model decisions or exhaustive autonomous execution of every skill. Detailed evidence and verification limits are recorded in `docs/stages/stage-25-review-log.md`.
 
 ## Overview
 

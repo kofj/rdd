@@ -8,8 +8,8 @@
 
 ### Current Stage
 
-- **Stage**: All Stages Complete ✅
-- **Status**: Phase 4 Done — v1.2.0 ready
+- **Stage**: Phase 5 complete — Stages 23–25
+- **Status**: Complete — v1.3.0 (verified 2026-11-14)
 
 ### Overall Progress
 
@@ -18,6 +18,7 @@ Phase 1 Core Development: ██████████████████
 Phase 2 E2E Testing:      ████████████████████ 100% (5/5 Stage)
 Phase 3 Release & Ops:    ████████████████████ 100% (3/3 Stage)
 Phase 4 User Readiness:   ████████████████████ 100% (4/4 Stage)
+Phase 5 Client Parity:    ████████████████████ 100% (3/3 Stage)
 ```
 
 ---
@@ -58,7 +59,7 @@ Phase 4 User Readiness:   ██████████████████
 | Stage 17 | ✅ Completed | GitHub Actions CI/CD | 2026-03-10 |
 | Stage 18 | ✅ Completed | Docker test environment | 2026-03-10 |
 
-### Phase 4: User Readiness 🔄 (In Progress)
+### Phase 4: User Readiness ✅ (Completed)
 
 | Stage | Status | Goal | Dependencies |
 |-------|--------|------|--------------|
@@ -66,6 +67,16 @@ Phase 4 User Readiness:   ██████████████████
 | Stage 20 | ✅ Completed | Help & workflow system | Stage 19 |
 | Stage 21 | ✅ Completed | TDD/BDD initialization enhancement | None |
 | Stage 22 | ✅ Completed | Multi-stage autonomous progression | Stage 19, 20 |
+
+### Phase 5: Claude Code / Codex parity
+
+Authorized by the user on 2026-11-14: plan and implement one-command Codex installation with equivalent RDD functionality in both clients. This is the approved implementation scope. The user subsequently authorized batched commits, a new version tag and push for v1.3.0.
+
+| Stage | Status | Goal | Dependencies |
+|-------|--------|------|--------------|
+| Stage 23 | ✅ Completed | Unified installation, upgrade and uninstall for claude/codex/both | Stage 22 |
+| Stage 24 | ✅ Completed | Shared skills, initialization and truthful agent execution | Stage 23 |
+| Stage 25 | ✅ Completed | Isolated lifecycle tests, client verification and user documentation | Stage 24 |
 
 ### Status Icons
 
@@ -166,10 +177,12 @@ Phase 4 User Readiness:   ██████████████████
 
 ## Test Statistics
 
+Current clean full-suite evidence: 2026-11-14. The 25 focused Python tests run within one unit wrapper; Linux and authenticated client smoke are separate opt-in checks.
+
 | Type | Count | Pass Rate |
 |------|-------|-----------|
-| Unit Tests | 867 | 100% |
-| E2E Tests | 42 | 100% |
+| Unit Tests | 869 | 100% |
+| E2E Tests | 40 | 100% |
 | **Total** | **909** | **100%** |
 
 ---
